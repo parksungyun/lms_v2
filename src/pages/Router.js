@@ -13,6 +13,7 @@ import { Register } from "./Web/Register"
 import { FindID } from "./Web/FindID"
 import { FindPW } from "./Web/FindPW"
 import { WebNavbar } from "../components/WebNavbar"
+import { CourseDetail } from "./Web/CourseDetail"
 import { Course } from "../components/Course"
 
 export function Router() {
@@ -24,7 +25,7 @@ export function Router() {
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
             <Route path="courses" element={<Courses />}>
-              <Route path=":id" element={<Course />} />
+              <Route path=":id" element={<CourseDetail />} />
             </Route>
             <Route path="trainers" element={<Trainers />} />
             <Route path="managers" element={<Managers />} />
@@ -38,6 +39,7 @@ export function Router() {
             {/* <Route path="student" element={<StudentWrapper />}>
               <Route path=":id" element={<StudentMain />}></Route>
             </Route> */}
+            <Route path="course" element={<Course />} />
           </Route>
         </Routes>
       </BrowserRouter>
