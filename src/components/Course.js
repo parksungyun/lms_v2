@@ -1,28 +1,77 @@
 import { Card } from "react-bootstrap";
-import clas from '../../assets/img/class/class1.png'
+import clas from '../assets/img/class/class1.png'
 import { NavLink } from "react-router-dom";
+import { BiUser } from "react-icons/bi";
+import styled from "styled-components";
+
+const Container = styled.div`
+  display: flex;
+  align-items: stretch;
+  margin-bottom: 20px;
+`
+
+const Box = styled.div`
+  border-radius: 5px;
+  border: 1px solid #eef0ef;
+`;
+
+const Img = styled.img`
+  max-width: 100%;
+  height: auto;
+`
+
+const Content = styled.div`
+  padding: 15px;
+`
+
+const PositionWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+`
+
+const Position = styled.div`
+  font-size: 14px;
+  background: #5f7dcf;
+  padding: 7px 14px;
+  color: #fff;
+  margin: 0;
+`
+
+const StyledNavLink = styled(NavLink)`
+  font-weight: 700;
+  font-size: 20px;
+  color: #37423b;
+  &:hover{
+    color: #5f7dcf;
+  }
+`
+
+const Capacity = styled.div`
+  margin-top: 10px;
+  padding-top: 15px;
+  border-top: 1px solid #eef0ef;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+`
 
 export function Course() {
   return <>
-    <Card>
-    <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
-            <div class="course-item">
-              <img src={clas} class="img-fluid" alt="..."/>
-              <div class="course-content">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <h4>Design</h4>
-                </div>
-
-                <NavLink to="">디지털콘텐츠 UI/UX 디자인</NavLink>
-                <p>Et architecto provident deleniti facere repellat nobis iste. Id facere quia quae dolores dolorem tempore.</p>
-                <div class="trainer d-flex justify-content-end align-items-center">
-                  <div class="trainer-rank d-flex align-items-center">
-                    <i class="bx bx-user"></i>&nbsp;30
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-    </Card>
+    <Container>
+      <Box>
+        <Img src={clas} alt="..."/>
+        <Content>
+          <PositionWrapper>
+            <Position>Design</Position>
+          </PositionWrapper>
+          <StyledNavLink to="">디지털콘텐츠 UI/UX 디자인</StyledNavLink>
+          <Capacity>
+            <BiUser />&nbsp;30
+          </Capacity>
+        </Content>
+      </Box>
+    </Container>
   </>
 }
