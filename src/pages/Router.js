@@ -13,6 +13,7 @@ import { Register } from "./Web/Register"
 import { FindID } from "./Web/FindID"
 import { FindPW } from "./Web/FindPW"
 import { WebNavbar } from "../components/WebNavbar"
+import { Course } from "../components/Course"
 
 export function Router() {
   return <>
