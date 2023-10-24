@@ -33,8 +33,8 @@ const StyledNavLink = styled(NavLink)`
 
 export function WebNavbar() {
   return <>
-    <Container>
-      <Navbar className="">
+    <Navbar className="">
+      <Container>
         <Navbar.Brand><NavLink to="/"><Img src={logo} alt="logo" /></NavLink></Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
@@ -53,8 +53,8 @@ export function WebNavbar() {
             <Nav.Link><StyledLogin to="login">로그인</StyledLogin></Nav.Link>
           </Nav>
         </Navbar.Collapse>
-      </Navbar>
-    </Container>
+      </Container>
+    </Navbar>
     <Outlet />
   </>
 }
