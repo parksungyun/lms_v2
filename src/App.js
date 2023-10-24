@@ -1,7 +1,7 @@
-import { Test } from './components/Test';
+import { Router } from './pages/Router';
 
 export default function App() {
   return <>
-    <Test />
+    <Router />
   </>
 }
