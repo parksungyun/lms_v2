@@ -1,21 +1,7 @@
 import styled from "styled-components"
 import { Container, Col, Row } from "react-bootstrap";
 import ceo from "../../assets/img/ceo.png"
-
-const Header = styled.div`
-  background-color: #5f7dcf;
-  width: 100%;
-  height: 100px;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const HeaderText = styled.p`
-  font-size: 2rem;
-  font-weight: 500;
-`;
+import WebWrapper from "../../components/WebWrapper"
 
 const Content = styled.div`
   height: 100%;
@@ -57,9 +43,7 @@ const Text = styled.p`
 
 export function About() {
   return <>
-    <Header>
-      <HeaderText>대표 인사말</HeaderText>
-    </Header>
+    <WebWrapper pageName={"대표 인사말"} />
     <Container>
       <Row>
         <Col>
