@@ -15,6 +15,7 @@ import { FindPW } from "./Web/FindPW"
 import { WebNavbar } from "../components/WebNavbar"
 import { CourseDetail } from "./Web/CourseDetail"
 import { Course } from "../components/Course"
+import { MemberCard } from "../components/MemberCard"
 
 export function Router() {
   return <>
@@ -40,6 +41,7 @@ export function Router() {
               <Route path=":id" element={<StudentMain />}></Route>
             </Route> */}
             <Route path="course" element={<Course />} />
+            <Route path="member" element={<MemberCard />} />
           </Route>
         </Routes>
       </BrowserRouter>

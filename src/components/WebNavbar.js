@@ -10,9 +10,7 @@ const Img = styled.img`
 
 const StyledLogin = styled(NavLink)`
   background-color: #5f7dcf;
-  padding: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 10px 30px;
   border-radius: 50px;
   color: white;
   &:hover {
