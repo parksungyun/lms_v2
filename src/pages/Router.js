@@ -22,7 +22,9 @@ export function Router() {
           <Route path="/" element={<WebNavbar />}>
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
-            <Route path="courses" element={<Courses />} />
+            <Route path="courses" element={<Courses />}>
+              <Route path=":id" element={<Course />} />
+            </Route>
             <Route path="trainers" element={<Trainers />} />
             <Route path="managers" element={<Managers />} />
             <Route path="step" element={<Step />} />
