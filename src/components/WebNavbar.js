@@ -29,6 +29,12 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
+const StyledDropdown = styled(NavDropdown.Item)`
+  &:active {
+    background-color: white;
+  }
+`;
+
 export function WebNavbar() {
   return <>
     <Navbar className="">
@@ -40,12 +46,12 @@ export function WebNavbar() {
             <Nav.Link><StyledNavLink to="about">아카데미 소개</StyledNavLink></Nav.Link>
             <Nav.Link><StyledNavLink to="courses">과정 안내</StyledNavLink></Nav.Link>
             <NavDropdown title="강사 소개" id="basic-nav-dropdown">
-              <NavDropdown.Item><StyledNavLink to="trainers">교육팀</StyledNavLink></NavDropdown.Item>
-              <NavDropdown.Item><StyledNavLink to="managers">행정팀</StyledNavLink></NavDropdown.Item>
+              <StyledDropdown><StyledNavLink to="trainers">교육팀</StyledNavLink></StyledDropdown>
+              <StyledDropdown><StyledNavLink to="managers">행정팀</StyledNavLink></StyledDropdown>
             </NavDropdown>
             <NavDropdown title="이용 안내" id="basic-nav-dropdown">
-              <NavDropdown.Item><StyledNavLink to="step">입학 절차</StyledNavLink></NavDropdown.Item>
-              <NavDropdown.Item><StyledNavLink to="admission">입학 상담</StyledNavLink></NavDropdown.Item>
+              <StyledDropdown><StyledNavLink to="step">입학 절차</StyledNavLink></StyledDropdown>
+              <StyledDropdown><StyledNavLink to="admission">입학 상담</StyledNavLink></StyledDropdown>
             </NavDropdown>
             <Nav.Link><StyledNavLink to="contact">오시는 길</StyledNavLink></Nav.Link>
             <Nav.Link><StyledLogin to="login">로그인</StyledLogin></Nav.Link>
