@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components"
+import WebWrapper from "../../components/WebWrapper";
 
 const Container = styled.div`
   width: 100%;
@@ -48,54 +49,23 @@ const Button = styled.button`
   }
 `;
 
-const FindWrapper = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-`;
-
-const Find = styled.button`
-  border: none;
-  background-color: white;
-`;
-
-const Divider = styled.div`
-  color: #bbb;
-  margin: 0;
-  padding: 0;
-  cursor: default;
-`;
-
-export function FindPW() {
-  const [userId, setUserId] = useState("");
-  const [userPhone, setUserPhone] = useState("");
+export function AdmissionPwCheck() {
+  const [postPw, setPostPw] = useState("");
   const navigate = useNavigate();
 
   function onSubmit(e) {
     e.preventDefault();
-
   }
 
   return <>
+    <WebWrapper pageName={"입학 상담"} />
     <Container>
       <form onSubmit={onSubmit}>
-        <Header>비밀번호 찾기</Header>
+        <Header>비밀번호 확인</Header>
         <Div>
-          <label>아이디</label>
-          <input id="userId" value={userId} onChange={(e) => setUserId(e.target.value)} />
+          <input type="password" id="userPw" value={postPw} onChange={(e) => setPostPw(e.target.value)} />
         </Div>
-        <Div>
-          <label>연락처</label>
-          <input id="userPhone" value={userPhone} onChange={(e) => setUserPhone(e.target.value)} />
-        </Div>
-        <Button type="submit">비밀번호 찾기</Button>
-        <FindWrapper>
-          <Find onClick={() => navigate("/register")}>회원가입</Find>
-          <Divider>|</Divider>
-          <Find onClick={() => navigate("/login")}>로그인</Find>
-          <Divider>|</Divider>
-          <Find onClick={() => navigate("/findID")}>아이디 찾기</Find>
-        </FindWrapper>
+        <Button type="submit">확인</Button>
       </form>
     </Container>
   </>
