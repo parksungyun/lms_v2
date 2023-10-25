@@ -41,7 +41,7 @@ const WriteButton = styled.button`
   color: white;
 `;
 
-const BadgeSucess = styled.span`
+const BadgeSuccess = styled.span`
   background-color: green;
   padding: 2px 15px;
   color: white;
@@ -60,7 +60,7 @@ const BadgeSecondary = styled.span`
 `;
 
 function changeReply(reply) {
-  if(reply === 1) return(<BadgeSucess>답변완료</BadgeSucess>);
+  if(reply === 1) return(<BadgeSuccess>답변완료</BadgeSuccess>);
   else return(<BadgeSecondary>답변대기</BadgeSecondary>);
 }
 
