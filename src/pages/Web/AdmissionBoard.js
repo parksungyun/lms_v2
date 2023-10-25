@@ -285,10 +285,6 @@ export function AdmissionBoard() {
     e.preventDefault();
   }
 
-  function changeSelect() {
-
-  }
-
   return <>
     <WebWrapper pageName={"입학 상담"} />
     <Container>
@@ -299,7 +295,7 @@ export function AdmissionBoard() {
       />
       <ButtonBox>
         <SearchBox>
-          <select className="searchSelect" onChange={changeSelect}>
+          <select className="searchSelect" onChange={(e) => setSearchOption(e.target.value)}>
             <option key="all" value="all">전체</option>
             <option key="title" value="title">제목</option>
             <option key="writer" value="writer">작성자</option>
