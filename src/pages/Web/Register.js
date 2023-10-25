@@ -8,10 +8,13 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin: 3rem auto;
+  align-items: center;
+  /* background-color: gray; */
   form {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: start;
     justify-content: center;
     gap: 1rem;
   }
@@ -20,19 +23,25 @@ const Container = styled.div`
 const Header = styled.div`
   font-size: 2rem;
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 5rem;
   font-weight: bold;
 `;
 
 const Div = styled.div`
   display: flex;
   flex-direction: column;
-  input {
-    width: 300px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid lightgray;
-  }
+`;
+
+const TextInput = styled.input`
+  width: 300px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+`;
+
+const Divider = styled.div`
+  display: flex;
+  gap: 1rem;
 `;
 
 const Button = styled.button`
@@ -42,7 +51,7 @@ const Button = styled.button`
   border: 1px solid #eee;
   color: white;
   font-weight: 700;
-  margin-top: 2rem;
+  margin: 2rem auto;
   &:hover {
     background-color: #86a8db;
   }
@@ -52,18 +61,16 @@ const FindWrapper = styled.div`
   display: flex;
   gap: 1rem;
   margin-top: 2rem;
+  font-weight: 100;
 `;
 
 const Find = styled.button`
   border: none;
   background-color: white;
-`;
-
-const Divider = styled.div`
-  color: #bbb;
-  margin: 0;
-  padding: 0;
-  cursor: default;
+  font-weight: 700;
+  &:hover {
+    color: #5f7dcf;
+  }
 `;
 
 export function Register() {
@@ -87,26 +94,53 @@ export function Register() {
 
   return <>
     <Container>
+      <Header>회원가입</Header>
       <form onSubmit={onSubmit}>
-        <Header>회원가입</Header>
-        <Div>
-          <label>아이디</label>
-          <input id="userId" value={userId} onChange={(e) => setUserId(e.target.value)} />
-        </Div>
-        <Div>
-          <label>비밀번호</label>
-          <input id="userPw" value={userPw} onChange={(e) => setUserPw(e.target.value)} />
-        </Div>
-        <Div>
-          <label>비밀번호 확인</label>
-          <input id="userPwCheck" value={userPwCheck} onChange={(e) => setUserPwCheck(e.target.value)} />
-        </Div>
-        <hr />
-        <Div>
-          <label>이름</label>
-          <input id="userName" value={userName} onChange={(e) => setUserName(e.target.value)} />
-        </Div>
-        <Button type="submit">회원가입</Button>
+        <Divider>
+          <Div>
+            <label>아이디</label>
+            <TextInput id="userId" value={userId} onChange={(e) => setUserId(e.target.value)} />
+          </Div>
+          <Div>
+            <label>이름</label>
+            <TextInput id="userName" value={userName} onChange={(e) => setUserName(e.target.value)} />
+          </Div>
+        </Divider>
+        <Divider>
+          <Div>
+            <label>비밀번호</label>
+            <TextInput type="password" id="userPw" value={userPw} onChange={(e) => setUserPw(e.target.value)} />
+          </Div>
+          <Div>
+            <label>비밀번호 확인</label>
+            <TextInput type="password" id="userPwCheck" value={userPwCheck} onChange={(e) => setUserPwCheck(e.target.value)} />
+          </Div>
+        </Divider>
+        <Divider>
+          <Div>
+            <label>연락처</label>
+            <TextInput id="userPhone" value={userPhone} onChange={(e) => setUserPhone(e.target.value)} />
+          </Div>
+          <Div>
+            <label>생년월일</label>
+            <TextInput type="date" id="userBirth" value={userBirth} onChange={(e) => setUserBirth(e.target.value)} />
+          </Div>
+        </Divider>
+        <Divider>
+          <Div>
+            <label>Email</label>
+            <TextInput id="userEmail" value={userEmail} onChange={(e) => setUserEmail(e.target.value)} />
+          </Div>
+          <Div>
+            <label>주소</label>
+            <TextInput id="userAddress" value={userAddress} onChange={(e) => setUserAddress(e.target.value)} />
+          </Div>
+        </Divider>
+        <Divider>
+            <input type="checkbox" id="agree" value={agree} onChange={(e) => setAgree(e.target.value)} />
+            <label>개인정보 수집 및 이용에 동의합니다.</label>
+        </Divider>
+        <Button type="submit">가입하기</Button>
         <FindWrapper>
           이미 계정이 있으십니까?
           <Find onClick={() => navigate("/login")}>로그인</Find>

@@ -1,7 +1,13 @@
 import styled from "styled-components"
-import { Container, Col, Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import ceo from "../../assets/img/ceo.png"
 import WebWrapper from "../../components/WebWrapper"
+
+const Container = styled.div`
+  margin: 2rem;
+  margin-left: 3rem;
+  padding-bottom: 3rem;
+`;
 
 const Content = styled.div`
   height: 100%;
