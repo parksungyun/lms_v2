@@ -8,6 +8,7 @@ const Container = styled.div`
 
 const Table = styled.table`
   border-bottom: 1px solid #ddd;
+  text-align: start;
   tr{
     border-bottom: 1px solid #ddd;
   }
