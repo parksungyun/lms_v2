@@ -1,13 +1,33 @@
 import styled from "styled-components"
-import { Container, Col, Row } from "react-bootstrap";
 import WebWrapper from "../../components/WebWrapper"
+import { Course } from '../../components/Course'
+
+const Container = styled.div`
+  margin: 2rem;
+  margin-left: 3rem;
+  padding-bottom: 3rem;
+`;
+
+
+const CardWrapper = styled.div`
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+  flex-wrap: wrap;
+`;
 
 export function Courses() {
   return <>
     <WebWrapper pageName={"과정 안내"} />
     <Container>
-      <Row>
-      </Row>
+      <CardWrapper>
+        <Course />
+        <Course />
+        <Course />
+        <Course />
+        <Course />
+        <Course />
+      </CardWrapper>
     </Container>
   </>
 }
