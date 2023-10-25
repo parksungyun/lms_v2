@@ -23,6 +23,7 @@ import { TrainerHome } from "./Learning/TrainerHome"
 import { ManagerHome } from "./Learning/ManagerHome"
 import { AdminHome } from "./Learning/AdminHome"
 import { LmsHeader } from "../components/LmsHeader"
+import { ParentsWrapper } from "../components/ParentsWrapper"
 
 export function Router() {
   return <>
@@ -32,26 +33,23 @@ export function Router() {
           <Route path="/" element={<WebNavbar />}>
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
-            <Route path="courses" element={<Courses />}>
-              <Route path=":id" element={<CourseDetail />} />
+            <Route path="courses" element={<ParentsWrapper />}>
+              <Route index element={<Courses />} />
+              <Route path="detail" element={<CourseDetail />} />
             </Route>
             <Route path="trainers" element={<Trainers />} />
             <Route path="managers" element={<Managers />} />
             <Route path="step" element={<Step />} />
-            <Route path="admission" element={<AdmissionBoard />}>
+            <Route path="admission" element={<ParentsWrapper />}>
+              <Route index element={<AdmissionBoard />} />
               <Route path="write" element={<AdmissionWrite />} />
-              <Route path=":id" element={<AdmissionPost />} />
+              <Route path="post" element={<AdmissionPost />} />
             </Route>
             <Route path="contact" element={<Contact />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="findID" element={<FindID />} />
             <Route path="findPW" element={<FindPW />} />
-            {/* <Route path="student" element={<StudentWrapper />}>
-              <Route path=":id" element={<StudentMain />}></Route>
-            </Route> */}
-            <Route path="course" element={<Course />} />
-            <Route path="member" element={<MemberCard />} />
           </Route>
           <Route path="/lms" element={<LmsHeader />}>
             <Route path="s" element={<StudentHome />}></Route>

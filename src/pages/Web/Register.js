@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components"
 
@@ -87,9 +87,6 @@ export function Register() {
 
   function onSubmit(e) {
     e.preventDefault();
-    if (userId && userPw) {
-      navigate("/");
-    }
   }
 
   return <>
