@@ -88,7 +88,7 @@ export function Login() {
         </Div>
         <Div>
           <label>비밀번호</label>
-          <input id="userPw" value={userPw} onChange={(e) => setUserPw(e.target.value)} />
+          <input type="password" id="userPw" value={userPw} onChange={(e) => setUserPw(e.target.value)} />
         </Div>
         <Button type="submit">로그인</Button>
         <FindWrapper>
