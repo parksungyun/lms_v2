@@ -33,7 +33,7 @@ const ButtonBox = styled.div`
   margin-right: 1.4rem;
 `;
 
-const WriteButton = styled.button`
+const PrimaryButton = styled.button`
   border: 0;
   border-radius: 5px;
   background-color: #5f7dcf;
@@ -305,7 +305,7 @@ export function AdmissionBoard() {
           <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
           <button onClick={onSearch}>검색</button>
         </SearchBox>
-        <WriteButton>작성</WriteButton>
+        <PrimaryButton>작성</PrimaryButton>
       </ButtonBox>
       <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
     </Container>
