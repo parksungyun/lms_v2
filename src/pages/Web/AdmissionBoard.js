@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { Table } from "../../components/Table";
 import '../../styles/table.css';
 import { Pagination } from "../../components/Pagination";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   margin: 2rem 15rem;
@@ -271,6 +272,7 @@ export function AdmissionBoard() {
   const [searchOption, setSearchOption] = useState("all");
   const limit = 10;
   const offset = (page - 1) * limit;
+  const navigate = useNavigate();
 
   const postsData = (posts) => {
     if(posts) {
@@ -305,7 +307,7 @@ export function AdmissionBoard() {
           <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
           <button onClick={onSearch}>검색</button>
         </SearchBox>
-        <PrimaryButton>작성</PrimaryButton>
+        <PrimaryButton onClick={() => navigate("write")}>작성</PrimaryButton>
       </ButtonBox>
       <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
     </Container>
