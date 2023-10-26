@@ -52,10 +52,18 @@ export function Router() {
             <Route path="findPW" element={<FindPW />} />
           </Route>
           <Route path="/lms" element={<LmsHeader />}>
-            <Route path="s" element={<StudentHome />}></Route>
-            <Route path="t" element={<TrainerHome />}></Route>
-            <Route path="m" element={<ManagerHome />}></Route>
-            <Route path="a" element={<AdminHome />}></Route>
+            <Route path="s" element={<ParentsWrapper />}>
+              <Route index element={<StudentHome />} />
+            </Route>
+            <Route path="t" element={<ParentsWrapper />}>
+              <Route index element={<TrainerHome />} />
+            </Route>
+            <Route path="m" element={<ParentsWrapper />}>
+              <Route index element={<ManagerHome />} />
+            </Route>
+            <Route path="a" element={<ParentsWrapper />}>
+              <Route index element={<AdminHome />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

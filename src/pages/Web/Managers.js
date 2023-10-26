@@ -3,8 +3,7 @@ import WebWrapper from "../../components/WebWrapper"
 import { MemberCard } from "../../components/MemberCard";
 
 const Container = styled.div`
-  margin: 2rem;
-  margin-left: 3rem;
+  margin: 2rem 15rem;
   padding-bottom: 3rem;
 `;
 

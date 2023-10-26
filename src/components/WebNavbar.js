@@ -2,7 +2,7 @@ import styled from "styled-components"
 import { Container, NavDropdown, Nav, Navbar } from "react-bootstrap";
 import { NavLink, Outlet } from "react-router-dom";
 import logo from "../assets/img/logo.png";
-// import '../styles/web_style.css';
+import { BsPencil } from "react-icons/bs";
 
 const Img = styled.img`
   width: 200px;
@@ -35,7 +35,14 @@ const StyledDropdown = styled(NavDropdown.Item)`
   }
 `;
 
+const LoginWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
+
 export function WebNavbar() {
+  const sessionTest = true;
+
   return <>
     <Navbar className="">
       <Container>
@@ -54,7 +61,16 @@ export function WebNavbar() {
               <StyledDropdown><StyledNavLink to="admission">입학 상담</StyledNavLink></StyledDropdown>
             </NavDropdown>
             <Nav.Link><StyledNavLink to="contact">오시는 길</StyledNavLink></Nav.Link>
-            <Nav.Link><StyledLogin to="login">로그인</StyledLogin></Nav.Link>
+            <LoginWrapper>
+              {
+                sessionTest
+                ? <Nav.Link><StyledLogin to="login">로그인</StyledLogin></Nav.Link>
+                : <>
+                  <Nav.Link><StyledNavLink to="/">로그아웃</StyledNavLink></Nav.Link>
+                  <Nav.Link><StyledLogin to="lms">LMS 바로가기 <BsPencil /></StyledLogin></Nav.Link>
+                </>
+              }
+            </LoginWrapper>
           </Nav>
         </Navbar.Collapse>
       </Container>

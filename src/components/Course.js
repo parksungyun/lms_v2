@@ -1,4 +1,3 @@
-import { Card } from "react-bootstrap";
 import clas from '../assets/img/class/class1.png'
 import { NavLink } from "react-router-dom";
 import { BiUser } from "react-icons/bi";
@@ -16,7 +15,7 @@ const Box = styled.div`
 `;
 
 const Img = styled.img`
-  max-width: 100%;
+  width: 100%;
   height: auto;
 `
 
