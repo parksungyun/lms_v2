@@ -4,8 +4,7 @@ import ceo from "../../assets/img/ceo.png"
 import WebWrapper from "../../components/WebWrapper"
 
 const Container = styled.div`
-  margin: 2rem;
-  margin-left: 3rem;
+  margin: 2rem 15rem;
   padding-bottom: 3rem;
 `;
 
