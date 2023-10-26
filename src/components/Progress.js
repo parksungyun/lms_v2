@@ -50,15 +50,14 @@ export function Progress({subjectName}) {
   const maxItem = 30
 	let availableItem = 15
   return<>
-      <Container>
-        <PrimaryButton>{subjectName}</PrimaryButton>
-        <Box>
-          <ProgressBar>
-            <ProgressBox width = {100-(availableItem*100/maxItem)}/>
-          </ProgressBar>
-          <P>현재 진행률 15/30강</P>
-        </Box>
-      </Container>
-    <hr/>
+    <Container>
+      <PrimaryButton>{subjectName}</PrimaryButton>
+      <Box>
+        <ProgressBar>
+          <ProgressBox width = {100-(availableItem*100/maxItem)}/>
+        </ProgressBar>
+        <P>현재 진행률 15/30강</P>
+      </Box>
+    </Container>
   </>
 }

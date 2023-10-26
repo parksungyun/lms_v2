@@ -120,6 +120,7 @@ const Container = styled.div`
   padding: 1.5rem 2rem;
   padding-bottom: 2rem;
   background-color: #f6f9ff;
+  height: calc(100vh - 50.73px);
 `;
 
 const TableBox = styled.div`
@@ -137,7 +138,7 @@ const H2 = styled.p`
   &.title{
     margin: 0;
   }
-`
+`;
 
 const PrimaryButton = styled.button`
   border: 0;
@@ -152,6 +153,17 @@ const Content = styled.div`
   justify-content: space-between;
   margin-bottom: 2rem;
   align-items: center;
+`;
+
+const Hr = styled.hr`
+  border: 0;
+  margin: 0;
+`;
+
+const Box = styled.div`
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
 `;
 
 export function StudentHome() {
@@ -186,14 +198,18 @@ export function StudentHome() {
         </TableBox>
         </Col>
       </Row>
-      <div>
+      <Box>
         <H2>내 진도관리</H2>
         <Progress subjectName={'HTML'}/>
+        <Hr />
         <Progress subjectName={'CSS'}/>
+        <Hr />
         <Progress subjectName={'JS'}/>
+        <Hr />
         <Progress subjectName={'DB'}/>
+        <Hr />
         <Progress subjectName={'JAVA'}/>
-      </div>
+      </Box>
     </Container>
   </>
 }
