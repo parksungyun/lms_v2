@@ -25,6 +25,7 @@ import { AdminHome } from "./Learning/AdminHome"
 import { LmsHeader } from "../components/LmsHeader"
 import { ParentsWrapper } from "../components/ParentsWrapper"
 import { createContext, useState } from "react"
+import { Error } from "./Error"
 
 export const SideContext = createContext();
 
@@ -61,6 +62,7 @@ export function Router() {
               <Route path="register" element={<Register />} />
               <Route path="findID" element={<FindID />} />
               <Route path="findPW" element={<FindPW />} />
+              <Route path="*" element={<Error />} />
             </Route>
               <Route path="/lms" element={<LmsHeader />}>
                 <Route path="s" element={<ParentsWrapper />}>
@@ -75,6 +77,7 @@ export function Router() {
                 <Route path="a" element={<ParentsWrapper />}>
                   <Route index element={<AdminHome />} />
                 </Route>
+                <Route path="*" element={<Error />} />
               </Route>
           </Routes>
         </SideContext.Provider>
