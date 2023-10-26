@@ -24,48 +24,60 @@ import { ManagerHome } from "./Learning/ManagerHome"
 import { AdminHome } from "./Learning/AdminHome"
 import { LmsHeader } from "../components/LmsHeader"
 import { ParentsWrapper } from "../components/ParentsWrapper"
+import { createContext, useState } from "react"
+
+export const SideContext = createContext();
 
 export function Router() {
+  const [user, setUser] = useState({
+    uid: "",
+    userName: "",
+  });
+  const [toggled, setToggled] = useState(true);
+  const [selectedMenu, setSelectedMenu] = useState("Home");
+
   return <>
     {/* <QueryClientProvider> */}
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<WebNavbar />}>
-            <Route index element={<Home />} />
-            <Route path="about" element={<About />} />
-            <Route path="courses" element={<ParentsWrapper />}>
-              <Route index element={<Courses />} />
-              <Route path="detail" element={<CourseDetail />} />
+        <SideContext.Provider value={{user, setUser, toggled, setToggled, selectedMenu, setSelectedMenu}}>
+          <Routes>
+            <Route path="/" element={<WebNavbar />}>
+              <Route index element={<Home />} />
+              <Route path="about" element={<About />} />
+              <Route path="courses" element={<ParentsWrapper />}>
+                <Route index element={<Courses />} />
+                <Route path="detail" element={<CourseDetail />} />
+              </Route>
+              <Route path="trainers" element={<Trainers />} />
+              <Route path="managers" element={<Managers />} />
+              <Route path="step" element={<Step />} />
+              <Route path="admission" element={<ParentsWrapper />}>
+                <Route index element={<AdmissionBoard />} />
+                <Route path="write" element={<AdmissionWrite />} />
+                <Route path="post" element={<AdmissionPost />} />
+              </Route>
+              <Route path="contact" element={<Contact />} />
+              <Route path="login" element={<Login />} />
+              <Route path="register" element={<Register />} />
+              <Route path="findID" element={<FindID />} />
+              <Route path="findPW" element={<FindPW />} />
             </Route>
-            <Route path="trainers" element={<Trainers />} />
-            <Route path="managers" element={<Managers />} />
-            <Route path="step" element={<Step />} />
-            <Route path="admission" element={<ParentsWrapper />}>
-              <Route index element={<AdmissionBoard />} />
-              <Route path="write" element={<AdmissionWrite />} />
-              <Route path="post" element={<AdmissionPost />} />
-            </Route>
-            <Route path="contact" element={<Contact />} />
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-            <Route path="findID" element={<FindID />} />
-            <Route path="findPW" element={<FindPW />} />
-          </Route>
-          <Route path="/lms" element={<LmsHeader />}>
-            <Route path="s" element={<ParentsWrapper />}>
-              <Route index element={<StudentHome />} />
-            </Route>
-            <Route path="t" element={<ParentsWrapper />}>
-              <Route index element={<TrainerHome />} />
-            </Route>
-            <Route path="m" element={<ParentsWrapper />}>
-              <Route index element={<ManagerHome />} />
-            </Route>
-            <Route path="a" element={<ParentsWrapper />}>
-              <Route index element={<AdminHome />} />
-            </Route>
-          </Route>
-        </Routes>
+              <Route path="/lms" element={<LmsHeader />}>
+                <Route path="s" element={<ParentsWrapper />}>
+                  <Route index element={<StudentHome />} />
+                </Route>
+                <Route path="t" element={<ParentsWrapper />}>
+                  <Route index element={<TrainerHome />} />
+                </Route>
+                <Route path="m" element={<ParentsWrapper />}>
+                  <Route index element={<ManagerHome />} />
+                </Route>
+                <Route path="a" element={<ParentsWrapper />}>
+                  <Route index element={<AdminHome />} />
+                </Route>
+              </Route>
+          </Routes>
+        </SideContext.Provider>
       </BrowserRouter>
     {/* </QueryClientProvider> */}
   </> 
