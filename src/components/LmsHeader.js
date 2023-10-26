@@ -1,7 +1,10 @@
 import styled from "styled-components"
-import { BiListUl } from "react-icons/bi";
+import { BsList } from "react-icons/bs";
 import logo from '../assets/img/logo.png'
-import { useNavigate } from "react-router";
+import { Outlet, useNavigate } from "react-router";
+import { LmsSidebar } from "./LmsSidebar";
+import { useContext, useEffect, useState } from "react";
+import { SideContext } from "../pages/Router";
 
 const Container = styled.div`
   width: 100%;
@@ -33,17 +36,37 @@ const UserName = styled.p`
   margin: 0;
 `;
 
-export function LmsHeader(){
+const ContentContainer = styled.div`
+  display: flex;
+`;
 
+const Aside = styled.div`
+  transition: all 1000ms ease-in-out;
+  width: fit-content;
+`;
+
+const Page = styled.div`
+  width: 100vw;
+`;
+
+export function LmsHeader(){
+  const { user, toggled, setToggled, setSelectedMenu } = useContext(SideContext);
   const navigate = useNavigate();
+
 
   return<>
     <Container>
-      <Img src={logo} alt="logo" onClick={()=>navigate("/lms")}/>
+      <Img src={logo} alt="logo" onClick={() => {setSelectedMenu("Home"); navigate("/lms/s");}}/>
       <Content>
         <UserName>송승현</UserName>
-        <BiListUl className="icon" />
+        <BsList className="icon" onClick={() => setToggled(!toggled)} />
       </Content>
     </Container>
+    <ContentContainer>
+      {
+        toggled && <Aside><LmsSidebar /></Aside>
+      }
+      <Page><Outlet /></Page>
+    </ContentContainer>
   </>
 }
