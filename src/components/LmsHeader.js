@@ -50,7 +50,7 @@ const Page = styled.div`
 `;
 
 export function LmsHeader(){
-  const { user, toggled, setToggled, setSelectedMenu } = useContext(SideContext);
+  const { toggled, setToggled, setSelectedMenu } = useContext(SideContext);
   const navigate = useNavigate();
 
 
