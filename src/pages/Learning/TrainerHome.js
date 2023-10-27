@@ -86,6 +86,10 @@ const Box = styled.div`
   padding: 2rem;
 `;
 
+const ButtonBox = styled.div`
+  height: 8rem;
+`;
+
 export function TrainerHome() {
   return <>
     <Container>
@@ -100,7 +104,7 @@ export function TrainerHome() {
         {/* 하위 부분은 수정이 필요합니다. 주의하세요 */}
         {
           classTest.map((c, i) => (
-            <LmsHomeButtonWrapper items={tItems} />
+            <ButtonBox><LmsHomeButtonWrapper items={tItems} /></ButtonBox>
           ))
         }
       </Box>

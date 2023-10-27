@@ -69,9 +69,9 @@ const Box = styled.div`
   padding: 2rem;
 `;
 
-const StyledBtn = styled.div`
-  height: 100%;
-`
+const ButtonBox = styled.div`
+  height: 15rem;
+`;
 
 export function AdminHome() {
   return <>
@@ -85,13 +85,11 @@ export function AdminHome() {
       <Box>
         <H2>진행중인 과목: {classTest.length}</H2>
         {/* 하위 부분은 수정이 필요합니다. 주의하세요 */}
-        <StyledBtn>
-          {
-            aItems.map((item, i) => (
-              <LmsHomeButtonWrapper items={item} />
-            ))
-          } 
-        </StyledBtn>
+        {
+          aItems.map((item, i) => (
+            <ButtonBox><LmsHomeButtonWrapper items={item} /></ButtonBox>
+          ))
+        } 
       </Box>
     </Container>
   </>

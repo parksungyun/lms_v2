@@ -11,6 +11,7 @@ const PrimaryLineButton = styled.button`
   font-size: 1.8rem;
   transition: all 300ms;
   font-weight: bold;
+  height: 100%;
   &:nth-child(2){
     width: 50%
   }

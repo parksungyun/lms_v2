@@ -6,6 +6,7 @@ const Container = styled.div`
   padding: 0.7rem 0;
   display: flex;
   gap: 2rem;
+  height: 100%;
 `;
 
 const Hr = styled.hr`
