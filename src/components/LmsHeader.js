@@ -5,6 +5,7 @@ import { Outlet, useNavigate } from "react-router";
 import { LmsSidebar } from "./LmsSidebar";
 import { useContext, useEffect, useState } from "react";
 import { SideContext } from "../pages/Router";
+import { LmsFooter } from "./LmsFooter";
 
 const Container = styled.div`
   width: 100%;
@@ -43,16 +44,27 @@ const UserName = styled.p`
 
 const ContentContainer = styled.div`
   display: flex;
+  height: 100%;
 `;
 
 const Aside = styled.div`
   transition: all 1000ms ease-in-out;
   width: fit-content;
+  min-height: 100%;
+  height: auto;
 `;
 
 const Page = styled.div`
   width: 100%;
-  height: 100%;
+  min-height: 100%;
+  height: auto;
+`;
+
+const Footer = styled.div`
+  position : relative;
+  padding: 1rem 0;
+  background-color: #f6f9ff;
+  border-top: 1px solid #eee;
 `;
 
 export function LmsHeader(){
@@ -73,8 +85,13 @@ export function LmsHeader(){
         {
           toggled && <Aside><LmsSidebar /></Aside>
         }
-        <Page><Outlet /></Page>
+        <Page>
+          <Outlet />
+        </Page>
       </ContentContainer>
+      <Footer>
+        <LmsFooter />
+      </Footer>
     </Container>
   </>
 }
