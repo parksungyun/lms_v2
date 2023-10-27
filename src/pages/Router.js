@@ -30,17 +30,13 @@ import { Error } from "./Error"
 export const SideContext = createContext();
 
 export function Router() {
-  const [user, setUser] = useState({
-    uid: "",
-    userName: "",
-  });
-  const [toggled, setToggled] = useState(true);
+  const [toggled, setToggled] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState("Home");
 
   return <>
     {/* <QueryClientProvider> */}
       <BrowserRouter>
-        <SideContext.Provider value={{user, setUser, toggled, setToggled, selectedMenu, setSelectedMenu}}>
+        <SideContext.Provider value={{toggled, setToggled, selectedMenu, setSelectedMenu}}>
           <Routes>
             <Route path="/" element={<WebNavbar />}>
               <Route index element={<Home />} />
@@ -65,6 +61,7 @@ export function Router() {
               <Route path="*" element={<Error />} />
             </Route>
               <Route path="/lms" element={<LmsHeader />}>
+                <Route index element={<Error />} />
                 <Route path="s" element={<ParentsWrapper />}>
                   <Route index element={<StudentHome />} />
                 </Route>

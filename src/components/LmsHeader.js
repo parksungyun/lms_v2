@@ -8,6 +8,11 @@ import { SideContext } from "../pages/Router";
 
 const Container = styled.div`
   width: 100%;
+  height: 100%;
+`;
+
+const Header = styled.div`
+  width: 100%;
   display: flex;
   justify-content: space-between;
   padding: 0 1rem;
@@ -46,27 +51,30 @@ const Aside = styled.div`
 `;
 
 const Page = styled.div`
-  width: 100vw;
+  width: 100%;
+  height: 100%;
 `;
 
 export function LmsHeader(){
-  const { user, toggled, setToggled, setSelectedMenu } = useContext(SideContext);
+  const { toggled, setToggled, setSelectedMenu } = useContext(SideContext);
   const navigate = useNavigate();
 
 
   return<>
-    <Container>
-      <Img src={logo} alt="logo" onClick={() => {setSelectedMenu("Home"); navigate("/lms/s");}}/>
-      <Content>
-        <UserName>송승현</UserName>
-        <BsList className="icon" onClick={() => setToggled(!toggled)} />
-      </Content>
+    <Container>  
+      <Header>
+        <Img src={logo} alt="logo" onClick={() => {setSelectedMenu("Home"); navigate("/lms/s");}}/>
+        <Content>
+          <UserName>송승현</UserName>
+          <BsList className="icon" onClick={() => setToggled(!toggled)} />
+        </Content>
+      </Header>
+      <ContentContainer>
+        {
+          toggled && <Aside><LmsSidebar /></Aside>
+        }
+        <Page><Outlet /></Page>
+      </ContentContainer>
     </Container>
-    <ContentContainer>
-      {
-        toggled && <Aside><LmsSidebar /></Aside>
-      }
-      <Page><Outlet /></Page>
-    </ContentContainer>
   </>
 }
