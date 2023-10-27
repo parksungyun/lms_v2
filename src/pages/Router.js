@@ -30,7 +30,7 @@ import { Error } from "./Error"
 export const SideContext = createContext();
 
 export function Router() {
-  const [toggled, setToggled] = useState(true);
+  const [toggled, setToggled] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState("Home");
 
   return <>
