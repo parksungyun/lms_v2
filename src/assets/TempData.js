@@ -80,7 +80,7 @@ export const userList = [
   },
 ]
 
-export const academic = [
+export const academics = [
   {
     academic_id: 1,
     uid: 1,
@@ -119,7 +119,7 @@ export const academic = [
   },
 ]
 
-export const student = [
+export const students = [
   {
     student_id: 1,
     uid: 4,
@@ -134,7 +134,7 @@ export const student = [
   },
 ]
 
-export const course = [
+export const courses = [
   {
     course_id: 1,
     academic_id: 1,

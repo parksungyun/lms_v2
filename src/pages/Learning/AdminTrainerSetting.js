@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Table } from "../../components/Table";
-import { academic } from "../../assets/TempData";
+import { academics } from "../../assets/TempData";
 import { userList } from "../../assets/TempData";
 import '../../styles/admin_table.css';
 import { useNavigate } from "react-router-dom";
@@ -91,23 +91,23 @@ export function AdminTrainerSetting() {
   const items = [
     {
       no: 1,
-      name: userList[academic[1].uid - 1].user_name,
-      birth: userList[academic[1].uid - 1].user_birth,
-      phone: userList[academic[1].uid - 1].user_phone,
-      email: userList[academic[1].uid - 1].user_email,
-      position: academic[1].position,
+      name: userList[academics[1].uid - 1].user_name,
+      birth: userList[academics[1].uid - 1].user_birth,
+      phone: userList[academics[1].uid - 1].user_phone,
+      email: userList[academics[1].uid - 1].user_email,
+      position: academics[1].position,
       subject: 6,
-      info: <SecondaryButton onClick={() => onDetail(academic[1].academic_id)}>상세정보</SecondaryButton>
+      info: <SecondaryButton onClick={() => onDetail(academics[1].academic_id)}>상세정보</SecondaryButton>
     },
     {
       no: 2,
-      name: userList[academic[1].uid - 1].user_name,
-      birth: userList[academic[1].uid - 1].user_birth,
-      phone: userList[academic[1].uid - 1].user_phone,
-      email: userList[academic[1].uid - 1].user_email,
-      position: academic[1].position,
+      name: userList[academics[1].uid - 1].user_name,
+      birth: userList[academics[1].uid - 1].user_birth,
+      phone: userList[academics[1].uid - 1].user_phone,
+      email: userList[academics[1].uid - 1].user_email,
+      position: academics[1].position,
       subject: 6,
-      info: <SecondaryButton onClick={() => onDetail(academic[1].academic_id)}>상세정보</SecondaryButton>
+      info: <SecondaryButton onClick={() => onDetail(academics[1].academic_id)}>상세정보</SecondaryButton>
     },
   ]
 

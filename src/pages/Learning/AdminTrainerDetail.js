@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { academic, userList } from "../../assets/TempData";
+import { academics, userList } from "../../assets/TempData";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -96,11 +96,11 @@ const ButtonBox = styled.div`
 export function AdminTrainerDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const trainer = academic.find((t) => t.academic_id == id);
-  const user = userList.find((u) => u.uid == trainer.uid);
+  const academic = academics.find((a) => a.academic_id == id);
+  const user = userList.find((u) => u.uid == academic.uid);
   let dept;
   
-  trainer.dept === 0 ? dept = "행정팀" : dept = "교육팀";
+  academic.dept === 0 ? dept = "행정팀" : dept = "교육팀";
 
   function onSubmit() {
 
@@ -110,7 +110,7 @@ export function AdminTrainerDetail() {
     <Container>
       <H2>강사 상세 정보</H2>
       <Content>
-        <Img src={trainer.user_photo} alt={user.user_name} />
+        <Img src={academic.user_photo} alt={user.user_name} />
         <Details action="" method="POST">
             <Detail>
               <Label>이름</Label>
@@ -138,7 +138,7 @@ export function AdminTrainerDetail() {
             </Detail>
             <Detail>
               <Label>포지션</Label>
-              <Input type="text" name="user_position" id="user_position" value={trainer.position} />
+              <Input type="text" name="user_position" id="user_position" value={academic.position} />
             </Detail>
             <Detail>
               <Label>연락처</Label>
