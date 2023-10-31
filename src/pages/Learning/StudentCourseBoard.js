@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Board } from "../../components/Board";
 
-const managerCBoard = [
+const studentCBoard = [
   {
     text: 'No.',
     value: 'no'
@@ -24,7 +24,7 @@ const managerCBoard = [
   }
 ];
 
-const MCBItems = [
+const SCBItems = [
   {
     no: 1,
     title: '교육상담아무말이나해봐아무말이나해봐아무해봐아무말이나해봐',
@@ -104,10 +104,10 @@ const Container = styled.div`
   height: 100%;
 `;
 
-export function ManagerClassBoard() {
+export function StudentCourseBoard() {
   return<>
     <Container>
-      <Board board={managerCBoard} item={MCBItems}/>
+      <Board board={studentCBoard} item={SCBItems}/>
     </Container>
   </>
 }
