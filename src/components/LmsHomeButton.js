@@ -36,6 +36,6 @@ export function LmsHomeButton({buttonName, link}){
   const navigate = useNavigate();
 
   return<>
-      <PrimaryLineButton onClick={()=>navigate({link})}>{buttonName}</PrimaryLineButton>
+      <PrimaryLineButton onClick={()=>navigate(`${link}`)}>{buttonName}</PrimaryLineButton>
   </>
 }

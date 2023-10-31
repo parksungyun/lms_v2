@@ -29,23 +29,23 @@ const classTest = [
 const tItems = [
   {
     text: "clasa이름",
-    link: 'lms/t'
+    link: '/lms/t'
   },
   {
     text: "강의",
-    link: 'lms/t'
+    link: '/lms/t'
   },
   {
     text: "공지",
-    link: 'lms/t'
+    link: '/lms/t'
   },
   {
     text: "과제",
-    link: 'lms/t'
+    link: '/lms/t'
   },
   {
     text: "Q&A",
-    link: 'lms/t'
+    link: '/lms/t'
   },
 ];
 
