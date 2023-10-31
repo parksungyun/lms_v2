@@ -16,9 +16,24 @@ const Divider = styled.hr`
   border: 0;
 `;
 
-export function LmsSidebar() {
+export function LmsSidebar({ userType, uid }) {
   const { toggled, selectedMenu, setSelectedMenu } = useContext(SideContext);
   const navigate = useNavigate();
+  let firstLabel;
+
+  if(userType === "t") {
+    firstLabel = "내 과목 관리";
+  }
+  else if(userType === "m") {
+    firstLabel = "내 클래스 관리";
+  }
+  else if(userType === "a") {
+    firstLabel = "관리자 페이지";
+  }
+  else if(userType === "s") {
+    firstLabel = "내 클래스";
+  }
+  const subjectName = "HTML";
 
   return <>
     <Container>
@@ -36,10 +51,10 @@ export function LmsSidebar() {
             active={selectedMenu === "Home"}
             icon={<RiMacbookLine />}
             onClick={() => setSelectedMenu("Home")}
-            component={<NavLink to={"/lms/s"} />}>
-            {"내 클래스"}
+            component={<NavLink to={`/lms/${userType}`} />}>
+            {firstLabel}
           </MenuItem>
-          <SubMenu label="HTML" icon={<RiBookletFill />}>
+          <SubMenu label={subjectName} icon={<RiBookletFill />}>
             <Menu transitionDuration={1000} menuItemStyles={{
                 button: ({ active }) => {
                     return {
