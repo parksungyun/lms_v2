@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "react-query"
-import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom"
 import { Home } from "./Web/Home"
 import { About } from "./Web/About"
 import { Courses } from "./Web/Courses"
@@ -26,6 +26,15 @@ import { LmsHeader } from "../components/LmsHeader"
 import { ParentsWrapper } from "../components/ParentsWrapper"
 import { createContext, useState } from "react"
 import { Error } from "./Error"
+import { AdminTrainerSetting } from "./Learning/AdminTrainerSetting"
+import { AdminManagerSetting } from "./Learning/AdminManagerSetting"
+import { AdminCourseSetting } from "./Learning/AdminCourseSetting"
+import { AdminTrainerDetail } from "./Learning/AdminTrainerDetail"
+import { AdminManagerDetail } from "./Learning/AdminManagerDetail"
+import { AdminCourseDetail } from "./Learning/AdminCourseDetail"
+import { AdminTrainerAdd } from "./Learning/AdminTrainerAdd"
+import { AdminManagerAdd } from "./Learning/AdminManagerAdd"
+import { AdminCourseAdd } from "./Learning/AdminCourseAdd"
 
 export const SideContext = createContext();
 
@@ -64,15 +73,49 @@ export function Router() {
                 <Route index element={<Error />} />
                 <Route path="s" element={<ParentsWrapper />}>
                   <Route index element={<StudentHome />} />
+                  {/* <Route path="cboard" element={<StudentCourseBoard />} /> */}
+                  {/* <Route path="subject" element={<StudentSubject />} /> */}
+                  {/* <Route path="sboard" element={<StudentSubjectBoard />} /> */}
+                  {/* <Route path="homework" element={<StudentHW />} /> */}
+                  {/* <Route path="lecture" element={<StudentLecture />} /> */}
+                  {/* <Route path="sqna" element={<StudentSubjectQna />} /> */}
+                  {/* <Route path="mypage" element={<StudentMypage />} /> */}
+                  {/* <Route path="cqna" element={<StudentCourseQna />} /> */}
                 </Route>
                 <Route path="t" element={<ParentsWrapper />}>
                   <Route index element={<TrainerHome />} />
+                  {/* <Route path="subject" element={<TrainerSubject />} /> */}
+                  {/* <Route path="lecture" element={<TrainerLecture />} /> */}
+                  {/* <Route path="board" element={<TrainerSubjectBoard />} /> */}
+                  {/* <Route path="homework" element={<TrainerHW />} /> */}
+                  {/* <Route path="qna" element={<TrainerSubjectQna />} /> */}
+                  {/* <Route path="mypage" element={<TrainerMypage />} /> */}
                 </Route>
                 <Route path="m" element={<ParentsWrapper />}>
                   <Route index element={<ManagerHome />} />
+                  {/* <Route path="info" element={<ManagerCourseInfo />} /> */}
+                  {/* <Route path="board" element={<ManagerCourseBoard />} /> */}
+                  {/* <Route path="qna" element={<ManagerCourseQna />} /> */}
+                  {/* <Route path="review" element={<ManagerCourseReview />} /> */}
+                  {/* <Route path="mypage" element={<ManagerMypage />} /> */}
                 </Route>
                 <Route path="a" element={<ParentsWrapper />}>
                   <Route index element={<AdminHome />} />
+                  <Route path="trainerSetting" element={<ParentsWrapper />}>
+                    <Route index element={<AdminTrainerSetting />} />
+                    <Route path="add" element={<AdminTrainerAdd />} />
+                    <Route path=":id" element={<AdminTrainerDetail />} />
+                  </Route>
+                  <Route path="managerSetting" element={<ParentsWrapper />}>
+                    <Route index element={<AdminManagerSetting />} />
+                    <Route path="add" element={<AdminManagerAdd />} />
+                    <Route path=":id" element={<AdminManagerDetail />} />
+                  </Route>
+                  <Route path="courseSetting" element={<ParentsWrapper />}>
+                    <Route index element={<AdminCourseSetting />} />
+                    <Route path="add" element={<AdminCourseAdd />} />
+                    <Route path=":id" element={<AdminCourseDetail />} />
+                  </Route>
                 </Route>
                 <Route path="*" element={<Error />} />
               </Route>

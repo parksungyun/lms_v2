@@ -49,7 +49,7 @@ const Container = styled.div`
   padding: 1.5rem 2rem;
   padding-bottom: 2rem;
   background-color: #f6f9ff;
-  height: calc(100vh - 50.73px);;
+  height: 100%;
 `;
 
 const H2 = styled.p`

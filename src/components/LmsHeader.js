@@ -10,7 +10,7 @@ import { LmsFooter } from "./LmsFooter";
 const Container = styled.div`
   width: 100%;
   height: 100%;
-`;
+;`
 
 const Header = styled.div`
   width: 100%;
@@ -44,7 +44,8 @@ const UserName = styled.p`
 
 const ContentContainer = styled.div`
   display: flex;
-  height: 100%;
+  min-height: 100vh;
+  height: auto;
 `;
 
 const Aside = styled.div`
@@ -61,7 +62,7 @@ const Page = styled.div`
 `;
 
 const Footer = styled.div`
-  position : relative;
+  /* position : relative; */
   padding: 1rem 0;
   background-color: #f6f9ff;
   border-top: 1px solid #eee;
@@ -70,12 +71,12 @@ const Footer = styled.div`
 export function LmsHeader(){
   const { toggled, setToggled, setSelectedMenu } = useContext(SideContext);
   const navigate = useNavigate();
-
+  const userType = "s";
 
   return<>
     <Container>  
       <Header>
-        <Img src={logo} alt="logo" onClick={() => {setSelectedMenu("Home"); navigate("/lms/s");}}/>
+        <Img src={logo} alt="logo" onClick={() => {setSelectedMenu("Home"); navigate(`/lms/${userType}`);}}/>
         <Content>
           <UserName>송승현</UserName>
           <BsList className="icon" onClick={() => setToggled(!toggled)} />
@@ -83,7 +84,7 @@ export function LmsHeader(){
       </Header>
       <ContentContainer>
         {
-          toggled && <Aside><LmsSidebar /></Aside>
+          toggled && <Aside><LmsSidebar userType={userType} /></Aside>
         }
         <Page>
           <Outlet />
