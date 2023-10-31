@@ -75,8 +75,9 @@ export function Router() {
                   {/* <Route path="sboard" element={<StudentSubjectBoard />} /> */}
                   {/* <Route path="homework" element={<StudentHW />} /> */}
                   {/* <Route path="lecture" element={<StudentLecture />} /> */}
-                  {/* <Route path="qna" element={<StudentSubjectQna />} /> */}
+                  {/* <Route path="sqna" element={<StudentSubjectQna />} /> */}
                   {/* <Route path="mypage" element={<StudentMypage />} /> */}
+                  {/* <Route path="cqna" element={<StudentCourseQna />} /> */}
                 </Route>
                 <Route path="t" element={<ParentsWrapper />}>
                   <Route index element={<TrainerHome />} />
