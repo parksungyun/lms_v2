@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "react-query"
-import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom"
 import { Home } from "./Web/Home"
 import { About } from "./Web/About"
 import { Courses } from "./Web/Courses"
@@ -29,6 +29,9 @@ import { Error } from "./Error"
 import { AdminTrainerSetting } from "./Learning/AdminTrainerSetting"
 import { AdminManagerSetting } from "./Learning/AdminManagerSetting"
 import { AdminCourseSetting } from "./Learning/AdminCourseSetting"
+import { AdminTrainerDetail } from "./Learning/AdminTrainerDetail"
+import { AdminManagerDetail } from "./Learning/AdminManagerDetail"
+import { AdminCourseDetail } from "./Learning/AdminCourseDetail"
 
 export const SideContext = createContext();
 
@@ -94,9 +97,18 @@ export function Router() {
                 </Route>
                 <Route path="a" element={<ParentsWrapper />}>
                   <Route index element={<AdminHome />} />
-                  <Route path="trainerSetting" element={<AdminTrainerSetting />} />
-                  <Route path="ManagerSetting" element={<AdminManagerSetting />} />
-                  <Route path="CourseSetting" element={<AdminCourseSetting />} />
+                  <Route path="trainerSetting" element={<ParentsWrapper />}>
+                    <Route index element={<AdminTrainerSetting />} />
+                    <Route path=":id" element={<AdminTrainerDetail />} />
+                  </Route>
+                  <Route path="ManagerSetting" element={<ParentsWrapper />}>
+                    <Route index element={<AdminManagerSetting />} />
+                    <Route path=":id" element={<AdminManagerDetail />} />
+                  </Route>
+                  <Route path="CourseSetting" element={<ParentsWrapper />}>
+                    <Route index element={<AdminCourseSetting />} />
+                    <Route path=":id" element={<AdminCourseDetail />} />
+                  </Route>
                 </Route>
                 <Route path="*" element={<Error />} />
               </Route>
