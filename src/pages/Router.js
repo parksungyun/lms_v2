@@ -26,6 +26,9 @@ import { LmsHeader } from "../components/LmsHeader"
 import { ParentsWrapper } from "../components/ParentsWrapper"
 import { createContext, useState } from "react"
 import { Error } from "./Error"
+import { AdminTrainerSetting } from "./Learning/AdminTrainerSetting"
+import { AdminManagerSetting } from "./Learning/AdminManagerSetting"
+import { AdminCourseSetting } from "./Learning/AdminCourseSetting"
 
 export const SideContext = createContext();
 
@@ -64,15 +67,36 @@ export function Router() {
                 <Route index element={<Error />} />
                 <Route path="s" element={<ParentsWrapper />}>
                   <Route index element={<StudentHome />} />
+                  {/* <Route path="cboard" element={<StudentCourseBoard />} /> */}
+                  {/* <Route path="subject" element={<StudentSubject />} /> */}
+                  {/* <Route path="sboard" element={<StudentSubjectBoard />} /> */}
+                  {/* <Route path="homework" element={<StudentHW />} /> */}
+                  {/* <Route path="lecture" element={<StudentLecture />} /> */}
+                  {/* <Route path="qna" element={<StudentSubjectQna />} /> */}
+                  {/* <Route path="mypage" element={<StudentMypage />} /> */}
                 </Route>
                 <Route path="t" element={<ParentsWrapper />}>
                   <Route index element={<TrainerHome />} />
+                  {/* <Route path="subject" element={<TrainerSubject />} /> */}
+                  {/* <Route path="lecture" element={<TrainerLecture />} /> */}
+                  {/* <Route path="board" element={<TrainerSubjectBoard />} /> */}
+                  {/* <Route path="homework" element={<TrainerHW />} /> */}
+                  {/* <Route path="qna" element={<TrainerSubjectQna />} /> */}
+                  {/* <Route path="mypage" element={<TrainerMypage />} /> */}
                 </Route>
                 <Route path="m" element={<ParentsWrapper />}>
                   <Route index element={<ManagerHome />} />
+                  {/* <Route path="info" element={<ManagerCourseInfo />} /> */}
+                  {/* <Route path="board" element={<ManagerCourseBoard />} /> */}
+                  {/* <Route path="qna" element={<ManagerCourseQna />} /> */}
+                  {/* <Route path="review" element={<ManagerCourseReview />} /> */}
+                  {/* <Route path="mypage" element={<ManagerMypage />} /> */}
                 </Route>
                 <Route path="a" element={<ParentsWrapper />}>
                   <Route index element={<AdminHome />} />
+                  <Route path="trainerSetting" element={<AdminTrainerSetting />} />
+                  <Route path="ManagerSetting" element={<AdminManagerSetting />} />
+                  <Route path="CourseSetting" element={<AdminCourseSetting />} />
                 </Route>
                 <Route path="*" element={<Error />} />
               </Route>
