@@ -9,7 +9,7 @@ const items = [
   },
   {
     text: "매니저 관리",
-    link: 'ManagerSetting'
+    link: 'managerSetting'
   },
   {
     text: "과정 관리",

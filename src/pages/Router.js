@@ -102,11 +102,11 @@ export function Router() {
                     <Route index element={<AdminTrainerSetting />} />
                     <Route path=":id" element={<AdminTrainerDetail />} />
                   </Route>
-                  <Route path="ManagerSetting" element={<ParentsWrapper />}>
+                  <Route path="managerSetting" element={<ParentsWrapper />}>
                     <Route index element={<AdminManagerSetting />} />
                     <Route path=":id" element={<AdminManagerDetail />} />
                   </Route>
-                  <Route path="CourseSetting" element={<ParentsWrapper />}>
+                  <Route path="courseSetting" element={<ParentsWrapper />}>
                     <Route index element={<AdminCourseSetting />} />
                     <Route path=":id" element={<AdminCourseDetail />} />
                   </Route>
