@@ -2,33 +2,18 @@ import styled from "styled-components"
 import { RiUserReceivedLine } from "react-icons/ri";
 import { LmsHomeButtonWrapper } from "../../components/LmsHomeButtonWrapper";
 
-const classTest = [
+const items = [
   {
-    name: "class이름1",
-    id: 0,
+    text: "강사 관리",
+    link: 'trainerSetting'
   },
   {
-    name: "class이름2",
-    id: 0,
+    text: "매니저 관리",
+    link: 'ManagerSetting'
   },
   {
-    name: "class이름3",
-    id: 0,
-  },
-];
-
-const aItems = [
-  {
-    text: "교육팀 관리",
-    link: '/lms/a'
-  },
-  {
-    text: "행정팀 관리",
-    link: '/lms/a'
-  },
-  {
-    text: "클래스 관리",
-    link: '/lms/a'
+    text: "과정 관리",
+    link: 'courseSetting'
   },
 ];
 
@@ -36,7 +21,7 @@ const Container = styled.div`
   padding: 1.5rem 2rem;
   padding-bottom: 2rem;
   background-color: #f6f9ff;
-  height: calc(100vh - 50.73px);;
+  height: 100%;
 `;
 
 const H2 = styled.p`
@@ -73,20 +58,63 @@ const ButtonBox = styled.div`
   height: 15rem;
 `;
 
+const HeaderBox = styled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+`;
+
+const AuthBox = styled.div`
+  display: flex;
+  gap: 0.3rem;
+`;
+
+const BadgePrimary = styled.span`
+  background-color: #5f7dcf;
+  padding: 3px 15px;
+  color: white;
+  font-weight: 500;
+  font-size: 1rem;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  `;
+
 export function AdminHome() {
+  const auth = 3;
+  function authBadge(auth) {
+    if(auth === 3) {
+      return (<>
+        <BadgePrimary>Trainers</BadgePrimary>
+        <BadgePrimary>Managers</BadgePrimary>
+        <BadgePrimary>Courses</BadgePrimary>
+      </>);
+    }
+    else if(auth === 2) {
+      return (<>
+        <BadgePrimary>Managers</BadgePrimary>
+        <BadgePrimary>Courses</BadgePrimary>
+      </>);
+    }
+    else if(auth === 1) {
+      return (<BadgePrimary>Trainers</BadgePrimary>);
+    }
+    else {
+      return (<BadgePrimary>Courses</BadgePrimary>);
+    }
+  }
   return <>
     <Container>
       <Content>
         <div>
-          <H2 className='title'>내 클래스 관리</H2>
+          <H2 className='title'>관리자 페이지</H2>
         </div>
         <PrimaryButton>사용자 페이지<RiUserReceivedLine /></PrimaryButton>
       </Content>
       <Box>
-        <H2>진행중인 과목: {classTest.length}</H2>
+      <HeaderBox><H2>보유 권한: </H2><AuthBox> {authBadge(auth)} </AuthBox></HeaderBox>
         {/* 하위 부분은 수정이 필요합니다. 주의하세요 */}
         {
-          aItems.map((item, i) => (
+          items.map((item, i) => (
             <ButtonBox><LmsHomeButtonWrapper items={item} /></ButtonBox>
           ))
         } 
