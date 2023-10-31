@@ -32,6 +32,9 @@ import { AdminCourseSetting } from "./Learning/AdminCourseSetting"
 import { AdminTrainerDetail } from "./Learning/AdminTrainerDetail"
 import { AdminManagerDetail } from "./Learning/AdminManagerDetail"
 import { AdminCourseDetail } from "./Learning/AdminCourseDetail"
+import { AdminTrainerAdd } from "./Learning/AdminTrainerAdd"
+import { AdminManagerAdd } from "./Learning/AdminManagerAdd"
+import { AdminCourseAdd } from "./Learning/AdminCourseAdd"
 
 export const SideContext = createContext();
 
@@ -100,14 +103,17 @@ export function Router() {
                   <Route index element={<AdminHome />} />
                   <Route path="trainerSetting" element={<ParentsWrapper />}>
                     <Route index element={<AdminTrainerSetting />} />
+                    <Route path="add" element={<AdminTrainerAdd />} />
                     <Route path=":id" element={<AdminTrainerDetail />} />
                   </Route>
                   <Route path="managerSetting" element={<ParentsWrapper />}>
                     <Route index element={<AdminManagerSetting />} />
+                    <Route path="add" element={<AdminManagerAdd />} />
                     <Route path=":id" element={<AdminManagerDetail />} />
                   </Route>
                   <Route path="courseSetting" element={<ParentsWrapper />}>
                     <Route index element={<AdminCourseSetting />} />
+                    <Route path="add" element={<AdminCourseAdd />} />
                     <Route path=":id" element={<AdminCourseDetail />} />
                   </Route>
                 </Route>
