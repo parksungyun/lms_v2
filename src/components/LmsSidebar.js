@@ -19,6 +19,7 @@ const Divider = styled.hr`
 export function LmsSidebar() {
   const { toggled, selectedMenu, setSelectedMenu } = useContext(SideContext);
   const navigate = useNavigate();
+  const subjectName = "HTML";
 
   return <>
     <Container>
@@ -39,7 +40,7 @@ export function LmsSidebar() {
             component={<NavLink to={"/lms/s"} />}>
             {"내 클래스"}
           </MenuItem>
-          <SubMenu label="HTML" icon={<RiBookletFill />}>
+          <SubMenu label={subjectName} icon={<RiBookletFill />}>
             <Menu transitionDuration={1000} menuItemStyles={{
                 button: ({ active }) => {
                     return {
