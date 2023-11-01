@@ -128,76 +128,76 @@ export function AdminTrainerDetail() {
       <Content>
         <Img src={academic.user_photo} alt={user.user_name} />
         <Details action="" method="POST">
-            <Detail>
-              <Label>이름</Label>
-              <Input type="text" name="user_name" id="user_name" value={userName} onChange={(e) => {setUserName(e.target.value)}} />
-            </Detail>
-            <Detail>
-              <Label>아이디</Label>
-              <Input type="text" name="user_id" id="user_id"  value={userId} onChange={(e) => {setUserId(e.target.value)}} />
-            </Detail>
-            <Detail>
-              <Label>비밀번호</Label>
-              <PrimaryButton>비밀번호 초기화</PrimaryButton>
-            </Detail>
-            <Detail>
-              <Label>생년월일</Label>
-              <Input type="date" name="user_birth" id="user_birth" value={userBirth} onChange={(e) => {setUserBirth(e.target.value)}} />
-            </Detail>
-            <Detail>
-              <Label>부서</Label>
-              <Select name="user_dept" id="user_dept" onChange={(e) => setUserDept(e.target.value)} value={userDept}>
-                {
-                  department.map((data) => (
-                    <option value={data.dept_id} key={data.dept_id}>
-                      {
-                        data.dept_name
-                      }
-                    </option>
-                  ))
-                }
-              </Select>
-            </Detail>
-            <Detail>
-              <Label>사진</Label>
-              <Input type="file" name="user_photo" id="user_photo" accept="image/png, image/jpeg" onChange={(e) => {setUserPhoto(e.target.files[0])}} />
-            </Detail>
-            <Detail>
-              <Label>포지션</Label>
-              <Select name="user_position" id="user_position" onChange={(e) => setUserPosition(e.target.value)} value={userPosition}>
-                {
-                  trainerPosition.map((data) => (
-                    <option value={data.position_id} key={data.position_id}>
-                      {
-                        data.position_name
-                      }
-                    </option>
-                  ))
-                }
-              </Select>
-            </Detail>
-            <Detail>
-              <Label>연락처</Label>
-              <Input type="text" name="user_phone" id="user_phone" value={userPhone} onChange={(e) => {setUserPhone(e.target.value)}} />
-            </Detail>
-            <Detail>
-              <Label>주소</Label>
-              <Input type="text" name="user_addr" id="user_addr" value={userAddr} onChange={(e) => {setUserAddr(e.target.value)}} />
-            </Detail>
-            <Detail>
-              <Label>이메일</Label>
-              <Input type="text" name="user_birth" id="user_birth" value={userEmail} onChange={(e) => {setUserEmail(e.target.value)}} />
-            </Detail>
-            <Detail>
-              <Label>활성화</Label>
+          <Detail>
+            <Label>이름</Label>
+            <Input type="text" name="user_name" id="user_name" value={userName} onChange={(e) => {setUserName(e.target.value)}} />
+          </Detail>
+          <Detail>
+            <Label>아이디</Label>
+            <Input type="text" name="user_id" id="user_id"  value={userId} onChange={(e) => {setUserId(e.target.value)}} />
+          </Detail>
+          <Detail>
+            <Label>비밀번호</Label>
+            <PrimaryButton>비밀번호 초기화</PrimaryButton>
+          </Detail>
+          <Detail>
+            <Label>생년월일</Label>
+            <Input type="date" name="user_birth" id="user_birth" value={userBirth} onChange={(e) => {setUserBirth(e.target.value)}} />
+          </Detail>
+          <Detail>
+            <Label>부서</Label>
+            <Select name="user_dept" id="user_dept" onChange={(e) => setUserDept(e.target.value)} value={userDept}>
               {
-                academic.available == 1 ? <DangerButton>비활성화</DangerButton> : <PrimaryButton>활성화</PrimaryButton>
+                department.map((data) => (
+                  <option value={data.dept_id} key={data.dept_id}>
+                    {
+                      data.dept_name
+                    }
+                  </option>
+                ))
               }
-            </Detail>
-            <ButtonBox>
-              <PrimaryButton type="submit" onClick={onSubmit}>수정</PrimaryButton>
-              <SecondaryButton onClick={() => navigate("/lms/a/trainerSetting")}>목록</SecondaryButton>
-            </ButtonBox>
+            </Select>
+          </Detail>
+          <Detail>
+            <Label>사진</Label>
+            <Input type="file" name="user_photo" id="user_photo" accept="image/png, image/jpeg" onChange={(e) => {setUserPhoto(e.target.files[0])}} />
+          </Detail>
+          <Detail>
+            <Label>포지션</Label>
+            <Select name="user_position" id="user_position" onChange={(e) => setUserPosition(e.target.value)} value={userPosition}>
+              {
+                trainerPosition.map((data) => (
+                  <option value={data.position_id} key={data.position_id}>
+                    {
+                      data.position_name
+                    }
+                  </option>
+                ))
+              }
+            </Select>
+          </Detail>
+          <Detail>
+            <Label>연락처</Label>
+            <Input type="text" name="user_phone" id="user_phone" value={userPhone} onChange={(e) => {setUserPhone(e.target.value)}} />
+          </Detail>
+          <Detail>
+            <Label>주소</Label>
+            <Input type="text" name="user_addr" id="user_addr" value={userAddr} onChange={(e) => {setUserAddr(e.target.value)}} />
+          </Detail>
+          <Detail>
+            <Label>이메일</Label>
+            <Input type="text" name="user_birth" id="user_birth" value={userEmail} onChange={(e) => {setUserEmail(e.target.value)}} />
+          </Detail>
+          <Detail>
+            <Label>활성화</Label>
+            {
+              academic.available == 1 ? <DangerButton>비활성화</DangerButton> : <PrimaryButton>활성화</PrimaryButton>
+            }
+          </Detail>
+          <ButtonBox>
+            <PrimaryButton type="submit" onClick={onSubmit}>수정</PrimaryButton>
+            <SecondaryButton onClick={() => navigate("/lms/a/trainerSetting")}>목록</SecondaryButton>
+          </ButtonBox>
         </Details>
       </Content>
     </Container>
