@@ -101,13 +101,13 @@ export function AdminTrainerSetting() {
     },
     {
       no: 2,
-      name: userList[academics[1].uid - 1].user_name,
-      birth: userList[academics[1].uid - 1].user_birth,
-      phone: userList[academics[1].uid - 1].user_phone,
-      email: userList[academics[1].uid - 1].user_email,
-      position: academics[1].position,
+      name: userList[academics[4].uid - 1].user_name,
+      birth: userList[academics[4].uid - 1].user_birth,
+      phone: userList[academics[4].uid - 1].user_phone,
+      email: userList[academics[4].uid - 1].user_email,
+      position: academics[4].position,
       subject: 6,
-      info: <SecondaryButton onClick={() => onDetail(academics[1].academic_id)}>상세정보</SecondaryButton>
+      info: <SecondaryButton onClick={() => onDetail(academics[4].academic_id)}>상세정보</SecondaryButton>
     },
   ]
 
@@ -121,7 +121,7 @@ export function AdminTrainerSetting() {
     <Container>
       <Content>
         <H2 className="title">강사 관리</H2>
-        <PrimaryButton onClick={() => navigate()}>강사 등록</PrimaryButton>
+        <PrimaryButton onClick={() => navigate("add")}>강사 등록</PrimaryButton>
       </Content>
       <TableBox>
         <Table 
