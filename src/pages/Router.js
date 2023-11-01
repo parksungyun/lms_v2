@@ -47,6 +47,8 @@ import { TrainerLecture } from "./Learning/TrainerLecture"
 import { TrainerSubject } from "./Learning/TrainerSubject"
 import { TrainerSubjectBoard } from "./Learning/TrainerSubjectBoard"
 import { TrainerSubjectQna } from "./Learning/TrainerSubjectQna"
+import { ManagerCourseInfo } from "./Learning/ManagerCourseInfo"
+import { ManagerCourseReview } from "./Learning/ManagerCourseReview"
 
 export const SideContext = createContext();
 
@@ -105,10 +107,10 @@ export function Router() {
                 </Route>
                 <Route path="m" element={<ParentsWrapper />}>
                   <Route index element={<ManagerHome />} />
-                  {/* <Route path="info" element={<ManagerCourseInfo />} /> */}
+                  <Route path="info" element={<ManagerCourseInfo />} />
                   <Route path="board" element={<ManagerCourseBoard />} />
                   <Route path="qna" element={<ManagerCourseQna />} />
-                  {/* <Route path="review" element={<ManagerCourseReview />} /> */}
+                  <Route path="review" element={<ManagerCourseReview />} />
                   {/* <Route path="mypage" element={<ManagerMypage />} /> */}
                 </Route>
                 <Route path="a" element={<ParentsWrapper />}>
