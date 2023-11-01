@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { department, trainerPosition, userList, academics } from "../../assets/TempData";
@@ -154,6 +154,17 @@ export function AdminTrainerAdd() {
   const [userEmail, setUserEmail] = useState("");
   const [userAvailable, setUserAvailable] = useState();
 
+  useEffect(()=> {
+    if(user) {
+      setUserName(user.user_name);
+      setUserId(user.user_id);
+      setUserBirth(user.user_birth);
+      setUserPhone(user.user_phone);
+      setUserEmail(user.user_email);
+      setUserAddr(user.user_addr);
+    }
+  }, [user]);
+
   function onSearch(item) {
     const temp = userList.find((u) => u.user_id == item);
     if(temp) {
@@ -199,7 +210,7 @@ export function AdminTrainerAdd() {
             </Detail>
             <Detail>
               <Label>부서</Label>
-              <Select name="user_dept" id="user_dept" onChange={(e) => setUserDept(e.target.value)} value={userDept}>
+              <Select name="user_dept" id="user_dept" onChange={(e) => setUserDept(e.target.value)} value={userDept} disabled>
                 {
                   department.map((data) => (
                     <option value={data.dept_id} key={data.dept_id}>
