@@ -35,6 +35,20 @@ import { AdminCourseDetail } from "./Learning/AdminCourseDetail"
 import { AdminTrainerAdd } from "./Learning/AdminTrainerAdd"
 import { AdminManagerAdd } from "./Learning/AdminManagerAdd"
 import { AdminCourseAdd } from "./Learning/AdminCourseAdd"
+import { ManagerCourseBoard } from "./Learning/ManagerCourseBoard"
+import { ManagerCourseQna } from "./Learning/ManagerCourseQna"
+import { StudentCourseBoard } from "./Learning/StudentCourseBoard"
+import { StudentCourseQna } from "./Learning/StudentCourseQna"
+import { StudentHW } from "./Learning/StudentHW"
+import { StudentLecture } from "./Learning/StudentLecture"
+import { StudentSubject } from "./Learning/StudentSubject"
+import { StudentSubjectBoard } from "./Learning/StudentSubjectBoard"
+import { StudentSubjectQna } from "./Learning/StudentSubjectQna"
+import { TrainerHW } from "./Learning/TrainerHW"
+import { TrainerLecture } from "./Learning/TrainerLecture"
+import { TrainerSubject } from "./Learning/TrainerSubject"
+import { TrainerSubjectBoard } from "./Learning/TrainerSubjectBoard"
+import { TrainerSubjectQna } from "./Learning/TrainerSubjectQna"
 
 export const SideContext = createContext();
 
@@ -73,29 +87,29 @@ export function Router() {
                 <Route index element={<Error />} />
                 <Route path="s" element={<ParentsWrapper />}>
                   <Route index element={<StudentHome />} />
-                  {/* <Route path="cboard" element={<StudentCourseBoard />} /> */}
-                  {/* <Route path="subject" element={<StudentSubject />} /> */}
-                  {/* <Route path="sboard" element={<StudentSubjectBoard />} /> */}
-                  {/* <Route path="homework" element={<StudentHW />} /> */}
-                  {/* <Route path="lecture" element={<StudentLecture />} /> */}
-                  {/* <Route path="sqna" element={<StudentSubjectQna />} /> */}
+                  <Route path="cboard" element={<StudentCourseBoard />} />
+                  <Route path="subject" element={<StudentSubject />} />
+                  <Route path="sboard" element={<StudentSubjectBoard />} />
+                  <Route path="homework" element={<StudentHW />} />
+                  <Route path="lecture" element={<StudentLecture />} />
+                  <Route path="sqna" element={<StudentSubjectQna />} />
                   {/* <Route path="mypage" element={<StudentMypage />} /> */}
-                  {/* <Route path="cqna" element={<StudentCourseQna />} /> */}
+                  <Route path="cqna" element={<StudentCourseQna />} />
                 </Route>
                 <Route path="t" element={<ParentsWrapper />}>
                   <Route index element={<TrainerHome />} />
-                  {/* <Route path="subject" element={<TrainerSubject />} /> */}
-                  {/* <Route path="lecture" element={<TrainerLecture />} /> */}
-                  {/* <Route path="board" element={<TrainerSubjectBoard />} /> */}
-                  {/* <Route path="homework" element={<TrainerHW />} /> */}
-                  {/* <Route path="qna" element={<TrainerSubjectQna />} /> */}
+                  <Route path="subject" element={<TrainerSubject />} />
+                  <Route path="lecture" element={<TrainerLecture />} />
+                  <Route path="board" element={<TrainerSubjectBoard />} />
+                  <Route path="homework" element={<TrainerHW />} />
+                  <Route path="qna" element={<TrainerSubjectQna />} />
                   {/* <Route path="mypage" element={<TrainerMypage />} /> */}
                 </Route>
                 <Route path="m" element={<ParentsWrapper />}>
                   <Route index element={<ManagerHome />} />
                   {/* <Route path="info" element={<ManagerCourseInfo />} /> */}
-                  {/* <Route path="board" element={<ManagerCourseBoard />} /> */}
-                  {/* <Route path="qna" element={<ManagerCourseQna />} /> */}
+                  <Route path="board" element={<ManagerCourseBoard />} />
+                  <Route path="qna" element={<ManagerCourseQna />} />
                   {/* <Route path="review" element={<ManagerCourseReview />} /> */}
                   {/* <Route path="mypage" element={<ManagerMypage />} /> */}
                 </Route>
