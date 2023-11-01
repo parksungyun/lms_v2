@@ -246,11 +246,11 @@ export function AdminTrainerAdd() {
             </Detail>
             <Detail>
               <Label>주소</Label>
-              <Input type="text" name="user_addr" id="user_addr" value={userAddr} onChange={(e) => {setUserAddr(e.target.value)}} />
+              <Input type="text" name="user_addr" id="user_addr" value={userAddr} onChange={(e) => {setUserAddr(e.target.value)}} disabled />
             </Detail>
             <Detail>
               <Label>이메일</Label>
-              <Input type="text" name="user_birth" id="user_birth" value={userEmail} onChange={(e) => {setUserEmail(e.target.value)}} />
+              <Input type="text" name="user_birth" id="user_birth" value={userEmail} onChange={(e) => {setUserEmail(e.target.value)}} disableds />
             </Detail>
             <Detail>
               <Label>활성화</Label>
