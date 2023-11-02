@@ -3,7 +3,7 @@ import WebWrapper from "../../components/WebWrapper"
 import { useState } from "react";
 import { useEffect } from "react";
 import { Table } from "../../components/Table";
-import '../../styles/admission_table.css';
+import '../../styles/table.css';
 import { Pagination } from "../../components/Pagination";
 import { Navigate, useNavigate } from "react-router-dom";
 
