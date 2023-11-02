@@ -156,7 +156,7 @@ export function AdminCourseSetting() {
     <Container>
       <Content>
         <H2 className="title">과정 관리</H2>
-        <PrimaryButton onClick={() => navigate()}>과정 등록</PrimaryButton>
+        <PrimaryButton onClick={() => navigate("add")}>과정 등록</PrimaryButton>
       </Content>
       <TableBox>
         <Table 

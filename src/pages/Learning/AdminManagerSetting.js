@@ -131,7 +131,7 @@ export function AdminManagerSetting() {
     <Container>
       <Content>
         <H2 className="title">매니저 관리</H2>
-        <PrimaryButton onClick={() => navigate()}>매니저 등록</PrimaryButton>
+        <PrimaryButton onClick={() => navigate("add")}>매니저 등록</PrimaryButton>
       </Content>
       <TableBox>
         <Table 
