@@ -55,11 +55,19 @@ export const SideContext = createContext();
 export function Router() {
   const [toggled, setToggled] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState("Home");
+  const [userType, setUserType] = useState("");
+  const [location, setLocation] = useState({...window.location});
+
+  const navigate = (path) => {
+    window.history.pushState({}, "", path);
+    setLocation({...window.location});
+    console.log(location);
+  }
 
   return <>
     {/* <QueryClientProvider> */}
       <BrowserRouter>
-        <SideContext.Provider value={{toggled, setToggled, selectedMenu, setSelectedMenu}}>
+        <SideContext.Provider value={{toggled, setToggled, selectedMenu, setSelectedMenu, userType, setUserType}}>
           <Routes>
             <Route path="/" element={<WebNavbar />}>
               <Route index element={<Home />} />
