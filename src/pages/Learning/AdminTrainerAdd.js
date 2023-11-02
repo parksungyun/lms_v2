@@ -62,14 +62,6 @@ const SecondaryButton = styled.button`
   color: white;
 `;
 
-const DangerButton = styled.button`
-  border: 0;
-  border-radius: 5px;
-  background-color: red;
-  padding: 0.8rem 1.4rem;
-  color: white;
-`;
-
 const Img = styled.img`
   width: 400px;
   border-radius: 1rem;
@@ -153,6 +145,10 @@ export function AdminTrainerAdd() {
   const [userAddr, setUserAddr] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userAvailable, setUserAvailable] = useState();
+  const [userTAuth, setUserTAuth] = useState();
+  const [userMAuth, setUserMAuth] = useState();
+  const [userCAuth, setUserCAuth] = useState();
+  const [userRemark, setUserRemark] = useState();
 
   useEffect(()=> {
     if(user) {
@@ -209,6 +205,18 @@ export function AdminTrainerAdd() {
               <Input type="date" name="user_birth" id="user_birth" value={userBirth} onChange={(e) => {setUserBirth(e.target.value)}} disabled />
             </Detail>
             <Detail>
+              <Label>연락처</Label>
+              <Input type="text" name="user_phone" id="user_phone" value={userPhone} onChange={(e) => {setUserPhone(e.target.value)}} disabled />
+            </Detail>
+            <Detail>
+              <Label>주소</Label>
+              <Input type="text" name="user_addr" id="user_addr" value={userAddr} onChange={(e) => {setUserAddr(e.target.value)}} disabled />
+            </Detail>
+            <Detail>
+              <Label>이메일</Label>
+              <Input type="text" name="user_birth" id="user_birth" value={userEmail} onChange={(e) => {setUserEmail(e.target.value)}} disabled />
+            </Detail>
+            <Detail>
               <Label>부서</Label>
               <Select name="user_dept" id="user_dept" onChange={(e) => setUserDept(e.target.value)} value={userDept} disabled>
                 {
@@ -221,10 +229,6 @@ export function AdminTrainerAdd() {
                   ))
                 }
               </Select>
-            </Detail>
-            <Detail>
-              <Label>사진</Label>
-              <Input type="file" name="user_photo" id="user_photo" accept="image/png, image/jpeg" onChange={(e) => {setUserPhoto(e.target.files[0])}} />
             </Detail>
             <Detail>
               <Label>포지션</Label>
@@ -241,16 +245,18 @@ export function AdminTrainerAdd() {
               </Select>
             </Detail>
             <Detail>
-              <Label>연락처</Label>
-              <Input type="text" name="user_phone" id="user_phone" value={userPhone} onChange={(e) => {setUserPhone(e.target.value)}} />
+              <Label>사진</Label>
+              <Input type="file" name="user_photo" id="user_photo" accept="image/png, image/jpeg" onChange={(e) => {setUserPhoto(e.target.files[0])}} />
             </Detail>
             <Detail>
-              <Label>주소</Label>
-              <Input type="text" name="user_addr" id="user_addr" value={userAddr} onChange={(e) => {setUserAddr(e.target.value)}} disabled />
+              <Label>나의 한마디</Label>
+              <Input  type="text" name="user_remark" id="user_remark" value={userRemark} onChange={(e) => {setUserRemark(e.target.value)}} placeholder="웹사이트 교육팀 소개페이지에 표시되는 내용입니다." />
             </Detail>
             <Detail>
-              <Label>이메일</Label>
-              <Input type="text" name="user_birth" id="user_birth" value={userEmail} onChange={(e) => {setUserEmail(e.target.value)}} disableds />
+              <Label>권한</Label>
+              <Check type="checkbox" name="user_t_auth" id="user_t_auth" value={userTAuth} onChange={(e) => {setUserTAuth(e.target.value)}} /> 강사 관리
+              <Check type="checkbox" name="user_m_auth" id="user_m_auth" value={userMAuth} onChange={(e) => {setUserMAuth(e.target.value)}} /> 매니저 관리
+              <Check type="checkbox" name="user_c_auth" id="user_c_auth" value={userCAuth} onChange={(e) => {setUserCAuth(e.target.value)}} /> 과정 관리
             </Detail>
             <Detail>
               <Label>활성화</Label>
