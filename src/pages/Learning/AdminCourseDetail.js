@@ -204,7 +204,7 @@ export function AdminCourseDetail() {
             </Detail>
             <Detail>
               <Label>정원</Label>
-              <Input type="text" name="capacity" id="capacity" value={capacity} onChange={(e) => {setCapacity(e.target.value)}} />
+              <Input type="number" name="capacity" id="capacity" value={capacity} onChange={(e) => {setCapacity(e.target.value)}} />
             </Detail>
             <Detail>
               <Label>사진</Label>
