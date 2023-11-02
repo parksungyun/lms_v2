@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 export function Table(
@@ -53,6 +54,10 @@ export function Table(
   const getAbledItems = (items) => {
     return items.filter(({ disabled }) => !disabled );
   };
+  const navigate = useNavigate();
+  function onPost(id) {
+    navigate(`${id}`);
+  }
   const isSelectedAll = () => {
     return selection.size === getAbledItems(items).length;
   };
@@ -84,6 +89,7 @@ export function Table(
           items.map((item, index) => (
             <tr 
               key={index} 
+              onClick={() => onPost(item.id)}
               className={
               `
                 ${selection.has(item[itemKey]) ? 'select_row': ''} 
@@ -104,7 +110,7 @@ export function Table(
               }
               { 
                 headerKey.map((key) => 
-                  <td key={key + index}>
+                  <td key={key + index} >
                     {item[key]} {/* key로 객체의 값을 출력 */}
                   </td>
                 )
