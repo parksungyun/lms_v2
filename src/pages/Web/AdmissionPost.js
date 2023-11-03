@@ -27,7 +27,6 @@ const Table = styled.table`
 const ContentRow = styled.tr`
   height: 400px;
   vertical-align: top;
-  overflow-y: scroll;
 `;
 
 const CommentBox = styled.div`
@@ -109,7 +108,7 @@ export function AdmissionPost(){
         </tr>
         <ContentRow>
           <th>내용</th>
-          <td>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusantium voluptas a ex velit animi quod nihil, voluptatibus perferendis sunt accusamus hic quasi neque doloremque illum consequuntur ullam. Corporis deleniti harum corrupti? At rerum, cum similique facere corrupti dolor ipsum impedit quae, numquam perferendis quasi pariatur reprehenderit provident ea deleniti quam expedita quis magni autem fugiat illum? Maiores magnam, laudantium totam nobis porro dignissimos minus, earum fugiat amet impedit id ab excepturi eaque sequi facere quo reiciendis natus nesciunt expedita dolores tenetur. Ipsa vitae laudantium magnam temporibus sunt aliquam corporis voluptatem esse beatae pariatur, ratione facilis minima nihil. Quis, doloremque dolorem?</td>
+          <td className="overflow-y-scroll">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusantium voluptas a ex velit animi quod nihil, voluptatibus perferendis sunt accusamus hic quasi neque doloremque illum consequuntur ullam. Corporis deleniti harum corrupti? At rerum, cum similique facere corrupti dolor ipsum impedit quae, numquam perferendis quasi pariatur reprehenderit provident ea deleniti quam expedita quis magni autem fugiat illum? Maiores magnam, laudantium totam nobis porro dignissimos minus, earum fugiat amet impedit id ab excepturi eaque sequi facere quo reiciendis natus nesciunt expedita dolores tenetur. Ipsa vitae laudantium magnam temporibus sunt aliquam corporis voluptatem esse beatae pariatur, ratione facilis minima nihil. Quis, doloremque dolorem?</td>
         </ContentRow>
       </Table>
       <CommentBox>

@@ -52,7 +52,8 @@ const Icon = styled.i`
 `;
 
 const Content = styled.p`
-
+  height: 300px;
+  overflow-y: scroll;
 `;
 
 const CommentBox = styled.div`
@@ -70,6 +71,7 @@ const Comment = styled.div`
   height: 100px;
   vertical-align: top;
   padding: 10px;
+  overflow-y: scroll;
 `;
 
 const Text = styled.p`
