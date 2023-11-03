@@ -71,14 +71,14 @@ const ContentInput = styled.textarea`
   border: 1px solid lightgray;
 `;
 
-export function StudentQnAWrite() {
+export function StudentCourseQnaWrite() {
   const navigate = useNavigate();
-  const [qna_title, setQna_title] =useState();
-  const [qna_content, setQna_content] =useState();
+  const [qna_title, setQna_title] = useState();
+  const [qna_content, setQna_content] = useState();
   return<>
     <Container>
       <TableBox>
-        <H2>QnA 등록</H2>
+        <H2>1:1문의 등록</H2>
         <form action="" method="POST">
         <Input type="text" name="qna_title" id="qna_title" value={qna_title} onChange={(e)=>setQna_title(e.target.value)} placeholder="제목 입력해주세요"/>
         <Hr />
