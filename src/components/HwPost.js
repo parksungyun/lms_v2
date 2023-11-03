@@ -110,7 +110,7 @@ const BadgePrimary = styled.span`
   border-radius: 5px;
 `;
 
-export function HwPost({userState}) {
+export function HWPost({userState}) {
   const navigate = useNavigate();
   return<>
     <TableBox>

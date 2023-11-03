@@ -82,7 +82,7 @@ const ContentInput = styled.textarea`
   resize: none;
 `;
 
-export function HwPostWrite() {
+export function HWPostWrite() {
   const [hw_content, setHw_content] = useState("");
   const [hw_title, setHw_title] = useState("");
   const [hw_start_date, setHw_start_date] = useState("");

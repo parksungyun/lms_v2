@@ -90,7 +90,7 @@ const ContentInput = styled.textarea`
   resize: none;
 `;
 
-export function HwPostMod() {
+export function HWPostMod() {
   const [hw_content, setHw_content] = useState("반복문을 이용하여 과제를 해결하세요. 아래 첨부파일을 확인하고 과제해결 후 제출하세요!");
   const [hw_title, setHw_title] = useState("피라미드 만들기");
   const [hw_start_date, setHw_start_date] = useState("2023-09-05");
