@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { academics, userList, courses, subjects } from "../../assets/TempData";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+import { BsPatchPlusFill, BsPatchMinusFill } from "react-icons/bs";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -136,6 +137,40 @@ const TextArea = styled.textarea`
   height: 10rem;
 `;
 
+const AddBox = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  .addIcon {
+    width: 30px;
+    height: 30px;
+    color: #5f7dcf;
+    cursor: pointer;
+  }
+`;
+
+const DeleteBox = styled.div`
+  width: 5%;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  .deleteIcon {
+    margin-left: 10px;
+    width: 30px;
+    height: 30px;
+    color: red;
+    cursor: pointer;
+  }
+  .notAvail {
+    margin-left: 10px;
+    width: 30px;
+    height: 30px;
+    opacity: 0;
+  }
+`;
+
 export function AdminCourseDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -167,6 +202,14 @@ export function AdminCourseDetail() {
 
   }
 
+  function onDeleteSubject(i) {
+
+  }
+
+  function addSubject() {
+
+  }
+
   function onChangeSubject(e, i) {
     let temp = [...subjectSelected];
     temp[i] = e.target.value;
@@ -178,7 +221,6 @@ export function AdminCourseDetail() {
     temp[i] = e.target.value;
     setSubjectName(temp);
   }
-
 
   return <>
     <Container>
@@ -233,7 +275,7 @@ export function AdminCourseDetail() {
               <SubjectBox>
                 {
                   subjects.filter(data => data.course_id == course.course_id).map((data, i) => (
-                    <Subject>
+                    <Subject key={i}>
                       <Input type="text" name={`subject${i}`} id={`subject${i}`} value={subjectName[i]} onChange={(e) => onChangeSubjectName(e, i)} />
                       <SubjectSelect name={`subjectT${i}`} id={`subjectT${i}`} onChange={(e) => onChangeSubject(e, i)} value={subjectSelected[i]}>
                         {
@@ -246,9 +288,13 @@ export function AdminCourseDetail() {
                           ))
                         }
                       </SubjectSelect>
+                      <DeleteBox>
+                        {i > 0 ? <BsPatchMinusFill className="deleteIcon" onClick={() => onDeleteSubject(i)} /> : <BsPatchMinusFill className="notAvail" />}
+                      </DeleteBox>
                     </Subject>
                   ))
                 }
+                <AddBox><BsPatchPlusFill className="addIcon" onClick={() => addSubject} /></AddBox>
               </SubjectBox>
             </Detail>
             <Detail>
