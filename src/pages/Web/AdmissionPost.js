@@ -27,6 +27,7 @@ const Table = styled.table`
 const ContentRow = styled.tr`
   height: 400px;
   vertical-align: top;
+  overflow-y: scroll;
 `;
 
 const CommentBox = styled.div`
