@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { SideContext } from "../pages/Router";
 import { useEffect } from "react";
+import { courses, subjects } from "../assets/TempData";
 
 const Container = styled.div`
   display: flex;
@@ -33,7 +34,8 @@ export function LmsSidebar({ userType, uid }) {
   else if(userType === "s") {
     firstLabel = "내 클래스";
   }
-  const subjectName = "HTML";
+  const subjectName = subjects[0].subject_name;
+  const courseName = courses[0].course_name;
 
   return <>
     <Container>
@@ -68,35 +70,122 @@ export function LmsSidebar({ userType, uid }) {
                 active={selectedMenu === "subjectHome"}
                 icon={<BsDash />}
                 onClick={() => setSelectedMenu("subjectHome")}
-                component={<NavLink to={"/lms/s"} />}>
+                component={<NavLink to={"/lms/s/subject"} />}>
                 {"강의실"}
               </MenuItem>
               <MenuItem
                 active={selectedMenu === "subjectBoard"}
                 icon={<BsDash />}
                 onClick={() => setSelectedMenu("subjectBoard")}
-                component={<NavLink to={"/lms/s"} />}>
+                component={<NavLink to={"/lms/s/sboard"}/>}>
                 {"공지"}
               </MenuItem>
               <MenuItem
                 active={selectedMenu === "subjectHomework"}
                 icon={<BsDash />}
                 onClick={() => setSelectedMenu("subjectHomework")}
-                component={<NavLink to={"/lms/s"} />}>
+                component={<NavLink to={"/lms/s/homework"} />}>
                 {"과제"}
               </MenuItem>
               <MenuItem
                 active={selectedMenu === "subjectLecture"}
                 icon={<BsDash />}
                 onClick={() => setSelectedMenu("subjectLecture")}
-                component={<NavLink to={"/lms/s"} />}>
+                component={<NavLink to={"/lms/s/lecture"} />}>
                 {"강의"}
               </MenuItem>
               <MenuItem
                 active={selectedMenu === "subjectQna"}
                 icon={<BsDash />}
                 onClick={() => setSelectedMenu("subjectQna")}
-                component={<NavLink to={"/lms/s"} />}>
+                component={<NavLink to={"/lms/s/sqna"} />}>
+                {"Q&A"}
+              </MenuItem>
+            </Menu>
+          </SubMenu>
+          <SubMenu label={courseName} icon={<RiBookletFill />}>
+            <Menu transitionDuration={1000} menuItemStyles={{
+                button: ({ active }) => {
+                    return {
+                      color: active ? '#5f7dcf' : 'black',
+                      backgroundColor: active ? '#eee' : undefined,
+                      fontWeight: active ? 'bold' : 'normal'
+                    };
+                },
+              }}>
+              <MenuItem
+                active={selectedMenu === "courseHome"}
+                icon={<BsDash />}
+                onClick={() => setSelectedMenu("courseHome")}
+                component={<NavLink to={"/lms/m/info"} />}>
+                {"정보"}
+              </MenuItem>
+              <MenuItem
+                active={selectedMenu === "courseBoard"}
+                icon={<BsDash />}
+                onClick={() => setSelectedMenu("courseBoard")}
+                component={<NavLink to={"/lms/m/board"}/>}>
+                {"공지"}
+              </MenuItem>
+              <MenuItem
+                active={selectedMenu === "courseQna"}
+                icon={<BsDash />}
+                onClick={() => setSelectedMenu("courseQna")}
+                component={<NavLink to={"/lms/m/qna"} />}>
+                {"1:1 문의"}
+              </MenuItem>
+              <MenuItem
+                active={selectedMenu === "courseReview"}
+                icon={<BsDash />}
+                onClick={() => setSelectedMenu("courseReview")}
+                component={<NavLink to={"/lms/m/review"} />}>
+                {"강의 평가"}
+              </MenuItem>
+            </Menu>
+          </SubMenu>
+          <SubMenu label={courseName} icon={<RiBookletFill />}>
+            <Menu transitionDuration={1000} menuItemStyles={{
+                button: ({ active }) => {
+                    return {
+                      color: active ? '#5f7dcf' : 'black',
+                      backgroundColor: active ? '#eee' : undefined,
+                      fontWeight: active ? 'bold' : 'normal'
+                    };
+                },
+              }}>
+              <MenuItem
+                active={selectedMenu === "courseSubjectHome"}
+                icon={<BsDash />}
+                onClick={() => setSelectedMenu("courseSubjectHome")}
+                component={<NavLink to={"/lms/t/subject"} />}>
+                {"정보"}
+              </MenuItem>
+              <MenuItem
+                active={selectedMenu === "subjectTLecture"}
+                icon={<BsDash />}
+                onClick={() => setSelectedMenu("subjectTLecture")}
+                component={<NavLink to={"/lms/t/lecture"} />}>
+                {"강의"}
+              </MenuItem>
+              <MenuItem
+                active={selectedMenu === "subjectTBoard"}
+                icon={<BsDash />}
+                onClick={() => setSelectedMenu("subjectTBoard")}
+                component={<NavLink to={"/lms/t/board"}/>}>
+                {"공지"}
+              </MenuItem>
+              <MenuItem
+                active={selectedMenu === "subjectTHomework"}
+                icon={<BsDash />}
+                onClick={() => setSelectedMenu("subjectTHomework")}
+                component={<NavLink to={"/lms/t/homework"} />}>
+                {"과제"}
+              </MenuItem>
+              <MenuItem
+                active={selectedMenu === "subjectTQna"}
+                icon={<BsDash />}
+                onClick={() => setSelectedMenu("subjectTQna")}
+                component={<NavLink to={"/lms/t/qna"} />}>
                 {"Q&A"}
               </MenuItem>
             </Menu>
