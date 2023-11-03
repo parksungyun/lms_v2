@@ -91,6 +91,30 @@ export const userList = [
     reg_date: "2023-09-25 00:00:00",
     mod_date: "2023-09-25 00:00:00",
   },
+  {
+    uid: 8,
+    user_id: "rkskek",
+    user_pw: "waegarweh",
+    user_name: "학생삼",
+    user_birth: "2000-09-10",
+    user_addr: "대전광역시 중구 중앙로 121번길 20",
+    user_phone: "010-1589-7456",
+    user_email: "rkskek@naver.com.com",
+    reg_date: "2023-09-13 00:00:00",
+    mod_date: "2023-09-13 00:00:00",
+  },
+  {
+    uid: 9,
+    user_id: "fkakqk",
+    user_pw: "uilgy",
+    user_name: "학생사",
+    user_birth: "1999-08-24",
+    user_addr: "대전광역시 중구 중앙로 121번길 20",
+    user_phone: "010-1589-7456",
+    user_email: "fkakqk@naver.com.com",
+    reg_date: "2023-09-14 00:00:00",
+    mod_date: "2023-09-14 00:00:00",
+  },
 ]
 
 export const academics = [
@@ -200,6 +224,20 @@ export const students = [
     uid: 5,
     course_id: 2,
     reg_date: "2023-09-17",
+    available: 1,
+  },
+  {
+    student_id: 3,
+    uid: 8,
+    course_id: 1,
+    reg_date: "2023-09-18",
+    available: 1,
+  },
+  {
+    student_id: 4,
+    uid: 9,
+    course_id: 2,
+    reg_date: "2023-09-18",
     available: 1,
   },
 ]
