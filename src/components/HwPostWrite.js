@@ -103,9 +103,9 @@ export function HWPostWrite() {
             <Input className="date" type="date" name="hw_start_date" id="hw_start_date" value={hw_start_date} onChange={(e)=>setHw_start_date(e.target.value)}/>
             <Input className="date" type="date" name="hw_end_date" id="hw_end_date" value={hw_end_date}  onChange={(e)=>setHw_end_date(e.target.value)}/>
           </Box>
-          <ContentInput type="text" name="board_content" id="board_content" value={hw_content}  onChange={(e)=>setHw_content(e.target.value)} placeholder="내용을 입력해주세요"/>
+          <ContentInput type="text" name="hw_content" id="hw_content" value={hw_content}  onChange={(e)=>setHw_content(e.target.value)} placeholder="내용을 입력해주세요"/>
         </Content>
-        <Input type="file" name="board_file" id="board_file" accept="" />
+        <Input type="file" name="hw_file" id="hw_file" accept="" />
         <Box className="btn">
           <PrimaryButton type="submit">등록</PrimaryButton>
           <SecondaryButton onClick={()=>navigate(-1)}>목록</SecondaryButton>

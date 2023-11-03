@@ -83,7 +83,7 @@ export function StudentHWSubmit() {
         <Hr />
         <form action="" method="POST">
           <ContentInput type="text" name="hw_submit_content" id="hw_submit_content" value={hw_submit_content}  onChange={(e)=>setHw_submit_content(e.target.value)}/>
-          <Input type="file" name="board_file" id="board_file" accept="" />
+          <Input type="file" name="hw_file" id="hw_file" accept="" />
           <Box>
             <PrimaryButton type="submit">제출</PrimaryButton>
             <SecondaryButton onClick={() => navigate(-1)}>목록</SecondaryButton>
