@@ -107,7 +107,7 @@ const Container = styled.div`
 export function StudentCourseBoard() {
   return<>
     <Container>
-      <Board board={studentCBoard} item={SCBItems}/>
+      <Board board={studentCBoard} item={SCBItems} write={true}/>
     </Container>
   </>
 }

@@ -107,7 +107,7 @@ const Container = styled.div`
 export function TrainerSubjectBoard() {
   return<>
     <Container>
-      <Board board={trainerSBoard} item={TSBItems}/>
+      <Board board={trainerSBoard} item={TSBItems} write={true}/>
     </Container>
   </>
 }

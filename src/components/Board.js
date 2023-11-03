@@ -56,7 +56,7 @@ const PrimaryButton = styled.button`
   color: white;
 `;
 
-export function Board({board, item}) {
+export function Board({board, item, write}) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [searchOption, setSearchOption] = useState("all");
@@ -95,7 +95,7 @@ export function Board({board, item}) {
         <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
         <button onClick={onSearch}>검색</button>
       </SearchBox>
-      <PrimaryButton onClick={() => navigate("/")}>작성</PrimaryButton>
+      {write == true ? <PrimaryButton onClick={() => navigate("/")}>작성</PrimaryButton> : null}
     </ButtonBox>
     <Pagination limit={limit} page={page} totalPosts={item.length} setPage={setPage} />
   </>  

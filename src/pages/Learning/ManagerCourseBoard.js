@@ -107,7 +107,7 @@ const Container = styled.div`
 export function ManagerCourseBoard() {
   return<>
     <Container>
-      <Board board={managerCBoard} item={MCBItems}/>
+      <Board board={managerCBoard} item={MCBItems} write={true}/>
     </Container>
   </>
 }
