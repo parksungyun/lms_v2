@@ -118,7 +118,7 @@ export function LmsSidebar({ userType, uid }) {
                 icon={<BsDash />}
                 onClick={() => setSelectedMenu("courseHome")}
                 component={<NavLink to={"/lms/m/info"} />}>
-                {"강의실"}
+                {"정보"}
               </MenuItem>
               <MenuItem
                 active={selectedMenu === "courseBoard"}
