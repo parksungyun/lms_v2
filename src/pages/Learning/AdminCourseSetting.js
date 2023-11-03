@@ -149,7 +149,7 @@ export function AdminCourseSetting() {
   }
 
   function onStudentInfo(id) {
-    
+    navigate(`${id}/s`);
   }
 
   return <>

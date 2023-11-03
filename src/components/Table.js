@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
 
 export function Table(
   { 
@@ -54,10 +52,6 @@ export function Table(
   const getAbledItems = (items) => {
     return items.filter(({ disabled }) => !disabled );
   };
-  const navigate = useNavigate();
-  function onPost(id) {
-    navigate(`${id}`);
-  }
   const isSelectedAll = () => {
     return selection.size === getAbledItems(items).length;
   };
@@ -88,8 +82,7 @@ export function Table(
         {
           items.map((item, index) => (
             <tr 
-              key={index} 
-              onClick={() => onPost(item.id)}
+              key={index}
               className={
               `
                 ${selection.has(item[itemKey]) ? 'select_row': ''} 

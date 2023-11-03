@@ -49,6 +49,8 @@ import { TrainerSubjectBoard } from "./Learning/TrainerSubjectBoard"
 import { TrainerSubjectQna } from "./Learning/TrainerSubjectQna"
 import { ManagerCourseInfo } from "./Learning/ManagerCourseInfo"
 import { ManagerCourseReview } from "./Learning/ManagerCourseReview"
+import { useEffect } from "react"
+import { AdminCourseStudentDetail } from "./Learning/AdminCourseStudentDetail"
 
 export const SideContext = createContext();
 
@@ -58,16 +60,20 @@ export function Router() {
   const [userType, setUserType] = useState("");
   const [location, setLocation] = useState({...window.location});
 
-  const navigate = (path) => {
-    window.history.pushState({}, "", path);
-    setLocation({...window.location});
-    console.log(location);
-  }
+  // const navigate = (path) => {
+  //   window.history.pushState({}, "", path);
+  //   setLocation({...window.location});
+  //   console.log(location);
+  // }
+
+  useEffect(() => {
+    setUserType("a");
+  }, []);
 
   return <>
     {/* <QueryClientProvider> */}
       <BrowserRouter>
-        <SideContext.Provider value={{toggled, setToggled, selectedMenu, setSelectedMenu, userType, setUserType}}>
+        <SideContext.Provider value={{toggled, setToggled, selectedMenu, setSelectedMenu, userType}}>
           <Routes>
             <Route path="/" element={<WebNavbar />}>
               <Route index element={<Home />} />
@@ -136,7 +142,10 @@ export function Router() {
                   <Route path="courseSetting" element={<ParentsWrapper />}>
                     <Route index element={<AdminCourseSetting />} />
                     <Route path="add" element={<AdminCourseAdd />} />
-                    <Route path=":id" element={<AdminCourseDetail />} />
+                    <Route path=":id" element={<ParentsWrapper />}>
+                      <Route index element={<AdminCourseDetail />} />
+                      <Route path="s" element={<AdminCourseStudentDetail />} />
+                    </Route>
                   </Route>
                 </Route>
                 <Route path="*" element={<Error />} />

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { userList, academics } from "../../assets/TempData";
 import defaultImg from "../../assets/img/default2.png";
+import { BsPatchPlusFill, BsPatchMinusFill } from "react-icons/bs";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -137,10 +138,38 @@ const SubjectSelect = styled.select`
   width: 50%;
 `;
 
-const AddButton = styled.button`
-  padding: 0.7rem;
-  border: 1px solid lightgray;
-  border-radius: 0.5rem;
+const AddBox = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  .addIcon {
+    width: 30px;
+    height: 30px;
+    color: #5f7dcf;
+    cursor: pointer;
+  }
+`;
+
+const DeleteBox = styled.div`
+  width: 5%;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  .deleteIcon {
+    margin-left: 10px;
+    width: 30px;
+    height: 30px;
+    color: red;
+    cursor: pointer;
+  }
+  .notAvail {
+    margin-left: 10px;
+    width: 30px;
+    height: 30px;
+    opacity: 0;
+  }
 `;
 
 export function AdminCourseAdd() {
@@ -173,24 +202,34 @@ export function AdminCourseAdd() {
     setSubjectName(temp);
   }
 
+  function onDeleteSubject(i) {
+
+  }
+
+  function SubjectComponent() {
+    return <>
+        <Subject key={countSubject}>
+          <Input type="text" name={`subject${countSubject}`} id={`subject${countSubject}`} value={subjectName[countSubject]} onChange={(e) => onChangeSubjectName(e, countSubject)} placeholder="과목 이름" />
+          <SubjectSelect name={`subjectT${countSubject}`} id={`subjectT${countSubject}`} onChange={(e) => onChangeSubject(e, countSubject)} value={subjectSelected[countSubject]}>
+                {
+                  academics.filter(a => a.dept == 1).map((trainer) => (
+                    <option value={trainer.academic_id} key={trainer.academic_id}>
+                      {
+                        userList.find((u) => u.uid == trainer.uid).user_name
+                      }
+                    </option>
+                  ))
+                }
+          </SubjectSelect>
+          <DeleteBox>
+            {countSubject > 0 ? <BsPatchMinusFill className="deleteIcon" onClick={() => onDeleteSubject(countSubject)} /> : <BsPatchMinusFill className="notAvail" />}
+          </DeleteBox>
+        </Subject>
+      </>
+  }
+
   function addSubject() {
     countSubject++;
-    return <>
-      <Subject>
-        <Input type="text" name={`subject${countSubject}`} id={`subject${countSubject}`} value={subjectName[countSubject]} onChange={(e) => onChangeSubjectName(e, countSubject)} placeholder="과목 이름" />
-        <SubjectSelect name={`subjectT${countSubject}`} id={`subjectT${countSubject}`} onChange={(e) => onChangeSubject(e, countSubject)} value={subjectSelected[countSubject]}>
-              {
-                academics.filter(a => a.dept == 1).map((trainer) => (
-                  <option value={trainer.academic_id} key={trainer.academic_id}>
-                    {
-                      userList.find((u) => u.uid == trainer.uid).user_name
-                    }
-                  </option>
-                ))
-              }
-            </SubjectSelect>
-      </Subject>
-    </>
   }
 
   function onSubmit() {
@@ -249,7 +288,7 @@ export function AdminCourseAdd() {
             <Detail>
               <Label>과목</Label>
               <SubjectBox>
-                <Subject>
+                <Subject key={0}>
                   <Input type="text" name="subject0" id="subject0" value={subjectName[0]} onChange={(e) => onChangeSubjectName(e, 0)} placeholder="과목 이름" />
                   <SubjectSelect name="subjectT0" id="subjectT0" onChange={(e) => onChangeSubject(e, 0)} value={subjectSelected[0]}>
                         {
@@ -261,9 +300,9 @@ export function AdminCourseAdd() {
                             </option>
                           ))
                         }
-                      </SubjectSelect>
+                  </SubjectSelect>
                 </Subject>
-                <AddButton onClick={() => addSubject}>과목 추가</AddButton>
+                <AddBox><BsPatchPlusFill className="addIcon" onClick={() => addSubject} /></AddBox>
               </SubjectBox>
             </Detail>
             <Detail>

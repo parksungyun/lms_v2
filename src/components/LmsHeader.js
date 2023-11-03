@@ -69,7 +69,7 @@ const Footer = styled.div`
 `;
 
 export function LmsHeader(){
-  const { toggled, setToggled, setSelectedMenu, userType, setUserType } = useContext(SideContext);
+  const { toggled, setToggled, setSelectedMenu, userType } = useContext(SideContext);
   const navigate = useNavigate();
   
   return<>
