@@ -51,6 +51,8 @@ import { ManagerCourseInfo } from "./Learning/ManagerCourseInfo"
 import { ManagerCourseReview } from "./Learning/ManagerCourseReview"
 import { useEffect } from "react"
 import { AdminCourseStudentDetail } from "./Learning/AdminCourseStudentDetail"
+import { ManagerCourseStudentDetail } from "./Learning/ManagerCourseStudentDetail"
+import { ManagerCourseStudentAttendance } from "./Learning/ManagerCourseStudentAttendance"
 
 export const SideContext = createContext();
 
@@ -121,7 +123,13 @@ export function Router() {
                 </Route>
                 <Route path="m" element={<ParentsWrapper />}>
                   <Route index element={<ManagerHome />} />
-                  <Route path="info" element={<ManagerCourseInfo />} />
+                  <Route path="info" element={<ParentsWrapper />}>
+                    <Route index element={<ManagerCourseInfo />} />
+                    <Route path=":id" element={<ManagerCourseStudentDetail />} />
+                    <Route path="attend" elements={<ParentsWrapper />}>
+                      <Route path=":id" element={<ManagerCourseStudentAttendance />} />
+                    </Route>
+                  </Route>
                   <Route path="board" element={<ManagerCourseBoard />} />
                   <Route path="qna" element={<ManagerCourseQna />} />
                   <Route path="review" element={<ManagerCourseReview />} />

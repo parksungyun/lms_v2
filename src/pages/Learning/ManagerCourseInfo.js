@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Table } from "../../components/Table";
-import { userList, students } from "../../assets/TempData";
+import { userList, students, courses } from "../../assets/TempData";
 import '../../styles/trainer_subject_table.css';
 import { useNavigate } from "react-router-dom";
 
@@ -92,24 +92,34 @@ const courseInfo = [
 export function ManagerCourseInfo(){
   const navigate = useNavigate();
 
+  const student = students.filter((s) => s.course_id == courses[0].course_id);
+
   const items = [
     {
       no: 1,
       name: userList[students[0].uid - 1].user_name,
       birth: userList[students[0].uid - 1].user_birth,
       phone: userList[students[0].uid - 1].user_phone,
-      attendance: <PrimaryButton onClick={()=>navigate('/lms/m/info')}>출결관리</PrimaryButton>,
-      info: <SecondaryButton onClick={()=>navigate('/lms/m/info')}>상세정보</SecondaryButton>
+      attendance: <PrimaryButton onClick={() => onAttend(students[0].student_id)}>출결관리</PrimaryButton>,
+      info: <SecondaryButton onClick={() => onDetail(students[0].student_id)}>상세정보</SecondaryButton>
     },
     {
       no: 2,
-      name: userList[students[1].uid - 1].user_name,
-      birth: userList[students[1].uid - 1].user_birth,
-      phone: userList[students[1].uid - 1].user_phone,
-      attendance: <PrimaryButton onClick={()=>navigate('/lms/m/info')}>출결관리</PrimaryButton>,
-      info: <SecondaryButton onClick={()=>navigate('/lms/m/info')}>상세정보</SecondaryButton>
+      name: userList[students[2].uid - 1].user_name,
+      birth: userList[students[2].uid - 1].user_birth,
+      phone: userList[students[2].uid - 1].user_phone,
+      attendance: <PrimaryButton onClick={() => onAttend(students[2].student_id)}>출결관리</PrimaryButton>,
+      info: <SecondaryButton onClick={() => onDetail(students[2].student_id)}>상세정보</SecondaryButton>
     },
   ];
+
+  function onDetail(id) {
+    navigate(`${id}`);
+  }
+
+  function onAttend(id) {
+    navigate(`attend/${id}`);
+  }
 
   return<>
     <Container>
@@ -118,19 +128,19 @@ export function ManagerCourseInfo(){
         <Box>
           <ContentBox className="col-3">
             <Bold>과정명</Bold>
-            <p>스마트 UI/UX 디지털 디자인 2회차</p>
+            <p>{courses[0].course_name}</p>
           </ContentBox>
           <ContentBox className="col-3">
             <Bold>과목수</Bold>
-            <p>5</p>
+            <p>{courses[0].subject_no}</p>
           </ContentBox>
           <ContentBox className="col-3">
             <Bold>기간</Bold>
-            <p>2023.06.07 ~ 2023.12.29</p>
+            <p>{courses[0].start_date} ~ {courses[0].end_date}</p>
           </ContentBox>
           <ContentBox className="col-3">
             <Bold>학생수</Bold>
-            <p>30명</p>
+            <p>{student.length} 명</p>
           </ContentBox>
         </Box>
         <Table 
