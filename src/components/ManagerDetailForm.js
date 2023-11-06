@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { useState } from "react";
 
 const Content = styled.div`
-  padding: 2rem;
+  padding: 2rem 0;
   padding-top: 2rem;
   background-color: white;
   border-radius: 1rem;
@@ -28,7 +28,6 @@ const Details = styled.form`
   flex-direction: column;
   gap: 1rem;
   width: 100%;
-  padding-left: 3rem;
 `;
 
 const Detail = styled.div`
