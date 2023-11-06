@@ -54,7 +54,7 @@ const BadgeSecondary = styled.span`
 
 const PrimaryButton = styled.button`
   background-color: #5f7dcf;
-  padding: 2px 15px;
+  padding: 0.8rem 1.4rem;
   color: white;
   font-weight: 500;
   font-size: 0.8rem;
