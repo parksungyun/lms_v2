@@ -3,6 +3,7 @@ import { BsDownload } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { BsFillEyeFill } from "react-icons/bs";
 import { useState } from "react";
+import { students, subject_answers, subject_questions, userList } from "../../assets/TempData";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -116,33 +117,35 @@ const ContentInput = styled.textarea`
 `;
 
 export function TrainerSubjectQnaReplyMod() {
+  const id = 1;
+  const question = subject_questions.find(data => data.subject_id == id);
+  const answer = subject_answers.find(data => data.s_question_id == question.s_question_id);
+  const student = userList.find(data => data.uid == (students.find(d => d.student_id == question.student_id)).uid);
   const navigate = useNavigate();
-  const [qna_reply, setQna_reply] = useState();
+  const [qna_reply, setQna_reply] = useState(answer.s_answer_content);
   return<>
     <Container>
       <TableBox>
-        <H2>반복문을 잘 모르겠어요</H2>
+        <H2>{question.s_question_title}</H2>
         <Box>
-          <P>안경태</P>
+          <P>{student.user_name}</P>
           <P>|</P>
-          <P>2023-09-01</P>
+          <P>{question.s_question_reg_date}</P>
           <P>|</P>
           <IconBox>
             <BsFillEyeFill />
-            <P>3</P>
+            <P>{question.s_question_hits}</P>
           </IconBox>
         </Box>
         <Hr />
-        <Content>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut ratione tenetur pariatur molestiae beatae corrupti illo, vel, amet delectus obcaecati aspernatur suscipit voluptas doloribus veniam magni assumenda impedit deserunt sint.
-        </Content>
+        <Content>{question.s_question_content}</Content>
         <AttachedBox>
           <Attached><p className="fw-bold">첨부파일</p></Attached>
-          <div><A href="">파일.pdf<Icon><BsDownload /></Icon></A></div>
+          <div><A href={question.s_question_fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
         </AttachedBox>
         <Hr />
       <form action="" method="POST" >
-        <ContentInput type="text" name="qna_reply" id="qna_reply" value={qna_reply}  onChange={(e)=>setQna_reply(e.target.value)} placeholder="내용을 입력해주세요"/>
+        <ContentInput type="text" name="qna_reply" id="qna_reply" value={qna_reply}  onChange={(e)=>setQna_reply(e.target.value)}/>
         <Box className="btn">
           <PrimaryButton type="submit">답변 수정</PrimaryButton>
           <DangerButton>답변 삭제</DangerButton>
