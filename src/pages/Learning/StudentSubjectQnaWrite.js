@@ -69,6 +69,7 @@ const ContentInput = styled.textarea`
   padding: 10px;
   border-radius: 5px;
   border: 1px solid lightgray;
+  resize: none;
 `;
 
 export function StudentSubjectQnaWrite() {
