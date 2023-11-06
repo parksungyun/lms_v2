@@ -53,6 +53,9 @@ import { useEffect } from "react"
 import { AdminCourseStudentDetail } from "./Learning/AdminCourseStudentDetail"
 import { ManagerCourseStudentDetail } from "./Learning/ManagerCourseStudentDetail"
 import { ManagerCourseStudentAttendance } from "./Learning/ManagerCourseStudentAttendance"
+import { TrainerMypage } from "./Learning/TrainerMypage"
+import { ManagerMypage } from "./Learning/ManagerMypage"
+import { StudentMypage } from "./Learning/StudentMypage"
 
 export const SideContext = createContext();
 
@@ -109,7 +112,7 @@ export function Router() {
                   <Route path="homework" element={<StudentHW />} />
                   <Route path="lecture" element={<StudentLecture />} />
                   <Route path="sqna" element={<StudentSubjectQna />} />
-                  {/* <Route path="mypage" element={<StudentMypage />} /> */}
+                  <Route path="mypage" element={<StudentMypage />} />
                   <Route path="cqna" element={<StudentCourseQna />} />
                 </Route>
                 <Route path="t" element={<ParentsWrapper />}>
@@ -119,7 +122,7 @@ export function Router() {
                   <Route path="board" element={<TrainerSubjectBoard />} />
                   <Route path="homework" element={<TrainerHW />} />
                   <Route path="qna" element={<TrainerSubjectQna />} />
-                  {/* <Route path="mypage" element={<TrainerMypage />} /> */}
+                  <Route path="mypage" element={<TrainerMypage />} />
                 </Route>
                 <Route path="m" element={<ParentsWrapper />}>
                   <Route index element={<ManagerHome />} />
@@ -133,7 +136,7 @@ export function Router() {
                   <Route path="board" element={<ManagerCourseBoard />} />
                   <Route path="qna" element={<ManagerCourseQna />} />
                   <Route path="review" element={<ManagerCourseReview />} />
-                  {/* <Route path="mypage" element={<ManagerMypage />} /> */}
+                  <Route path="mypage" element={<ManagerMypage />} />
                 </Route>
                 <Route path="a" element={<ParentsWrapper />}>
                   <Route index element={<AdminHome />} />
