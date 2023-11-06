@@ -1,10 +1,10 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { academics, userList, department, trainerPosition } from "../assets/TempData";
+import { useNavigate } from "react-router-dom";
+import { students, userList } from "../assets/TempData";
 import styled from "styled-components";
 import { useState } from "react";
 
 const Content = styled.div`
-  padding: 2rem;
+  padding: 2rem 0;
   padding-top: 2rem;
   background-color: white;
   border-radius: 1rem;
@@ -28,7 +28,6 @@ const Details = styled.form`
   flex-direction: column;
   gap: 1rem;
   width: 100%;
-  padding-left: 3rem;
 `;
 
 const Detail = styled.div`
@@ -58,9 +57,9 @@ const ButtonBox = styled.div`
 
 export function StudentDetailForm() {
   const navigate = useNavigate();
-  const  id  = 5;
-  const academic = academics.find((a) => a.academic_id == id);
-  const user = userList.find((u) => u.uid == academic.uid);
+  const id = 1;
+  const student = students.find((a) => a.student_id == id);
+  const user = userList.find((u) => u.uid == student.uid);
   
   const [userName, setUserName] = useState(user.user_name);
   const [userId, setUserId] = useState(user.user_id);

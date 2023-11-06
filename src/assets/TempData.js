@@ -705,7 +705,7 @@ export const submits = [
 export const feedbacks = [
   {
     submit_id: 1,
-    hw_score: 10,
+    hw_score: 100,
     hw_comment: "Good!",
     academic_id: 2,
     feedback_reg_date: "2023-10-07",
@@ -713,7 +713,7 @@ export const feedbacks = [
   },
   {
     submit_id: 2,
-    hw_score: 10,
+    hw_score: 100,
     hw_comment: "Good!",
     academic_id: 2,
     feedback_reg_date: "2023-10-07",
@@ -721,7 +721,7 @@ export const feedbacks = [
   },
   {
     submit_id: 3,
-    hw_score: 10,
+    hw_score: 100,
     hw_comment: "Good!",
     academic_id: 2,
     feedback_reg_date: "2023-10-07",
@@ -729,7 +729,7 @@ export const feedbacks = [
   },
   {
     submit_id: 4,
-    hw_score: 6,
+    hw_score: 65,
     hw_comment: "중간까지는 잘 풀었으니 조금 더 노력해보아요.",
     academic_id: 2,
     feedback_reg_date: "2023-10-07",
@@ -737,7 +737,7 @@ export const feedbacks = [
   },
   {
     submit_id: 5,
-    hw_score: 10,
+    hw_score: 100,
     hw_comment: "잘했어요.",
     academic_id: 5,
     feedback_reg_date: "2023-10-10",
@@ -745,7 +745,7 @@ export const feedbacks = [
   },
   {
     submit_id: 6,
-    hw_score: 9,
+    hw_score: 90,
     hw_comment: "잘했어요. 글씨 크기를 더 키우면 좋을거같네요.",
     academic_id: 5,
     feedback_reg_date: "2023-10-10",
@@ -753,7 +753,7 @@ export const feedbacks = [
   },
   {
     submit_id: 7,
-    hw_score: 9,
+    hw_score: 90,
     hw_comment: "Good! 실수때문인거같은데 아쉽네요.",
     academic_id: 2,
     feedback_reg_date: "2023-10-10",
@@ -761,8 +761,8 @@ export const feedbacks = [
   },
   {
     submit_id: 8,
-    hw_score: 1,
-    hw_comment: "잘 풀었지만 늦게 제출하여 1점입니다.",
+    hw_score: 10,
+    hw_comment: "잘 풀었지만 늦게 제출하여 10점입니다.",
     academic_id: 2,
     feedback_reg_date: "2023-10-11",
     feedback_mod_date: "2023-10-11",
@@ -887,21 +887,21 @@ export const subject_answers = [
     s_answer_mod_date: "2023-10-02",
   },
   {
-    s_question_id: 1,
+    s_question_id: 2,
     academic_id: 2,
     s_answer_content: "국회의원은 법률이 정하는 직을 겸할 수 없다. 누구든지 체포 또는 구속을 당한 때에는 즉시 변호인의 조력을 받을 권리를 가진다. 다만, 형사피고인이 스스로 변호인을 구할 수 없을 때에는 법률이 정하는 바에 의하여 국가가 변호인을 붙인다. 모든 국민은 법률이 정하는 바에 의하여 납세의 의무를 진다. 군인 또는 군무원이 아닌 국민은 대한민국의 영역안에서는 중대한 군사상 기밀·초병·초소·유독음식물공급·포로·군용물에 관한 죄중 법률이 정한 경우와 비상계엄이 선포된 경우를 제외하고는 군사법원의 재판을 받지 아니한다. 모든 국민은 인간으로서의 존엄과 가치를 가지며, 행복을 추구할 권리를 가진다. 국가는 개인이 가지는 불가침의 기본적 인권을 확인하고 이를 보장할 의무를 진다.",
     s_answer_reg_date: "2023-10-03",
     s_answer_mod_date: "2023-10-03",
   },
   {
-    s_question_id: 1,
+    s_question_id: 3,
     academic_id: 2,
     s_answer_content: "국민경제의 발전을 위한 중요정책의 수립에 관하여 대통령의 자문에 응하기 위하여 국민경제자문회의를 둘 수 있다. 국토와 자원은 국가의 보호를 받으며, 국가는 그 균형있는 개발과 이용을 위하여 필요한 계획을 수립한다. 국무총리·국무위원 또는 정부위원은 국회나 그 위원회에 출석하여 국정처리상황을 보고하거나 의견을 진술하고 질문에 응답할 수 있다. 국민의 자유와 권리는 헌법에 열거되지 아니한 이유로 경시되지 아니한다. 국가안전보장회의의 조직·직무범위 기타 필요한 사항은 법률로 정한다. 위원은 정당에 가입하거나 정치에 관여할 수 없다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다.",
     s_answer_reg_date: "2023-10-09",
     s_answer_mod_date: "2023-10-09",
   },
   {
-    s_question_id: 1,
+    s_question_id: 4,
     academic_id: 5,
     s_answer_content: "대법원에 대법관을 둔다. 다만, 법률이 정하는 바에 의하여 대법관이 아닌 법관을 둘 수 있다. 국민경제자문회의의 조직·직무범위 기타 필요한 사항은 법률로 정한다. 국가안전보장에 관련되는 대외정책·군사정책과 국내정책의 수립에 관하여 국무회의의 심의에 앞서 대통령의 자문에 응하기 위하여 국가안전보장회의를 둔다. 행정각부의 장은 국무위원 중에서 국무총리의 제청으로 대통령이 임명한다. 타인의 범죄행위로 인하여 생명·신체에 대한 피해를 받은 국민은 법률이 정하는 바에 의하여 국가로부터 구조를 받을 수 있다. 대통령은 헌법과 법률이 정하는 바에 의하여 국군을 통수한다. 대통령의 선거에 관한 사항은 법률로 정한다.",
     s_answer_reg_date: "2023-10-09",
