@@ -1,9 +1,13 @@
 import styled from "styled-components";
 
 const Container = styled.div`
-  padding: 0.7rem 0;
+  padding: 0.7rem;
   display: flex;
   gap: 2rem;
+  background-color: #f6f9ff;
+  border: lightgray solid 1px;
+  margin-bottom: 0.5rem;
+  border-radius: 10px;
 `;
 
 const PrimaryButton = styled.button`
