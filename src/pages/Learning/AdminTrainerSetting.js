@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Table } from "../../components/Table";
-import { academics } from "../../assets/TempData";
+import { academics, subjects, trainerPosition } from "../../assets/TempData";
 import { userList } from "../../assets/TempData";
 import '../../styles/admin_table.css';
 import { useNavigate } from "react-router-dom";
@@ -88,28 +88,19 @@ const trainerSetting = [
 ];
 
 export function AdminTrainerSetting() {
-  const items = [
+  const trainers = academics.filter((a) => a.dept == 1);
+  const items = trainers.map((a, i) => (
     {
-      no: 1,
-      name: userList[academics[1].uid - 1].user_name,
-      birth: userList[academics[1].uid - 1].user_birth,
-      phone: userList[academics[1].uid - 1].user_phone,
-      email: userList[academics[1].uid - 1].user_email,
-      position: academics[1].position,
-      subject: 6,
-      info: <SecondaryButton onClick={() => onDetail(academics[1].academic_id)}>상세정보</SecondaryButton>
-    },
-    {
-      no: 2,
-      name: userList[academics[4].uid - 1].user_name,
-      birth: userList[academics[4].uid - 1].user_birth,
-      phone: userList[academics[4].uid - 1].user_phone,
-      email: userList[academics[4].uid - 1].user_email,
-      position: academics[4].position,
-      subject: 6,
-      info: <SecondaryButton onClick={() => onDetail(academics[4].academic_id)}>상세정보</SecondaryButton>
-    },
-  ]
+      no: i + 1,
+      name: userList[a.uid - 1].user_name,
+      birth: userList[a.uid - 1].user_birth,
+      phone: userList[a.uid - 1].user_phone,
+      email: userList[a.uid - 1].user_email,
+      position: trainerPosition.find((p) => p.position_id == a.position).position_name,
+      subject: subjects.filter((s) => s.academic_id == a.academic_id).length,
+      info: <SecondaryButton onClick={() => onDetail(a.academic_id)}><p>상세정보</p></SecondaryButton>
+    }
+  ))
 
   const navigate = useNavigate();
 
@@ -121,7 +112,7 @@ export function AdminTrainerSetting() {
     <Container>
       <Content>
         <H2 className="title">강사 관리</H2>
-        <PrimaryButton onClick={() => navigate("add")}>강사 등록</PrimaryButton>
+        <PrimaryButton onClick={() => navigate("add")}><p>강사 등록</p></PrimaryButton>
       </Content>
       <TableBox>
         <Table 

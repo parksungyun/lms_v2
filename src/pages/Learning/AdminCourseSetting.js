@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Table } from "../../components/Table";
-import { academics, userList, courses } from "../../assets/TempData";
+import { academics, userList, courses, students, subjects } from "../../assets/TempData";
 import '../../styles/course_admin_table.css';
 import { useNavigate } from "react-router-dom";
 
@@ -111,36 +111,22 @@ const courseSetting = [
 ];
 
 export function AdminCourseSetting() {
-  const items = [
+  const items = courses.map((c, i) => (
     {
-      no: 1,
-      name: courses[0].course_name,
-      start_date: courses[0].start_date,
-      end_date: courses[0].end_date,
-      recruit_start: courses[0].recruit_start,
-      recruit_end: courses[0].recruit_end,
-      current: 1,
-      capacity: courses[0].capacity,
-      manager: userList[academics[courses[0].academic_id - 1].uid - 1].user_name,
-      subject: 3,
-      studentInfo: <PrimaryButtonSmall onClick={() => onStudentInfo(courses[0].course_id)}>학생조회</PrimaryButtonSmall>,
-      info: <SecondaryButton onClick={() => onDetail(courses[0].course_id)}>상세정보</SecondaryButton>
-    },
-    {
-      no: 2,
-      name: courses[1].course_name,
-      start_date: courses[1].start_date,
-      end_date: courses[1].end_date,
-      recruit_start: courses[1].recruit_start,
-      recruit_end: courses[1].recruit_end,
-      current: 1,
-      capacity: courses[1].capacity,
-      manager: userList[academics[courses[1].academic_id - 1].uid - 1].user_name,
-      subject: 3,
-      studentInfo: <PrimaryButtonSmall onClick={() => onStudentInfo(courses[1].course_id)}>학생조회</PrimaryButtonSmall>,
-      info: <SecondaryButton onClick={() => onDetail(courses[1].course_id)}>상세정보</SecondaryButton>
-    },
-  ]
+      no: i + 1,
+      name: c.course_name,
+      start_date: c.start_date,
+      end_date: c.end_date,
+      recruit_start: c.recruit_start,
+      recruit_end: c.recruit_end,
+      current: students.filter((s) => s.course_id == c.course_id).length,
+      capacity: c.capacity,
+      manager: userList[academics[c.academic_id - 1].uid - 1].user_name,
+      subject: subjects.filter((s) => s.course_id == c.course_id).length,
+      studentInfo: <PrimaryButtonSmall onClick={() => onStudentInfo(c.course_id)}><p>학생조회</p></PrimaryButtonSmall>,
+      info: <SecondaryButton onClick={() => onDetail(c.course_id)}><p>상세정보</p></SecondaryButton>
+    }
+  ))
 
   const navigate = useNavigate();
 
@@ -156,7 +142,7 @@ export function AdminCourseSetting() {
     <Container>
       <Content>
         <H2 className="title">과정 관리</H2>
-        <PrimaryButton onClick={() => navigate("add")}>과정 등록</PrimaryButton>
+        <PrimaryButton onClick={() => navigate("add")}><p>과정 등록</p></PrimaryButton>
       </Content>
       <TableBox>
         <Table 

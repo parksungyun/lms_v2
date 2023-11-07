@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Table } from "../../components/Table";
-import { academics } from "../../assets/TempData";
+import { academics, courses, managerPosition } from "../../assets/TempData";
 import { userList } from "../../assets/TempData";
 import '../../styles/admin_table.css';
 import { useNavigate } from "react-router-dom";
@@ -88,38 +88,19 @@ const managerSetting = [
 ];
 
 export function AdminManagerSetting() {
-  const items = [
+  const managers = academics.filter((a) => a.dept == 0);
+  const items = managers.map((a, i) => (
     {
-      no: 1,
-      name: userList[academics[0].uid - 1].user_name,
-      birth: userList[academics[0].uid - 1].user_birth,
-      phone: userList[academics[0].uid - 1].user_phone,
-      email: userList[academics[0].uid - 1].user_email,
-      position: academics[0].position,
-      course: 1,
-      info: <SecondaryButton onClick={() => onDetail(academics[0].academic_id)}>상세정보</SecondaryButton>
-    },
-    {
-      no: 2,
-      name: userList[academics[2].uid - 1].user_name,
-      birth: userList[academics[2].uid - 1].user_birth,
-      phone: userList[academics[2].uid - 1].user_phone,
-      email: userList[academics[2].uid - 1].user_email,
-      position: academics[2].position,
-      course: 1,
-      info: <SecondaryButton onClick={() => onDetail(academics[2].academic_id)}>상세정보</SecondaryButton>
-    },
-    {
-      no: 3,
-      name: userList[academics[3].uid - 1].user_name,
-      birth: userList[academics[3].uid - 1].user_birth,
-      phone: userList[academics[3].uid - 1].user_phone,
-      email: userList[academics[3].uid - 1].user_email,
-      position: academics[3].position,
-      course: 0,
-      info: <SecondaryButton onClick={() => onDetail(academics[3].academic_id)}>상세정보</SecondaryButton>
-    },
-  ]
+      no: i + 1,
+      name: userList[a.uid - 1].user_name,
+      birth: userList[a.uid - 1].user_birth,
+      phone: userList[a.uid - 1].user_phone,
+      email: userList[a.uid - 1].user_email,
+      position: managerPosition.find((p) => p.position_id == a.position).position_name,
+      course: courses.filter((c) => c.academic_id == a.academic_id).length,
+      info: <SecondaryButton onClick={() => onDetail(a.academic_id)}><p>상세정보</p></SecondaryButton>
+    }
+  ));
 
   const navigate = useNavigate();
 
@@ -131,7 +112,7 @@ export function AdminManagerSetting() {
     <Container>
       <Content>
         <H2 className="title">매니저 관리</H2>
-        <PrimaryButton onClick={() => navigate("add")}>매니저 등록</PrimaryButton>
+        <PrimaryButton onClick={() => navigate("add")}><p>매니저 등록</p></PrimaryButton>
       </Content>
       <TableBox>
         <Table 
