@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
 import { Pagination } from "../../components/Pagination";
+import { academics, homeworks, userList } from "../../assets/TempData";
 
 const SuccessButton = styled.button`
   background-color: green;
@@ -124,7 +125,7 @@ export function TrainerHW() {
     },
     {
       text: '제출현황',
-      value: 'submitHits'
+      value: 'submitCount'
     },
     {
       text: '채점하기',
@@ -132,233 +133,20 @@ export function TrainerHW() {
     },
   ];
   
-  const items = [
+  const id = 1 // subjectid 임의로 받아옴
+  const homework = homeworks.filter(h => h.subject_id == id);
+
+  const items = homework.map((h,i) => (
     {
-      no: 1,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
+      no: i+1,
+      title: h.hw_title,
+      writer: userList.find(u => u.uid == academics.find(a => a.academic_id == h.academic_id).uid).user_name,
+      startDate: h.hw_start_date,
+      endDate: h.hw_end_date,
+      submitCount: '',
       submitScore: changeButton(1)
-    },
-    {
-      no: 2,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(0)
-    },
-    {
-      no: 3,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(1)
-    },
-    {
-      no: 4,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(1)
-    },
-    {
-      no: 5,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(1)
-    },
-    {
-      no: 6,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(1)
-    },
-    {
-      no: 7,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(0)
-    },
-    {
-      no: 8,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(1)
-    },
-    {
-      no: 9,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(0)
-    },
-    {
-      no: 10,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(0)
-    },
-    {
-      no: 11,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(0)
-    },
-    {
-      no: 12,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(0)
-    },
-    {
-      no: 13,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(0)
-    },
-    {
-      no: 14,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(0)
-    },
-    {
-      no: 15,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(1)
-    },
-    {
-      no: 16,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(1)
-    },
-    {
-      no: 17,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(1)
-    },
-    {
-      no: 18,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(0)
-    },
-    {
-      no: 19,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(1)
-    },
-    {
-      no: 20,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(1)
-    },
-    {
-      no: 21,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(0)
-    },
-    {
-      no: 22,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(1)
-    },
-    {
-      no: 23,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(1)
-    },
-    {
-      no: 24,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(1)
-    },
-    {
-      no: 25,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submitHits: '10',
-      submitScore: changeButton(0)
-    },
-  ];
+    }
+  ));
 
   return<>
     <Container>
@@ -378,9 +166,9 @@ export function TrainerHW() {
             <option key="writer" value="writer">작성자</option>
           </select>
           <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={onSearch}>검색</button>
+          <button onClick={onSearch}><p>검색</p></button>
         </SearchBox>
-        <PrimaryButton onClick={() => navigate("/lms/t")}>작성</PrimaryButton>
+        <PrimaryButton onClick={() => navigate("/lms/t")}><p>작성</p></PrimaryButton>
       </ButtonBox>
       <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
     </Container>

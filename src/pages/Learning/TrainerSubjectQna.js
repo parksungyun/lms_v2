@@ -118,8 +118,11 @@ export function TrainerSubjectQna() {
       value: 'replyState'
     },
   ];
+
+  const id  = 1; // subjectid 값 임의로 받아옴
+  const question = subject_questions.filter(s => s.subject_id == id)
   
-  const items = subject_questions.map((q,i) => (
+  const items = question.map((q,i) => (
     {
       no: i+1,
       title: q.s_question_title,

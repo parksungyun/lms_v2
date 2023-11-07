@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
 import { Pagination } from "../../components/Pagination";
+import { students, subject_answers, subject_questions, userList } from "../../assets/TempData";
 
 const BadgeSuccess = styled.span`
   background-color: green;
@@ -91,7 +92,7 @@ export function StudentSubjectQna() {
   };
 
   function changeReply(reply) {
-    if(reply === 1) {return(<BadgeSuccess>답변완료</BadgeSuccess>)}
+    if(subject_answers.find(d=> d.s_question_id == reply)) {return(<BadgeSuccess>답변완료</BadgeSuccess>)}
     else {return(<BadgeSecondary>답변대기</BadgeSecondary>)};
   };
 
@@ -125,209 +126,20 @@ export function StudentSubjectQna() {
       value: 'replyState'
     },
   ];
+
+  const id = 1;
+  const question = subject_questions.filter(s => s.subject_id == id);
   
-  const items = [
+  const items = question.map((s,i) => (
     {
-      no: 1,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(1)
-    },
-    {
-      no: 2,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(0)
-    },
-    {
-      no: 3,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(1)
-    },
-    {
-      no: 4,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(1)
-    },
-    {
-      no: 5,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(0)
-    },
-    {
-      no: 6,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(0)
-    },
-    {
-      no: 7,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(1)
-    },
-    {
-      no: 8,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(0)
-    },
-    {
-      no: 9,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(1)
-    },
-    {
-      no: 10,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(1)
-    },
-    {
-      no: 11,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(1)
-    },
-    {
-      no: 12,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(0)
-    },
-    {
-      no: 13,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(0)
-    },
-    {
-      no: 14,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(1)
-    },
-    {
-      no: 15,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(1)
-    },
-    {
-      no: 16,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(1)
-    },
-    {
-      no: 17,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(0)
-    },
-    {
-      no: 18,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(0)
-    },
-    {
-      no: 19,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(1)
-    },
-    {
-      no: 20,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(0)
-    },
-    {
-      no: 21,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(0)
-    },
-    {
-      no: 22,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(1)
-    },
-    {
-      no: 23,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(0)
-    },
-    {
-      no: 24,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(0)
-    },
-    {
-      no: 25,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10',
-      replyState: changeReply(1)
-    },
-  ];
+      no: i + 1,
+      title: s.s_question_title,
+      writer: userList.find(u => u.uid == students.find(student => student.student_id == s.student_id).uid).user_name,
+      regDate: s.s_question_reg_date,
+      Hits: s.s_question_hits,
+      replyState: changeReply(s.s_question_id)
+    }
+  ));
 
   return<>
     <Container>
@@ -349,7 +161,7 @@ export function StudentSubjectQna() {
           <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
           <button onClick={onSearch}>검색</button>
         </SearchBox>
-        <PrimaryButton onClick={() => navigate("/lms/s")}>작성</PrimaryButton>
+        <PrimaryButton onClick={() => navigate("/lms/s")}><p>작성</p></PrimaryButton>
       </ButtonBox>
       <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
     </Container>

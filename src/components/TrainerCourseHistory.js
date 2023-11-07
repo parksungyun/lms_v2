@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Table } from "./Table";
-import { userList, courses, subjects, academics } from "../assets/TempData";
+import { courses, subjects } from "../assets/TempData";
 import styled from "styled-components";
 
 const header = [
@@ -81,44 +81,18 @@ export function TrainerCourseHistory() {
     else {return(<BadgeSecondary>진행끝</BadgeSecondary>)};
   };
 
-  const item = [
+  const item = subject.map((s,i) => (  
     {
-      no: 1,
-      courseName: course[0].course_name,
-      subjectName: subject[0].subject_name,
-      startDate: course[0].start_date,
-      endDate: course[0].end_date,
-      state: changeReply(course[0].end_date),
+      no: i+1,
+      courseName: course[i].course_name,
+      subjectName: subject[i].subject_name,
+      startDate: course[i].start_date,
+      endDate: course[i].end_date,
+      state: changeReply(course[i].end_date),
       link: <PrimaryButton onClick={()=>navigate('/lms/t/subject')}>바로가기</PrimaryButton>,
-    },
-    {
-      no: 2,
-      courseName: course[1].course_name,
-      subjectName: subject[1].subject_name,
-      startDate: course[1].start_date,
-      endDate: course[1].end_date,
-      state: changeReply(course[1].end_date),
-      link: <PrimaryButton onClick={()=>navigate('/lms/t/subject')}>바로가기</PrimaryButton>,
-    },
-    {
-      no: 3,
-      courseName: course[2].course_name,
-      subjectName: subject[2].subject_name,
-      startDate: course[2].start_date,
-      endDate: course[2].end_date,
-      state: changeReply(course[2].end_date),
-      link: <PrimaryButton onClick={()=>navigate('/lms/t/subject')}>바로가기</PrimaryButton>,
-    },
-    {
-      no: 4,
-      courseName: course[3].course_name,
-      subjectName: subject[3].subject_name,
-      startDate: course[3].start_date,
-      endDate: course[3].end_date,
-      state: changeReply(course[3].end_date),
-      link: <PrimaryButton onClick={()=>navigate('/lms/t/subject')}>바로가기</PrimaryButton>,
-    },
-  ];
+    }
+  ));
+
   return<>
     <Table 
       headers={header}

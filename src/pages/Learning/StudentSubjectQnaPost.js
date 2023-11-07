@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { BsDownload } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { BsFillEyeFill } from "react-icons/bs";
+import { academics, students, subject_answers, subject_questions, userList } from "../../assets/TempData";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -118,42 +119,44 @@ const IconBox = styled.div`
   gap: 0.5rem;
 `;
 
+
 export function StudentSubjectQnaPost() {
+  const id = 1; //s_question_id 임의로 받아옴
+  const question = subject_questions.find(s => s.s_question_id == id);
+  const answer = subject_answers.find(s => s.s_question_id == id);
   const navigate = useNavigate();
   return<>
     <Container>
       <TableBox>
-        <H2>반복문을 잘 모르겠어요</H2>
+        <H2>{question.s_question_title}</H2>
         <Box>
-          <P>안경태</P>
+          <P>{userList.find(u => u.uid == students.find(s => s.student_id == question.student_id).uid).user_name}</P>
           <P>|</P>
-          <P>2023-09-01</P>
+          <P>{question.s_question_reg_date}</P>
           <P>|</P>
           <IconBox>
             <BsFillEyeFill />
-            <P>3</P>
+            <P>{question.s_question_hits}</P>
           </IconBox>
         </Box>
         <Hr />
-        <Content>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut ratione tenetur pariatur molestiae beatae corrupti illo, vel, amet delectus obcaecati aspernatur suscipit voluptas doloribus veniam magni assumenda impedit deserunt sint.
-        </Content>
+        <Content>{question.s_question_content}</Content>
         <AttachedBox>
           <Attached><p className="fw-bold">첨부파일</p></Attached>
-          <div><A href="">파일.pdf<Icon><BsDownload /></Icon></A></div>
+          <div><A href={question.s_question_fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
         </AttachedBox>
         <Hr />
         <CommentBox>
         <CommentWriter>
-          <Text>황기현 | 2023-09-01</Text>
+          <Text>{userList.find(u => u.uid == academics.find(a => a.academic_id == answer.academic_id).uid).user_name} | {answer.s_answer_reg_date}</Text>
         </CommentWriter>
         <Comment>
-          <Text>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</Text>
+          <Text>{answer.s_answer_content}</Text>
         </Comment>
       </CommentBox>
       <Box className="btn">
-        <PrimaryButton onClick={()=>navigate("/lms/s")}>수정</PrimaryButton>
-        <SecondaryButton onClick={()=>navigate(-1)}>목록</SecondaryButton>
+        <PrimaryButton onClick={()=>navigate("/lms/s")}><p>수정</p></PrimaryButton>
+        <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
       </Box>
       </TableBox>
     </Container>

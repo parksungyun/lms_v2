@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Board } from "../../components/Board";
+import { academics, subject_board, userList } from "../../assets/TempData";
 
 const trainerSBoard = [
   {
@@ -24,78 +25,16 @@ const trainerSBoard = [
   }
 ];
 
-const TSBItems = [
+const TSBItems = subject_board.map((d,i)=>(
   {
-    no: 1,
-    title: '교육상담아무말이나해봐아무말이나해봐아무해봐아무말이나해봐',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '5'
-  },
-  {
-    no: 2,
-    title: '교육상담아무말이나무말이나해봐',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '10'
-  },
-  {
-    no: 3,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '8'
-  },
-  {
-    no: 4,
-    title: '교육상담아무말이나해봐아무말이나해무말이나해봐',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '4'
-  },
-  {
-    no: 5,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '484'
-  },
-  {
-    no: 6,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '484'
-  },
-  {
-    no: 7,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '484'
-  },
-  {
-    no: 8,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '484'
-  },
-  {
-    no: 9,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '484'
-  },
-  {
-    no: 10,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '484'
-  },
-];
+    no: i+1,
+    title: d.s_post_title,
+    writer: userList.find(u => u.uid == academics.find(a=> a.academic_id == d.academic_id).uid).user_name,
+    regDate: d.s_post_reg_date,
+    hits: d.s_post_hits
+  }
+));
+
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
