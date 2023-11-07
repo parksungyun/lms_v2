@@ -65,7 +65,7 @@ const Bold = styled.p`
 `;
 
 const Select = styled.select`
-  padding: 0.7rem;
+  padding: 0.6rem;
   border: 1px solid lightgray;
   border-radius: 0.5rem;
 `;
@@ -85,11 +85,13 @@ const Detail = styled.div`
   gap: 1rem;
   margin-right: 2rem;
   align-items: center;
+  justify-content: center;
 `;
 
 const Search = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 
 const BadgePrimary = styled.span`
@@ -171,7 +173,6 @@ const headers = [
 
 
 export function StudentAttendance() {
-  const navigate = useNavigate();
   const id = 1;
   const student = students.find((s) => s.student_id == id);
   const user = userList.find((u) => u.uid == student.uid);
@@ -264,7 +265,7 @@ export function StudentAttendance() {
           ~
           <InputDate type="date" name="end_date" id="end_date"  value={searchEndDate} onChange={(e) => {setSearchEndDate(e.target.value)}} />
         </Detail>
-        <PrimaryButton onClick={onSearch}>검색</PrimaryButton>
+        <PrimaryButton onClick={onSearch}><p>검색</p></PrimaryButton>
       </Search>
       <Table 
         headers={headers}
