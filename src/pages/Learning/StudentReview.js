@@ -87,7 +87,7 @@ export function StudentReview() {
     }
   };
 
-  function onReview() {
+  function onReview(id) {
     navigate(`review/${id}`);
   }
 
