@@ -964,7 +964,7 @@ export const admission_questions = [
   {
     a_question_id: 1,
     post_pw: "rkskek",
-    writher_name: "유세나",
+    writer_name: "유세나",
     age: 22,
     phone: "010-1111-1234",
     final_school: "고졸",
@@ -977,7 +977,7 @@ export const admission_questions = [
   {
     a_question_id: 2,
     post_pw: "rkskek",
-    writher_name: "안영태",
+    writer_name: "안영태",
     age: 29,
     phone: "010-1111-1234",
     final_school: "대졸",
@@ -990,7 +990,7 @@ export const admission_questions = [
   {
     a_question_id: 3,
     post_pw: "rkskek",
-    writher_name: "진소이",
+    writer_name: "진소이",
     age: 28,
     phone: "010-1111-1234",
     final_school: "대졸",
@@ -1003,7 +1003,7 @@ export const admission_questions = [
   {
     a_question_id: 4,
     post_pw: "rkskek",
-    writher_name: "송승현",
+    writer_name: "송승현",
     age: 27,
     phone: "010-1111-1234",
     final_school: "고졸",
@@ -1016,7 +1016,7 @@ export const admission_questions = [
   {
     a_question_id: 5,
     post_pw: "rkskek",
-    writher_name: "송승연",
+    writer_name: "송승연",
     age: 28,
     phone: "010-1111-1234",
     final_school: "대졸",
@@ -1029,7 +1029,7 @@ export const admission_questions = [
   {
     a_question_id: 6,
     post_pw: "rkskek",
-    writher_name: "박세나",
+    writer_name: "박세나",
     age: 25,
     phone: "010-1111-1234",
     final_school: "초대졸",
@@ -1042,7 +1042,7 @@ export const admission_questions = [
   {
     a_question_id: 7,
     post_pw: "rkskek",
-    writher_name: "박두나",
+    writer_name: "박두나",
     age: 26,
     phone: "010-1111-1234",
     final_school: "대졸",
@@ -1055,7 +1055,7 @@ export const admission_questions = [
   {
     a_question_id: 8,
     post_pw: "rkskek",
-    writher_name: "왕경태",
+    writer_name: "왕경태",
     age: 30,
     phone: "010-1111-1234",
     final_school: "대졸",
@@ -1068,7 +1068,7 @@ export const admission_questions = [
   {
     a_question_id: 9,
     post_pw: "rkskek",
-    writher_name: "안경대",
+    writer_name: "안경대",
     age: 28,
     phone: "010-1111-1234",
     final_school: "대졸",
@@ -1081,7 +1081,7 @@ export const admission_questions = [
   {
     a_question_id: 10,
     post_pw: "rkskek",
-    writher_name: "박소이",
+    writer_name: "박소이",
     age: 30,
     phone: "010-1111-1234",
     final_school: "대졸",
@@ -1094,7 +1094,7 @@ export const admission_questions = [
   {
     a_question_id: 11,
     post_pw: "rkskek",
-    writher_name: "박승현",
+    writer_name: "박승현",
     age: 21,
     phone: "010-1111-1234",
     final_school: "고졸",
