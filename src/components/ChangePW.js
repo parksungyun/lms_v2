@@ -1,5 +1,5 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { academics, userList, department, trainerPosition } from "../assets/TempData";
+import { useNavigate } from "react-router-dom";
+import { academics, userList } from "../assets/TempData";
 import styled from "styled-components";
 import { useState } from "react";
 

@@ -317,7 +317,7 @@ export function StudentSubject() {
       <Row>
         <Col>
           <TableBox>
-            <StyledNavLink to='/lms/s'>공지 사항</StyledNavLink>
+            <StyledNavLink to='/lms/s/sboard'>공지 사항</StyledNavLink>
             <Table
               headers={studentSBoard}
               items={SSBItems}
@@ -327,7 +327,7 @@ export function StudentSubject() {
         </Col>
         <Col>
           <TableBox>
-            <StyledNavLink to='/lms/s'>과제</StyledNavLink>
+            <StyledNavLink to='/lms/s/homework'>과제</StyledNavLink>
             <Table
               headers={studentSHW}
               items={SSHWItems}
@@ -339,7 +339,7 @@ export function StudentSubject() {
       <Row>
         <Col>
           <TableBox>
-            <StyledNavLink to='/lms/s'>강의</StyledNavLink>
+            <StyledNavLink to='/lms/s/lecture'>강의</StyledNavLink>
             <ProgressBar>
               <ProgressBox width = {100-(availableItem*100/maxItem)}/>
             </ProgressBar>
@@ -353,7 +353,7 @@ export function StudentSubject() {
         </Col>
         <Col>
           <TableBox>
-            <StyledNavLink to='/lms/s'>Q&A</StyledNavLink>
+            <StyledNavLink to='/lms/s/sqna'>Q&A</StyledNavLink>
             <Table
               headers={studentSQNA}
               items={SSQNAItems}
