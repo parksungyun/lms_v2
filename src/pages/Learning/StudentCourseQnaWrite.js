@@ -85,8 +85,8 @@ export function StudentCourseQnaWrite() {
         <ContentInput type="text" name="qna_content" id="qna_content" value={qna_content}  onChange={(e)=>setQna_content(e.target.value)} placeholder="내용 입력해주세요"/>
         <Input type="file" name="qna_file" id="qna_file" accept="" />
         <Box>
-          <PrimaryButton>등록</PrimaryButton>
-          <SecondaryButton onClick={() => navigate(-1)}>목록</SecondaryButton>
+          <PrimaryButton><p>등록</p></PrimaryButton>
+          <SecondaryButton onClick={() => navigate(-1)}><p>목록</p></SecondaryButton>
         </Box>
       </form>
       </TableBox>
