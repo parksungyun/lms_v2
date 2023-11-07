@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { courses, students, userList, subjects, academics, studies, attendances, feedbacks, submits, homeworks } from "../../assets/TempData";
+import { courses, students, userList, subjects, academics, studies, attendances, feedbacks, submits, homeworks, lectures } from "../../assets/TempData";
 import { Table } from "../../components/Table";
 import { useState } from "react";
 
@@ -18,28 +18,6 @@ const PrimaryButton = styled.button`
   background-color: #5f7dcf;
   padding: 0.8rem 1.4rem;
   color: white;
-`;
-
-const SecondaryButton = styled.button`
-  border: 0;
-  border-radius: 5px;
-  background-color: gray;
-  padding: 0.8rem 1.4rem;
-  color: white;
-`;
-
-const DangerButton = styled.button`
-  border: 0;
-  border-radius: 5px;
-  background-color: red;
-  padding: 0.8rem 1.4rem;
-  color: white;
-`;
-
-const ButtonBox = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
 `;
 
 const Box = styled.div`
@@ -93,9 +71,10 @@ export function StudentScore() {
   const subject = subjects.filter(data => data.course_id == course.course_id);
   const attendance = attendances.filter(data => data.student_id == student.student_id);
   const subjectHwScore = calHwScore();
-  const attendScore = 0;
+  const subjectLectScore = calLectScore();
+  const attendScore = calAttendScore();
   const homeworkScore = totalHwScore();
-  const lectureScore = 0;
+  const lectureScore = totalLectScore();
   const totalScore = Math.round((lectureScore * 0.4) + (homeworkScore * 0.4) + (attendScore * 0.2));
 
   function calHwScore() {
@@ -118,9 +97,71 @@ export function StudentScore() {
     return score;
   }
 
+  function calLectScore() {
+    let score = [0];
+    subject.map((s, i) => {
+      let temp = 0;
+      const tempLecture = lectures.filter((l) => l.subject_id === s.subject_id);
+      const tempStudy = tempLecture.map((l) => (studies.filter(data => data.student_id === student.student_id)).find((t) => l.lecture_id == t.lecture_id));
+      tempStudy.map((t) => {
+        if(t) {
+          if(t.is_study == 2) temp++;
+        }
+      });
+      score[i] = Math.round(temp / tempLecture.length * 100);
+    })
+    return score;
+  }
+
+  function calPeriod() {
+    const start = new Date(course.start_date);
+    const end = new Date(course.end_date);
+    let count = 0;
+
+    while(true) {
+      let temp = start;
+      if(temp.getTime() > end.getTime()) {
+        break;
+      }
+      else {
+        let tmp = temp.getDay();
+        if(tmp == 0 || tmp == 6) {
+          // 주말
+        }
+        else {
+          // 평일
+          count++;
+        }
+        temp.setDate(start.getDate() + 1);
+      }
+    }
+    return count;
+  }
+
+  function calAttendScore() {
+    let temp = 0;
+    const period = calPeriod();
+    
+    const tempAttend = attendances.filter((a) => a.student_id === student.student_id);
+    console.log(tempAttend);
+    tempAttend.map((t) => {
+      if(t) {
+        if(t.absence_id < 99) temp++;
+      }
+    });
+    return Math.round(temp / period * 100);
+  }
+
   function totalHwScore() {
     let temp = 0;
     subjectHwScore.map((h) => {temp += h});
+    temp = temp / subject.length;
+    return Math.round(temp);
+  }
+
+  function totalLectScore() {
+    let temp = 0;
+    subjectLectScore.map((l) => {temp += l});
     temp = temp / subject.length;
     return Math.round(temp);
   }
@@ -130,7 +171,7 @@ export function StudentScore() {
       no: i + 1,
       subject_name: s.subject_name,
       trainer_name: userList.find((u) => u.uid == (academics.find((a) => a.academic_id == s.academic_id).uid)).user_name,
-      lecture_score: 0,
+      lecture_score: subjectLectScore[i],
       homework_score: subjectHwScore[i],
     }
   ))

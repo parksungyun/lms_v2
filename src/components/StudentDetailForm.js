@@ -100,7 +100,7 @@ export function StudentDetailForm() {
           <Input type="text" name="user_birth" id="user_birth" value={userEmail} onChange={(e) => {setUserEmail(e.target.value)}} />
         </Detail>
         <ButtonBox>
-          <PrimaryButton type="submit" onClick={onSubmit}>수정</PrimaryButton>
+          <PrimaryButton type="submit" onClick={onSubmit}><p>수정</p></PrimaryButton>
         </ButtonBox>
       </Details>
     </Content>

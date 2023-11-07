@@ -17,6 +17,27 @@ const Divider = styled.hr`
   border: 0;
 `;
 
+const Text = styled.p`
+  font-weight: 700;
+  font-size: 0.9rem;
+`;
+
+const TrainerText = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const CourseName = styled.p`
+  margin: 0;
+  font-size: 0.8rem;
+`;
+
+const SubjectName = styled.p`
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+`;
+
 export function LmsSidebar({ userType, uid }) {
   const { toggled, selectedMenu, setSelectedMenu } = useContext(SideContext);
   const navigate = useNavigate();
@@ -56,7 +77,7 @@ export function LmsSidebar({ userType, uid }) {
             component={<NavLink to={`/lms/${userType}`} />}>
             {firstLabel}
           </MenuItem>
-          <SubMenu label={subjectName} icon={<RiBookletFill />}>
+          <SubMenu label={<Text>{subjectName}</Text>} icon={<RiBookletFill />}>
             <Menu transitionDuration={1000} menuItemStyles={{
                 button: ({ active }) => {
                     return {
@@ -103,7 +124,7 @@ export function LmsSidebar({ userType, uid }) {
               </MenuItem>
             </Menu>
           </SubMenu>
-          <SubMenu label={courseName} icon={<RiBookletFill />}>
+          <SubMenu label={<Text>{courseName}</Text>} icon={<RiBookletFill />}>
             <Menu transitionDuration={1000} menuItemStyles={{
                 button: ({ active }) => {
                     return {
@@ -143,7 +164,7 @@ export function LmsSidebar({ userType, uid }) {
               </MenuItem>
             </Menu>
           </SubMenu>
-          <SubMenu label={courseName} icon={<RiBookletFill />}>
+          <SubMenu label={<TrainerText><CourseName>{courseName}</CourseName><SubjectName>{subjectName}</SubjectName></TrainerText>} icon={<RiBookletFill />}>
             <Menu transitionDuration={1000} menuItemStyles={{
                 button: ({ active }) => {
                     return {
@@ -195,14 +216,14 @@ export function LmsSidebar({ userType, uid }) {
             active={selectedMenu === "myPage"}
             icon={<BsFillPersonFill />}
             onClick={() => setSelectedMenu("myPage")}
-            component={<NavLink to={"/lms/s"} />}>
+            component={<NavLink to={"/lms/s/mypage"} />}>
             {"마이페이지"}
           </MenuItem>
           <MenuItem
             active={selectedMenu === "classQna"}
             icon={<RiMailLine />}
             onClick={() => setSelectedMenu("classQna")}
-            component={<NavLink to={"/lms/s"} />}>
+            component={<NavLink to={"/lms/s/cqna"} />}>
             {"1:1 문의"}
           </MenuItem>
           <MenuItem

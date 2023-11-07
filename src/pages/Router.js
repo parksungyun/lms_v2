@@ -56,6 +56,7 @@ import { ManagerCourseStudentAttendance } from "./Learning/ManagerCourseStudentA
 import { TrainerMypage } from "./Learning/TrainerMypage"
 import { ManagerMypage } from "./Learning/ManagerMypage"
 import { StudentMypage } from "./Learning/StudentMypage"
+import { SubjectReview } from "./Learning/SubjectReview"
 
 export const SideContext = createContext();
 
@@ -72,7 +73,7 @@ export function Router() {
   // }
 
   useEffect(() => {
-    setUserType("a");
+    setUserType("s");
   }, []);
 
   return <>
@@ -112,7 +113,12 @@ export function Router() {
                   <Route path="homework" element={<StudentHW />} />
                   <Route path="lecture" element={<StudentLecture />} />
                   <Route path="sqna" element={<StudentSubjectQna />} />
-                  <Route path="mypage" element={<StudentMypage />} />
+                  <Route path="mypage" element={<ParentsWrapper />}>
+                    <Route index element={<StudentMypage />} />
+                    <Route path="review" elements={<ParentsWrapper />}>
+                      <Route path=":id" element={<SubjectReview />} />
+                    </Route>
+                  </Route>
                   <Route path="cqna" element={<StudentCourseQna />} />
                 </Route>
                 <Route path="t" element={<ParentsWrapper />}>
