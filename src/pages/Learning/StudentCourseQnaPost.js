@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { BsDownload } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { BsFillEyeFill } from "react-icons/bs";
+import { academics, course_answers, course_questions, students, userList } from "../../assets/TempData";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -113,36 +114,37 @@ const P = styled.p`
 `;
 
 export function StudentCourseQnaPost() {
+  const id = 1;
+  const question = course_questions.find(c => c.course_id == id);
+  const answer = course_answers.find(c => c.c_question_id == question.c_question_id);
   const navigate = useNavigate();
   return<>
     <Container>
       <TableBox>
-        <H2>휴가를 사용하고 싶어요</H2>
+        <H2>{question.c_question_title}</H2>
         <Box>
-          <P>안경태</P>
+          <P>{userList.find(u => u.uid == students.find(s => s.student_id == question.student_id).uid).user_name}</P>
           <P>|</P>
-          <P>2023-09-01</P>
+          <P>{question.c_question_reg_date}</P>
         </Box>
         <Hr />
-        <Content>
-          휴가계 올립니다.
-        </Content>
+        <Content>{question.c_question_content}</Content>
         <AttachedBox>
           <Attached><p className="fw-bold">첨부파일</p></Attached>
-          <div><A href="">휴가계.pdf<Icon><BsDownload /></Icon></A></div>
+          <div><A href={question.c_question_fileURL}>휴가계.pdf<Icon><BsDownload /></Icon></A></div>
         </AttachedBox>
         <Hr />
         <CommentBox>
         <CommentWriter>
-          <Text>황기현 | 2023-09-01</Text>
+          <Text>{userList.find(u => u.uid == academics.find(a => a.academic_id == answer.academic_id).uid).user_name} | {answer.c_answer_reg_date}</Text>
         </CommentWriter>
         <Comment>
-          <Text>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</Text>
+          <Text>{answer.c_answer_content}</Text>
         </Comment>
       </CommentBox>
       <Box className="btn">
-        <PrimaryButton onClick={()=>navigate("/lms/s")}>수정</PrimaryButton>
-        <SecondaryButton onClick={()=>navigate(-1)}>목록</SecondaryButton>
+        <PrimaryButton onClick={()=>navigate("/lms/s")}><p>수정</p></PrimaryButton>
+        <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
       </Box>
       </TableBox>
     </Container>

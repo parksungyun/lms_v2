@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { course_questions } from "../../assets/TempData";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -81,8 +82,10 @@ const ContentInput = styled.textarea`
 `;
 
 export function StudentCourseQnaMod() {
-  const [qna_content, setQna_content] = useState("휴가계 첨부합니다.");
-  const [qna_title, setQna_title] = useState("9월 10일 휴가 사용하고 싶어요");
+  const id = 1;
+  const question = course_questions.find(c => c.c_question_id == id)
+  const [qna_content, setQna_content] = useState(question.c_question_content);
+  const [qna_title, setQna_title] = useState(question.c_question_title);
   const navigate = useNavigate();
   return<>
     <Container>
@@ -94,9 +97,9 @@ export function StudentCourseQnaMod() {
           <ContentInput type="text" name="qna_content" id="qna_content" value={qna_content}  onChange={(e)=>setQna_content(e.target.value)}/>
           <Input type="file" name="qna_file" id="qna_file" accept="" />
           <Box>
-            <PrimaryButton type="submit">수정</PrimaryButton>
-            <DangerButton>삭제</DangerButton>
-            <SecondaryButton onClick={() => navigate(-1)}>목록</SecondaryButton>
+            <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
+            <DangerButton><p>삭제</p></DangerButton>
+            <SecondaryButton onClick={() => navigate(-1)}><p>목록</p></SecondaryButton>
           </Box>
         </form>
       </TableBox>

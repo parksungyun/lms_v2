@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Table } from "../../components/Table";
 import '../../styles/student_hw_table.css';
 import { useNavigate } from "react-router-dom";
+import { academics, feedbacks, homeworks, submits, userList } from "../../assets/TempData";
 
 const PrimaryButton = styled.button`
   background-color: #5f7dcf;
@@ -60,6 +61,13 @@ const H2 = styled.p`
   margin-bottom: 0;
 `;
 
+const P = styled.p`
+  margin: 0;
+  &.active{
+    color: red;
+  }
+`
+
 export function StudentHW() {
   const [page, setPage] = useState(1);
   const limit = 10;
@@ -74,8 +82,8 @@ export function StudentHW() {
   };
 
   function changeButton(button) {
-    if(button === 1) {return(<SuccessButton onClick={()=>navigate('/lms/s')}>결과확인</SuccessButton>)}
-    else {return(<SecondaryButton onClick={()=>navigate('/lms/s')}>제출확인</SecondaryButton>)};
+    if(feedbacks.find(f => f.submit_id == button)) {return(<SuccessButton onClick={()=>navigate('/lms/s')}><p>결과확인</p></SuccessButton>)}
+    else {return(<SecondaryButton onClick={()=>navigate('/lms/s')}><p>제출확인</p></SecondaryButton>)};
   };
 
   const newDate = new Date();
@@ -87,9 +95,9 @@ export function StudentHW() {
     end = new Date(end);
     const endDate = end.getTime();
     if(date < endDate){
-      return(<PrimaryButton onClick={()=>navigate('/lms/s')}>채점하기</PrimaryButton>)
+      return(<PrimaryButton onClick={()=>navigate('/lms/s')}><p>제출하기</p></PrimaryButton>)
     } else {
-      return (<PrimaryButton className="disabled" disabled>채점하기</PrimaryButton>)
+      return (<PrimaryButton className="disabled" disabled><p>제출하기</p></PrimaryButton>)
     }
   };
   
@@ -127,259 +135,37 @@ export function StudentHW() {
       value: 'submitTime'
     },
   ];
+
+  const id = 1; // subject 값 받아오기
+  const studentid = 1; // studentid 값 받아오기
+  const homework = homeworks.filter(h => h.subject_id == id);
+  const submit = submits.filter(s => s.student_id == studentid);
+  console.log(homework)
   
-  const items = [
+  const items = homework.map((h,i) => (
     {
-      no: 1,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-11-05',
-      submit: disabledBtn('2023-11-05'),
-      submitState: changeButton(1),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 2,
-      title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(1),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 3,
-      title: '교육상담아무말이나해봐아무말이나해봐아무말이나',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(1),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 4,
-      title: '교육상담아무말이나해봐아무말이나해봐아무말이나',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(1),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 5,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(0),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 6,
-      title: '교육상담아무말이나해봐아무말이나해',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(0),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 7,
-      title: '교육상담아무말이나해봐아무말이나해봐아',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(0),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 8,
-      title: '교육상담아무말이나해봐아무말이나해봐아',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(1),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 9,
-      title: '교육상담아무말이나해봐아무말이나해봐아',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(1),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 10,
-      title: '교육상담아무말이나해봐아무말이',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(1),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 11,
-      title: '교육상담아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(0),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 12,
-      title: '교육상담아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(1),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 13,
-      title: '교육상담아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(0),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 14,
-      title: '교육상담아무말이나해봐아무말',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(0),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 15,
-      title: '교육상담아무말이나해봐',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(1),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 16,
-      title: '교육상담아무말이나해봐아무',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(1),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 17,
-      title: '교육상담아무말이나해봐아무말이나',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(1),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 18,
-      title: '교육상담아무말이나해봐아무말이나해봐',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(1),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 19,
-      title: '교육상담아무말이나해봐아무말이나',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(0),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 20,
-      title: '교육상담아무말이나해봐아무말이나해',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(0),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 21,
-      title: '교육상담아무말이나해봐아무말이나해',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(0),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 22,
-      title: '교육상담아무말이나해봐아무말이',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(0),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 23,
-      title: '교육상담아무말이나해봐아무말이나해봐아무말',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(1),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 24,
-      title: '교육상담아무말이나해봐아무말이나해',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(0),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-    {
-      no: 25,
-      title: '교육상담아무말이나해봐아무말',
-      writer: '가나다',
-      startDate: '2023-10-01',
-      endDate: '2023-10-25',
-      submit: disabledBtn('2023-10-25'),
-      submitState: changeButton(0),
-      submitTime: 'yyyy-mm-dd hh:mm:ss'
-    },
-  ];
+      no: i + 1,
+      title: h.hw_title,
+      writer: userList.find(u => u.uid == academics.find(a => a.academic_id == h.academic_id).uid).user_name,
+      startDate: h.hw_start_date,
+      endDate: h.hw_end_date,
+      submit: disabledBtn(h.hw_end_date),
+      submitState: changeButton(submit.find(s => s.homework_id == h.homework_id).submit_id),
+      submitTime: changeColor(h.hw_end_date, submit.find(s => s.homework_id == h.homework_id).submit_mod_date)
+    }
+  ));
+
+  
+  function changeColor(end, submitDate) {
+    const currentDate = new Date(submitDate);
+    const endDate = new Date(end);
+    const diff = (endDate.getTime() - currentDate.getTime()) / 1000 / 24 / 60 / 60;
+    if(diff < 0){
+      return(<P className="active">{submitDate}</P>)
+    } else {
+      return (<P>{submitDate}</P>)
+    }
+  };
 
   return<>
     <Container>

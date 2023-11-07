@@ -1,7 +1,8 @@
-import { Col, ProgressBar, Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import styled from "styled-components"
 import { Table } from "../../components/Table";
 import { Progress } from "../../components/Progress";
+import { academics, course_board, homeworks, subjects, userList } from "../../assets/TempData";
 
 const cBoard = [
   {
@@ -26,43 +27,18 @@ const cBoard = [
   }
 ];
 
-const cBoardItems = [
+const id = 1;
+const course = course_board.filter(c => c.cousre_id == id);
+
+const cBoardItems = course.map((c,i) => (
   {
-    no: 1,
-    title: '교육상담아무말이나해봐아무말이나해봐아무해봐아무말이나해봐',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '5'
-  },
-  {
-    no: 2,
-    title: '교육상담아무말이나무말이나해봐',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '10'
-  },
-  {
-    no: 3,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '8'
-  },
-  {
-    no: 4,
-    title: '교육상담아무말이나해봐아무말이나해무말이나해봐',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '4'
-  },
-  {
-    no: 5,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '484'
-  },
-];
+    no: i + 1,
+    title: c.c_post_title,
+    writer: userList.find(u => u.uid == academics.find(a => a.academic_id == c.academic_id).uid).user_name,
+    regDate: c.c_post_reg_date,
+    hits: c.c_post_hits
+  }
+));
 
 const hw = [
   {
@@ -74,8 +50,8 @@ const hw = [
     value: 'title'
   },
   {
-    text: '등록일',
-    value: 'regDate'
+    text: '시작일',
+    value: 'startDate'
   },
   {
     text: '종료일',
@@ -83,38 +59,19 @@ const hw = [
   },
 ];
 
-const hwItems = [
+const subject = subjects.filter(s => s.course_id == id);
+const homework = homeworks.filter(h => (subject.map((s) => s.subject_id == h.subject_id)))
+console.log(subject)
+console.log(homework)
+
+const hwItems = homework.map((h,i) => (
   {
-    subject: 1,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐아무말이나나해봐',
-    regDate: '가나다',
-    endDate: '2023-10-25',
-  },
-  {
-    subject: 2,
-    title: '교육상담아무말이나무말이나해봐',
-    regDate: '가나다',
-    endDate: '2023-10-25',
-  },
-  {
-    subject: 3,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    regDate: '가나다',
-    endDate: '2023-10-25',
-  },
-  {
-    subject: 4,
-    title: '교육상담아무말이나해봐아무말이나해무말이나해봐',
-    regDate: '가나다',
-    endDate: '2023-10-25',
-  },
-  {
-    subject: 5,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    regDate: '가나다',
-    endDate: '2023-10-25',
-  },
-];
+    subject: subject.find(s => s.subject_id == h.subject_id).subject_name,
+    title: h.hw_title,
+    startDate: h.hw_start_date,
+    endDate: h.hw_end_date,
+  }
+))
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -200,15 +157,13 @@ export function StudentHome() {
       </Row>
       <Box>
         <H2>내 진도관리</H2>
-        <Progress subjectName={'HTML'}/>
-        <Hr />
-        <Progress subjectName={'CSS'}/>
-        <Hr />
-        <Progress subjectName={'JS'}/>
-        <Hr />
-        <Progress subjectName={'DB'}/>
-        <Hr />
-        <Progress subjectName={'JAVA'}/>
+        {
+          subject.map((s) => (
+            <>
+              <Progress subjectName={s.subject_name} />
+            </>
+          ))
+        }
       </Box>
     </Container>
   </>

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { BsDownload } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
+import { academics, feedbacks, homeworks, submits, userList } from "../../assets/TempData";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -106,31 +107,35 @@ const SecondaryButton = styled.button`
 `;
 
 export function StudentHWReview() {
+  const id = 1; //homeworkid 받아오기
+  const studentid = 1;
+  const homework = homeworks.find(h => h.homework_id == id);
+  const submit = submits.filter(s => s.homework_id == id);
+  const student = submit.find(s => s.student_id == studentid);
+  const feedback = feedbacks.find(f => f.submit_id == student.submit_id);
   const navigate = useNavigate();
   return<>
     <Container>
       <TableBox>
-        <H2>피라미드 만들기</H2>
+        <H2>{homework.hw_title}</H2>
         <Hr />
-        <Content>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut ratione tenetur pariatur molestiae beatae corrupti illo, vel, amet delectus obcaecati aspernatur suscipit voluptas doloribus veniam magni assumenda impedit deserunt sint.
-        </Content>
+        <Content>{student.submit_content}</Content>
         <AttachedBox>
           <Attached><p className="fw-bold">첨부파일</p></Attached>
-          <div><A href="">파일.pdf<Icon><BsDownload /></Icon></A></div>
+          <div><A href={student.submit_fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
         </AttachedBox>
         <Hr />
         <CommentBox>
         <CommentWriter>
-          <Text>황기현 | 2023-09-01</Text>
+          <Text>{userList.find(u => u.uid == academics.find(a => a.academic_id == feedback.academic_id).uid).user_name} | {feedback.feedback_reg_date}</Text>
         </CommentWriter>
         <Comment>
-          <Text>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</Text>
+          <Text>{feedback.hw_comment}</Text>
         </Comment>
       </CommentBox>
       <Box>
-        <PrimaryButton onClick={()=>navigate("/lms/shw")}>다시 제출</PrimaryButton>
-        <SecondaryButton onClick={()=>navigate(-1)}>목록</SecondaryButton>
+        <PrimaryButton onClick={()=>navigate("/lms/shw")}><p>다시 제출</p></PrimaryButton>
+        <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
       </Box>
       </TableBox>
     </Container>

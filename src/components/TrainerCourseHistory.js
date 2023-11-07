@@ -89,7 +89,7 @@ export function TrainerCourseHistory() {
       startDate: course[i].start_date,
       endDate: course[i].end_date,
       state: changeReply(course[i].end_date),
-      link: <PrimaryButton onClick={()=>navigate('/lms/t/subject')}>바로가기</PrimaryButton>,
+      link: <PrimaryButton onClick={()=>navigate('/lms/t/subject')}><p>바로가기</p></PrimaryButton>,
     }
   ));
 
