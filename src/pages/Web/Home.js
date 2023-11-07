@@ -1,11 +1,11 @@
 import styled from "styled-components"
 import { Container, Row, Col } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
 import main from '../../assets/img/main.jpg'
 import { BiWon, BiSolidBusiness } from "react-icons/bi";
 import { BsFillMortarboardFill, BsChevronRight } from "react-icons/bs";
 import { Course } from "../../components/Course";
-
+import { courses } from "../../assets/TempData";
+import { useNavigate } from "react-router-dom";
 
 const Content = styled.div`
   height: 100%;
@@ -41,12 +41,13 @@ const Section = styled.div`
   }
 `;
 
-const Button = styled.button`
+const Button = styled.span`
   background-color: #7f97d9;
   padding: 10px 40px;
   border-radius: 50px;
   color: white;
   border: 0;
+  cursor: pointer;
   &:hover {
     background-color: white;
     color: #7f97d9;
@@ -88,6 +89,8 @@ const Icon = styled.div`
 `;
 
 export function Home() {
+  const navigate = useNavigate();
+
   return <>
     <Section id="hero">
       <div className="container position-relative">
@@ -102,7 +105,7 @@ export function Home() {
             <Content className="text-center" style={{backgroundColor: "#5f7dcf"}}>
               <H2 className="text-center mb-0" style={{color: "white"}}>GOOD CHOICE</H2>
               <H3 className="text-center" style={{color: "white"}}>Y&Y ACADEMY</H3>
-              <Button to="" >입학 상담<BsChevronRight className="mb-1"/></Button>
+              <Button onClick={() => navigate("/admission")}>입학 상담 <BsChevronRight className="mb-1"/></Button>
             </Content>
           </Col>
         </Col>
@@ -134,15 +137,13 @@ export function Home() {
       </Row>
       <H1 className="mt-5">모집중인 과정</H1>
       <Row>
-        <Col>
-          <Course />
-        </Col>
-        <Col>
-          <Course />
-        </Col>
-        <Col>
-          <Course />
-        </Col>
+        {
+          courses.map((c, i) => (
+            <Col>
+              <Course id={c.course_id} />
+            </Col>
+          ))
+        }
       </Row>
     </Container>
   </>

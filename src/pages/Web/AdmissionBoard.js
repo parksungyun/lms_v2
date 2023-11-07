@@ -6,6 +6,7 @@ import { Table } from "../../components/Table";
 import '../../styles/table.css';
 import { Pagination } from "../../components/Pagination";
 import { Navigate, useNavigate } from "react-router-dom";
+import { admission_answers, admission_questions } from "../../assets/TempData";
 
 const Container = styled.div`
   margin: 2rem 15rem;
@@ -60,11 +61,6 @@ const BadgeSecondary = styled.span`
   border-radius: 5px;
 `;
 
-function changeReply(reply) {
-  if(reply === 1) return(<BadgeSuccess>답변완료</BadgeSuccess>);
-  else return(<BadgeSecondary>답변대기</BadgeSecondary>);
-}
-
 const headers = [
   {
     text: 'No.',
@@ -88,184 +84,6 @@ const headers = [
   }
 ];
 
-const items = [
-  {
-    no: 1,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(1)
-  },
-  {
-    no: 2,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(1)
-  },
-  {
-    no: 3,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(1)
-  },
-  {
-    no: 4,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐아무말이나해봐아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(1)
-  },
-  {
-    no: 5,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(1)
-  },
-  {
-    no: 6,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(1)
-  },
-  {
-    no: 7,
-    title: '교육상담아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(1)
-  },
-  {
-    no: 8,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(1)
-  },
-  {
-    no: 9,
-    title: '교육상담아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-  {
-    no: 10,
-    title: '교육상담',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-  {
-    no: 11,
-    title: '교육상담',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-  {
-    no: 12,
-    title: '교육상담',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-  {
-    no: 13,
-    title: '교육상담',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-  {
-    no: 14,
-    title: '교육상담',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-  {
-    no: 15,
-    title: '교육상담',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-  {
-    no: 16,
-    title: '교육상담',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-  {
-    no: 17,
-    title: '교육상담',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-  {
-    no: 18,
-    title: '교육상담',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-  {
-    no: 19,
-    title: '교육상담',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-  {
-    no: 20,
-    title: '교육상담',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-  {
-    no: 21,
-    title: '교육상담',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-  {
-    no: 22,
-    title: '교육상담',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-  {
-    no: 23,
-    title: '교육상담',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-  {
-    no: 24,
-    title: '교육상담',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-  {
-    no: 25,
-    title: '교육상담',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    reply: changeReply(0)
-  },
-];
-
 export function AdmissionBoard() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -273,6 +91,26 @@ export function AdmissionBoard() {
   const limit = 10;
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
+
+  const items = admission_questions.map((a, i) => (
+    {
+      no: i + 1,
+      title: a.a_question_title,
+      writer: a.writer_name,
+      writeDate: a.a_question_reg_date,
+      reply: changeReply(checkReply(a.a_question_id)),
+    }
+  ))
+
+  function checkReply(id) {
+    if(admission_answers.find((a) => a.a_question_id == id)) return 1;
+    else return 0;
+  }
+
+  function changeReply(reply) {
+    if(reply === 1) return(<BadgeSuccess>답변완료</BadgeSuccess>);
+    else return(<BadgeSecondary>답변대기</BadgeSecondary>);
+  }
 
   const postsData = (posts) => {
     if(posts) {
@@ -301,9 +139,9 @@ export function AdmissionBoard() {
             <option key="writer" value="writer">작성자</option>
           </select>
           <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={onSearch}>검색</button>
+          <button onClick={onSearch}><p>검색</p></button>
         </SearchBox>
-        <PrimaryButton onClick={() => navigate("write")}>작성</PrimaryButton>
+        <PrimaryButton onClick={() => navigate("write")}><p>작성</p></PrimaryButton>
       </ButtonBox>
       <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
     </Container>

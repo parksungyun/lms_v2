@@ -1,12 +1,12 @@
 import styled from "styled-components"
 import WebWrapper from "../../components/WebWrapper"
 import { Course } from '../../components/Course'
+import { courses } from "../../assets/TempData";
 
 const Container = styled.div`
   margin: 2rem 13rem;
   padding-bottom: 3rem;
 `;
-
 
 const CardWrapper = styled.div`
   display: flex;
@@ -20,12 +20,11 @@ export function Courses() {
     <WebWrapper pageName={"과정 안내"} />
     <Container>
       <CardWrapper>
-        <Course />
-        <Course />
-        <Course />
-        <Course />
-        <Course />
-        <Course />
+        {
+          courses.map((c) => (
+            <Course id={c.course_id} />
+          ))
+        }
       </CardWrapper>
     </Container>
   </>

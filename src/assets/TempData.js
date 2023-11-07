@@ -4,6 +4,7 @@ import m1 from "./img/managers/m1.jpg";
 import m2 from "./img/managers/m2.jpg";
 import m3 from "./img/managers/m3.jpg";
 import c1 from "./img/class/class1.png";
+import c3 from "./img/class/class3.png";
 import c5 from "./img/class/class5.png";
 import html from "./video/html.mp4";
 import css from "./video/css.mp4";
@@ -276,7 +277,7 @@ export const courses = [
     course_info: "실무 프로젝트 운영<br>훈련생 별 프로젝트 팀을 구성하여 기획자, Front-end, Back-end 개발자의 역할을 고루 맡을 수 있습니다.<br>관련된 참여기업에서 퍼실리테이터 및 멘토를 지원하며 과업 수행을 보조합니다.<br>효과적인 학습을 위해 페어코딩, 코드리뷰 기법을 적용하여 프로젝트를 진행합니다.",
     course_photo: c5,
     available: 1,
-  }, 
+  },
 ]
 
 export const subjects = [
@@ -963,7 +964,7 @@ export const admission_questions = [
   {
     a_question_id: 1,
     post_pw: "rkskek",
-    writher_name: "유세나",
+    writer_name: "유세나",
     age: 22,
     phone: "010-1111-1234",
     final_school: "고졸",
@@ -976,7 +977,7 @@ export const admission_questions = [
   {
     a_question_id: 2,
     post_pw: "rkskek",
-    writher_name: "안영태",
+    writer_name: "안영태",
     age: 29,
     phone: "010-1111-1234",
     final_school: "대졸",
@@ -989,7 +990,7 @@ export const admission_questions = [
   {
     a_question_id: 3,
     post_pw: "rkskek",
-    writher_name: "진소이",
+    writer_name: "진소이",
     age: 28,
     phone: "010-1111-1234",
     final_school: "대졸",
@@ -1002,7 +1003,7 @@ export const admission_questions = [
   {
     a_question_id: 4,
     post_pw: "rkskek",
-    writher_name: "송승현",
+    writer_name: "송승현",
     age: 27,
     phone: "010-1111-1234",
     final_school: "고졸",
@@ -1015,7 +1016,7 @@ export const admission_questions = [
   {
     a_question_id: 5,
     post_pw: "rkskek",
-    writher_name: "송승연",
+    writer_name: "송승연",
     age: 28,
     phone: "010-1111-1234",
     final_school: "대졸",
@@ -1028,7 +1029,7 @@ export const admission_questions = [
   {
     a_question_id: 6,
     post_pw: "rkskek",
-    writher_name: "박세나",
+    writer_name: "박세나",
     age: 25,
     phone: "010-1111-1234",
     final_school: "초대졸",
@@ -1041,7 +1042,7 @@ export const admission_questions = [
   {
     a_question_id: 7,
     post_pw: "rkskek",
-    writher_name: "박두나",
+    writer_name: "박두나",
     age: 26,
     phone: "010-1111-1234",
     final_school: "대졸",
@@ -1054,7 +1055,7 @@ export const admission_questions = [
   {
     a_question_id: 8,
     post_pw: "rkskek",
-    writher_name: "왕경태",
+    writer_name: "왕경태",
     age: 30,
     phone: "010-1111-1234",
     final_school: "대졸",
@@ -1067,7 +1068,7 @@ export const admission_questions = [
   {
     a_question_id: 9,
     post_pw: "rkskek",
-    writher_name: "안경대",
+    writer_name: "안경대",
     age: 28,
     phone: "010-1111-1234",
     final_school: "대졸",
@@ -1080,7 +1081,7 @@ export const admission_questions = [
   {
     a_question_id: 10,
     post_pw: "rkskek",
-    writher_name: "박소이",
+    writer_name: "박소이",
     age: 30,
     phone: "010-1111-1234",
     final_school: "대졸",
@@ -1093,7 +1094,7 @@ export const admission_questions = [
   {
     a_question_id: 11,
     post_pw: "rkskek",
-    writher_name: "박승현",
+    writer_name: "박승현",
     age: 21,
     phone: "010-1111-1234",
     final_school: "고졸",

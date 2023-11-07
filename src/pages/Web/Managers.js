@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import WebWrapper from "../../components/WebWrapper"
 import { MemberCard } from "../../components/MemberCard";
+import { academics } from "../../assets/TempData";
 
 const Container = styled.div`
   margin: 2rem 15rem;
@@ -19,18 +20,11 @@ export function Managers() {
     <WebWrapper pageName={"행정팀 소개"} />
     <Container>
       <CardWrapper>
-        <MemberCard />
-        <MemberCard />
-        <MemberCard />
-        <MemberCard />
-        <MemberCard />
-        <MemberCard />
-        <MemberCard />
-        <MemberCard />
-        <MemberCard />
-        <MemberCard />
-        <MemberCard />
-        <MemberCard />
+        {
+          academics.map((a) => (
+            a.dept == 0 && <MemberCard id={a.academic_id} />
+          ))
+        }
       </CardWrapper>
     </Container>
   </>

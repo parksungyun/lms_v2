@@ -1,6 +1,7 @@
 import img from "../assets/img/trainers/t2.jpg"
 import styled from "styled-components";
 import { BsTelephoneFill } from "react-icons/bs";
+import { academics, userList, trainerPosition, managerPosition } from "../assets/TempData";
 
 const Card = styled.div`
   display: flex;
@@ -55,15 +56,21 @@ const Call = styled.p`
   }
 `;
 
-export function MemberCard({key}) {
+export function MemberCard({id}) {
+  const member = academics.find((a) => a.academic_id == id);
+  const user = userList.find((u) => u.uid == member.uid);
+
   return <>
     <Card>
-      <Img src={img} alt="key" />
+      <Img src={member.user_photo} alt={user.user_name} />
       <Content>
-        <Name>최서희</Name>
-        <Position>Web Development</Position>
-        <Remark>최대한 즐겁게 공부하고 최대한 빨리 취업할 수 있도록 최선을 다해 강의하겠습니다.</Remark>
-        <Call><BsTelephoneFill className="callIcon" />042-222-1234</Call>
+        <Name>{user.user_name}</Name>
+        <Position>{
+          member.dept == 0 ? (managerPosition.find(m => m.position_id == member.position)).position_name
+          : (trainerPosition.find(t => t.position_id == member.position)).position_name
+        }</Position>
+        <Remark>{member.remark}</Remark>
+        <Call><BsTelephoneFill className="callIcon" />{user.user_phone}</Call>
       </Content>
     </Card>
   </>
