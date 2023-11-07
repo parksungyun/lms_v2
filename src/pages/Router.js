@@ -84,9 +84,9 @@ export function Router() {
             <Route path="/" element={<WebNavbar />}>
               <Route index element={<Home />} />
               <Route path="about" element={<About />} />
-              <Route path="courses" element={<ParentsWrapper />}>
-                <Route index element={<Courses />} />
-                <Route path="detail" element={<CourseDetail />} />
+              <Route path="courses" element={<Courses />} />
+              <Route path="course" element={<ParentsWrapper />}>
+                <Route path=":id" element={<CourseDetail />} />
               </Route>
               <Route path="trainers" element={<Trainers />} />
               <Route path="managers" element={<Managers />} />

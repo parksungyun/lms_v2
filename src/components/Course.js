@@ -1,13 +1,13 @@
-import clas from '../assets/img/class/class1.png'
-import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { BiUser } from "react-icons/bi";
 import styled from "styled-components";
+import { courses } from '../assets/TempData';
 
 const Container = styled.div`
   display: flex;
   align-items: stretch;
   margin-bottom: 20px;
-`
+`;
 
 const Box = styled.div`
   border-radius: 5px;
@@ -17,35 +17,22 @@ const Box = styled.div`
 const Img = styled.img`
   width: 100%;
   height: auto;
-`
+  cursor: pointer;
+`;
 
 const Content = styled.div`
   padding: 15px;
-`
+`;
 
-const PositionWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-`
-
-const Position = styled.div`
-  font-size: 14px;
-  background: #5f7dcf;
-  padding: 7px 14px;
-  color: #fff;
-  margin: 0;
-`
-
-const StyledNavLink = styled(NavLink)`
+const Title = styled.p`
   font-weight: 700;
   font-size: 20px;
   color: #37423b;
   &:hover{
     color: #5f7dcf;
   }
-`
+  cursor: pointer;
+`;
 
 const Capacity = styled.div`
   margin-top: 10px;
@@ -56,18 +43,22 @@ const Capacity = styled.div`
   align-items: center;
 `
 
-export function Course() {
+export function Course({id}) {
+  const course = courses.find((c) => c.course_id == id);
+  const navigate = useNavigate();
+
+  function onDetail(id) {
+    navigate(`/course/${id}`);
+  }
+
   return <>
     <Container>
       <Box>
-        <Img src={clas} alt="..."/>
+        <Img src={course.course_photo} alt={course.course_name} onClick={() => onDetail(course.course_id)}/>
         <Content>
-          <PositionWrapper>
-            <Position>Design</Position>
-          </PositionWrapper>
-          <StyledNavLink to="">디지털콘텐츠 UI/UX 디자인</StyledNavLink>
+          <Title onClick={() => onDetail(course.course_id)}>{course.course_name}</Title>
           <Capacity>
-            <BiUser />&nbsp;30
+            <BiUser />&nbsp;{course.capacity}
           </Capacity>
         </Content>
       </Box>

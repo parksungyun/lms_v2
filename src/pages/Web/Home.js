@@ -1,10 +1,10 @@
 import styled from "styled-components"
 import { Container, Row, Col } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
 import main from '../../assets/img/main.jpg'
 import { BiWon, BiSolidBusiness } from "react-icons/bi";
 import { BsFillMortarboardFill, BsChevronRight } from "react-icons/bs";
 import { Course } from "../../components/Course";
+import { courses } from "../../assets/TempData";
 
 
 const Content = styled.div`
@@ -134,15 +134,13 @@ export function Home() {
       </Row>
       <H1 className="mt-5">모집중인 과정</H1>
       <Row>
-        <Col>
-          <Course />
-        </Col>
-        <Col>
-          <Course />
-        </Col>
-        <Col>
-          <Course />
-        </Col>
+        {
+          courses.map((c, i) => (
+            <Col>
+              <Course id={c.course_id} />
+            </Col>
+          ))
+        }
       </Row>
     </Container>
   </>

@@ -4,6 +4,7 @@ import m1 from "./img/managers/m1.jpg";
 import m2 from "./img/managers/m2.jpg";
 import m3 from "./img/managers/m3.jpg";
 import c1 from "./img/class/class1.png";
+import c3 from "./img/class/class3.png";
 import c5 from "./img/class/class5.png";
 import html from "./video/html.mp4";
 import css from "./video/css.mp4";
@@ -276,7 +277,7 @@ export const courses = [
     course_info: "실무 프로젝트 운영<br>훈련생 별 프로젝트 팀을 구성하여 기획자, Front-end, Back-end 개발자의 역할을 고루 맡을 수 있습니다.<br>관련된 참여기업에서 퍼실리테이터 및 멘토를 지원하며 과업 수행을 보조합니다.<br>효과적인 학습을 위해 페어코딩, 코드리뷰 기법을 적용하여 프로젝트를 진행합니다.",
     course_photo: c5,
     available: 1,
-  }, 
+  },
 ]
 
 export const subjects = [
