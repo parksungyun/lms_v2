@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_subject_table.css';
+import { courses, students, studies, userList } from "../../assets/TempData";
 
 const headers = [
   {
@@ -29,208 +30,22 @@ const headers = [
   },
 ];
 
-const items = [
+const id = 1;
+
+const course = courses.find(c => c.course_id == id);
+const student = students.filter(u => u.course_id == course.course_id);
+console.log(student);
+console.log(course);
+const items = courses.map((d,i)=>(
   {
-    no: 1,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
+    no: i+1,
+    name: userList.find(u => u.uid == student[i].uid).user_name,
+    birth: userList.find(u => u.uid == student[i].uid).user_birth,
+    phone: userList.find(u => u.uid == student[i].uid).user_phone,
+    lectureCount: studies.filter(s => s.student_id == student[i].student_id).filter(i => i.is_study == 2).length,
     HWCount: '3'
-  },
-  {
-    no: 2,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 3,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 4,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 5,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 6,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 7,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 8,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 9,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 10,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 11,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 12,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 13,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 14,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 15,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 16,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 17,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 18,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 19,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 20,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 21,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 22,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 23,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 24,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-  {
-    no: 25,
-    name: '가나다',
-    birth: '1999.01.01',
-    phone: '010-1234-5678',
-    lectureCount: '3',
-    HWCount: '3'
-  },
-];
+  }
+));
 
 const Container = styled.div`
   padding: 1.5rem 2rem;

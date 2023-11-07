@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { academics, userList, department, trainerPosition } from "../assets/TempData";
 import styled from "styled-components";
 import { useState } from "react";
@@ -64,7 +64,7 @@ const Select = styled.select`
 
 export function TrainerDetailForm() {
   const navigate = useNavigate();
-  const  id  = 2;
+  const id = 2;
   const academic = academics.find((a) => a.academic_id == id);
   const user = userList.find((u) => u.uid == academic.uid);
   const dept = department.find((d) => d.dept_id == academic.dept);

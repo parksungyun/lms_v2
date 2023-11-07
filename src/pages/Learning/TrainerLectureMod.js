@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { academics, lectures, userList } from "../../assets/TempData";
+import { lectures } from "../../assets/TempData";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -110,9 +110,9 @@ export function TrainerLectureMod() {
           <P>강의 자료</P>
           <Input type="file" name="lecture_file" id="lecture_file" value={lecture_file} onChange={(e)=>setLecture_file(e.target.value)}/>
           <Box>
-            <PrimaryButton type="submit">수정</PrimaryButton>
-            <DangerButton>삭제</DangerButton>
-            <SecondaryButton onClick={() => navigate(-1)}>목록</SecondaryButton>
+            <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
+            <DangerButton><p>삭제</p></DangerButton>
+            <SecondaryButton onClick={() => navigate(-1)}><p>목록</p></SecondaryButton>
           </Box>
         </form>
       </TableBox>

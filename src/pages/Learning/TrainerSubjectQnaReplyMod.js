@@ -147,9 +147,9 @@ export function TrainerSubjectQnaReplyMod() {
       <form action="" method="POST" >
         <ContentInput type="text" name="qna_reply" id="qna_reply" value={qna_reply}  onChange={(e)=>setQna_reply(e.target.value)}/>
         <Box className="btn">
-          <PrimaryButton type="submit">답변 수정</PrimaryButton>
-          <DangerButton>답변 삭제</DangerButton>
-          <SecondaryButton onClick={()=>navigate(-1)}>목록</SecondaryButton>
+          <PrimaryButton type="submit"><p>답변 수정</p></PrimaryButton>
+          <DangerButton><p>답변 삭제</p></DangerButton>
+          <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
         </Box>
       </form>
       </TableBox>

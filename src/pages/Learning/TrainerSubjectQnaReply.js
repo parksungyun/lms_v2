@@ -169,14 +169,14 @@ export function TrainerSubjectQnaReply() {
         </Comment>
       </CommentBox>
       <Box className="btn">
-        <PrimaryButton onClick={()=>navigate("/lms/t")}>답변 수정</PrimaryButton>
-        <SecondaryButton onClick={()=>navigate(-1)}>목록</SecondaryButton>
+        <PrimaryButton onClick={()=>navigate("/lms/t")}><p>답변 수정</p></PrimaryButton>
+        <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
       </Box>
       <form action="" method="POST" >
         <ContentInput type="text" name="qna_reply" id="qna_reply" value={qna_reply}  onChange={(e)=>setQna_reply(e.target.value)} placeholder="내용을 입력해주세요"/>
         <Box className="btn">
-          <PrimaryButton type="submit">답변 등록</PrimaryButton>
-          <SecondaryButton onClick={()=>navigate(-1)}>목록</SecondaryButton>
+          <PrimaryButton type="submit"><p>답변 등록</p></PrimaryButton>
+          <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
         </Box>
       </form>
       </TableBox>
