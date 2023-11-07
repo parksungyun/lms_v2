@@ -94,7 +94,9 @@ export function Router() {
               <Route path="admission" element={<ParentsWrapper />}>
                 <Route index element={<AdmissionBoard />} />
                 <Route path="write" element={<AdmissionWrite />} />
-                <Route path="post" element={<AdmissionPost />} />
+                <Route path="post" element={<ParentsWrapper />}>
+                  <Route path=":id" element={<AdmissionPost />} />
+                </Route>
               </Route>
               <Route path="contact" element={<Contact />} />
               <Route path="login" element={<Login />} />
