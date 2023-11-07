@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Table } from "../../components/Table";
 import { Col, Row } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import { Progress } from "../../components/Progress";
+import { academics, feedbacks, homeworks, students, subject_answers, subject_board, subject_questions, submits, userList } from "../../assets/TempData";
 
 const BadgePrimary = styled.span`
   background-color: #5f7dcf;
@@ -54,49 +54,19 @@ const studentSBoard = [
   }
 ];
 
-const SSBItems = [
-  {
-    no: 1,
-    title: '교육상담아무말이나해봐아무',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '5'
-  },
-  {
-    no: 2,
-    title: '교육상담아무말이나무말이나해봐',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '10'
-  },
-  {
-    no: 3,
-    title: '교육상담아무말이나해봐아무',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '8'
-  },
-  {
-    no: 4,
-    title: '교육상담아무말이',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '4'
-  },
-  {
-    no: 5,
-    title: '교육상담아무말이나',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    hits: '484'
-  },
-];
+const subjectid = 1;
+const board = subject_board.filter(s => s.subject_id == subjectid);
 
-function changeReplyHW(reply) {
-  if(reply === 2) return(<BadgePrimary>제출완료</BadgePrimary>);
-  else if (reply == 1) return (<BadgeSuccess>채점완료</BadgeSuccess>);
-  else return(<BadgeSecondary>제출대기</BadgeSecondary>);
-};
+const SSBItems = board.map((b,i) => (
+  {
+    no: i + 1,
+    title: b.s_post_title,
+    writer: userList.find(u => u.uid == academics.find(a => a.academic_id == b.academic_id).uid).user_name,
+    regDate: b.s_post_reg_date,
+    hits: b.s_post_hits
+  }
+));
+
 
 const studentSHW = [
   {
@@ -121,43 +91,27 @@ const studentSHW = [
   }
 ];
 
-const SSHWItems = [
+function changeReplyHW(reply) {
+  if(feedbacks.find(f => f.submit_id == submit.find(s => s.homework_id == reply).submit_id)) return(<BadgeSuccess>채점완료</BadgeSuccess>);
+  else if (submit.find(s => s.homework_id == reply)) return (<BadgePrimary>제출완료</BadgePrimary>);
+  else return(<BadgeSecondary>제출대기</BadgeSecondary>);
+};
+
+const studentid =1;
+
+const submit = submits.filter(s => s.student_id == studentid);
+
+const homework = homeworks.filter(h => h.subject_id == subjectid);
+
+const SSHWItems = homework.map((h,i) => (
   {
-    no: 1,
-    title: '교육상담아무말이나해봐아무',
-    startDate: '2023-10-10',
-    endDate: '2023-10-25',
-    submit: changeReplyHW(2)
-  },
-  {
-    no: 2,
-    title: '교육상담아무말이나무말이나해봐',
-    startDate: '2023-10-10',
-    endDate: '2023-10-25',
-    submit: changeReplyHW(0)
-  },
-  {
-    no: 3,
-    title: '교육상담아무말이나해봐아무',
-    startDate: '2023-10-10',
-    endDate: '2023-10-25',
-    submit: changeReplyHW(0)
-  },
-  {
-    no: 4,
-    title: '교육상담아무말이',
-    startDate: '2023-10-10',
-    endDate: '2023-10-25',
-    submit: changeReplyHW(0)
-  },
-  {
-    no: 5,
-    title: '교육상담아무말이나',
-    startDate: '2023-10-10',
-    endDate: '2023-10-25',
-    submit: changeReplyHW(1)
-  },
-];
+    no: i + 1,
+    title: h.hw_title,
+    startDate: h.hw_start_date,
+    endDate: h.hw_end_date,
+    submit: changeReplyHW(h.homework_id)
+  }
+));
 
 function changeReplyLec(reply) {
   if(reply === 2) return(<BadgePrimary>학습중</BadgePrimary>);
@@ -198,11 +152,6 @@ const SSLECItems = [
   },
 ];
 
-function changeReplyQNA(reply) {
-  if(reply === 1) return(<BadgeSuccess>답변완료</BadgeSuccess>);
-  else return(<BadgeSecondary>답변대기</BadgeSecondary>);
-};
-
 const studentSQNA = [
   {
     text: 'No.',
@@ -226,43 +175,22 @@ const studentSQNA = [
   }
 ];
 
-const SSQNAItems = [
+function changeReplyQNA(reply) {
+  if(subject_answers.find(s => s.s_question_id == reply)) return(<BadgeSuccess>답변완료</BadgeSuccess>);
+  else return(<BadgeSecondary>답변대기</BadgeSecondary>);
+};
+
+const question = subject_questions.filter(s => s.subject_id == subjectid);
+
+const SSQNAItems = question.map((q,i) => (
   {
-    no: 1,
-    title: '교육상담아무말이나해봐아무',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    state: changeReplyQNA(0)
-  },
-  {
-    no: 2,
-    title: '교육상담아무말이나해봐아무',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    state: changeReplyQNA(1)
-  },
-  {
-    no: 3,
-    title: '교육상담아무말이나해봐아무',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    state: changeReplyQNA(1)
-  },
-  {
-    no: 4,
-    title: '교육상담아무말이나해봐아무',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    state: changeReplyQNA(0)
-  },
-  {
-    no: 5,
-    title: '교육상담아무말이나해봐아무',
-    writer: '가나다',
-    regDate: '2023-10-25',
-    state: changeReplyQNA(0)
-  },
-];
+    no: i + 1,
+    title: q.s_question_title,
+    writer: userList.find(u => u.uid == students.find(s => s.student_id == q.student_id).uid).user_name,
+    regDate: q.s_question_reg_date,
+    state: changeReplyQNA(q.s_question_id)
+  }
+));
 
 const Container = styled.div`
   padding: 1.5rem 2rem;

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
 import { Pagination } from "../../components/Pagination";
+import { course_answers, course_questions, courses } from "../../assets/TempData";
 
 const BadgeSuccess = styled.span`
   background-color: green;
@@ -74,7 +75,7 @@ export function StudentCourseQna() {
   };
 
   function changeReply(reply) {
-    if(reply === 1) {return(<BadgeSuccess>답변완료</BadgeSuccess>)}
+    if(course_answers.find(c => c.c_question_id == reply)) {return(<BadgeSuccess>답변완료</BadgeSuccess>)}
     else {return(<BadgeSecondary>답변대기</BadgeSecondary>)};
   };
 
@@ -96,159 +97,22 @@ export function StudentCourseQna() {
       value: 'replyState'
     },
   ];
+
+  const id = 1;
+  const studentid = 1;
+  const course = course_questions.filter(c => c.course_id == id);
+  const question = course.filter((s) => s.student_id == studentid);
+  console.log(question);
+  console.log(course.filter((s) => s.student_id == studentid));
   
-  const items = [
+  const items = question.map((q,i) => (
     {
-      no: 1,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(1)
-    },
-    {
-      no: 2,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(0)
-    },
-    {
-      no: 3,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(1)
-    },
-    {
-      no: 4,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(1)
-    },
-    {
-      no: 5,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(0)
-    },
-    {
-      no: 6,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(0)
-    },
-    {
-      no: 7,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(1)
-    },
-    {
-      no: 8,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(0)
-    },
-    {
-      no: 9,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(1)
-    },
-    {
-      no: 10,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(1)
-    },
-    {
-      no: 11,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(1)
-    },
-    {
-      no: 12,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(0)
-    },
-    {
-      no: 13,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(0)
-    },
-    {
-      no: 14,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(1)
-    },
-    {
-      no: 15,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(1)
-    },
-    {
-      no: 16,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(1)
-    },
-    {
-      no: 17,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(0)
-    },
-    {
-      no: 18,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(0)
-    },
-    {
-      no: 19,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(1)
-    },
-    {
-      no: 20,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(0)
-    },
-    {
-      no: 21,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(0)
-    },
-    {
-      no: 22,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(1)
-    },
-    {
-      no: 23,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(0)
-    },
-    {
-      no: 24,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(0)
-    },
-    {
-      no: 25,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      regDate: '2023-10-01',
-      replyState: changeReply(1)
-    },
-  ];
+      no: i + 1,
+      title: q.c_question_title,
+      regDate: q.c_question_reg_date,
+      replyState: changeReply(q.c_question_id)
+    }
+  ));
 
   return<>
     <Container>
@@ -261,7 +125,7 @@ export function StudentCourseQna() {
         />
       </TableBox>
       <ButtonBox>
-        <PrimaryButton onClick={() => navigate("/lms/s")}>1:1 문의하기</PrimaryButton>
+        <PrimaryButton onClick={() => navigate("/lms/s")}><p>1:1 문의하기</p></PrimaryButton>
       </ButtonBox>
       <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
     </Container>

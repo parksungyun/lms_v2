@@ -4,26 +4,7 @@ import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
 import { Pagination } from "../../components/Pagination";
-
-const SuccessButton = styled.button`
-  background-color: green;
-  padding: 2px 15px;
-  color: white;
-  font-weight: 500;
-  font-size: 0.8rem;
-  border-radius: 5px;
-  border: 0;
-`;
-
-const SecondaryButton = styled.button`
-  background-color: gray;
-  padding: 2px 15px;
-  color: white;
-  font-weight: 500;
-  font-size: 0.8rem;
-  border-radius: 5px;
-  border: 0;
-`;
+import { academics, lectures, userList } from "../../assets/TempData";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -111,183 +92,17 @@ export function StudentLecture() {
     },
   ];
   
-  const items = [
+  const id = 1; //subjectid 임의로 받아옴
+  const lecture = lectures.filter(l => l.subject_id == id);
+  const items = lecture.map((l,i) => (
     {
-      no: 1,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 2,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 3,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 4,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 5,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 6,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 7,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 8,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 9,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 10,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 11,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 12,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 13,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 14,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 15,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 16,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 17,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 18,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 19,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 20,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 21,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 22,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 23,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 24,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-    {
-      no: 25,
-      title: '교육상담아무말이나해봐아무말이나해봐아무',
-      writer: '가나다',
-      regDate: '2023-10-01',
-      Hits: '10'
-    },
-  ];
+      no: i + 1,
+      title: l.lecture_title,
+      writer: userList.find(u => u.uid == academics.find(a => a.academic_id == l.academic_id).uid).user_name,
+      regDate: l.lecture_reg_date,
+      Hits: l.lecture_hits
+    }
+  ));
 
   return<>
     <Container>
@@ -307,7 +122,7 @@ export function StudentLecture() {
             <option key="writer" value="writer">작성자</option>
           </select>
           <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={onSearch}>검색</button>
+          <button onClick={onSearch}><p>검색</p></button>
         </SearchBox>
       </ButtonBox>
       <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
