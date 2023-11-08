@@ -48,7 +48,7 @@ export function Error() {
         <Danger>PAGE NOT FOUND</Danger>
         <Text>We're sorry, the requested page couldn't be found. If you followed a link, please contact us.</Text>
       </Content>
-      <Button onClick={() => navigate("/")}>Back to Homepage</Button>
+      <Button onClick={() => navigate("/")}><p>Back to Homepage</p></Button>
     </Container>
   </>
 }

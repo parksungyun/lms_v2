@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components"
 
@@ -90,13 +90,13 @@ export function Login() {
           <label>비밀번호</label>
           <input type="password" id="userPw" value={userPw} onChange={(e) => setUserPw(e.target.value)} />
         </Div>
-        <Button type="submit">로그인</Button>
+        <Button type="submit"><p>로그인</p></Button>
         <FindWrapper>
-          <Find onClick={() => navigate("/register")}>회원가입</Find>
+          <Find onClick={() => navigate("/register")}><p>회원가입</p></Find>
           <Divider>|</Divider>
-          <Find onClick={() => navigate("/findID")}>아이디 찾기</Find>
+          <Find onClick={() => navigate("/findID")}><p>아이디 찾기</p></Find>
           <Divider>|</Divider>
-          <Find onClick={() => navigate("/findPW")}>비밀번호 찾기</Find>
+          <Find onClick={() => navigate("/findPW")}><p>비밀번호 찾기</p></Find>
         </FindWrapper>
       </form>
     </Container>

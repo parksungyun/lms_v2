@@ -65,7 +65,7 @@ export function AdmissionPwCheck() {
         <Div>
           <input type="password" id="userPw" value={postPw} onChange={(e) => setPostPw(e.target.value)} />
         </Div>
-        <Button type="submit">확인</Button>
+        <Button type="submit"><p>확인</p></Button>
       </form>
     </Container>
   </>

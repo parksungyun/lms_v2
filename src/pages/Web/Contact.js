@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { Container, Col, Row } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 import WebWrapper from "../../components/WebWrapper"
 import { BsGeoAltFill, BsTelephoneFill } from "react-icons/bs";
 

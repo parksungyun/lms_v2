@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import WebWrapper from "../../components/WebWrapper"
 import { MemberCard } from "../../components/MemberCard";
-import { academics, userList } from "../../assets/TempData";
+import { academics } from "../../assets/TempData";
 
 const Container = styled.div`
   margin: 2rem 15rem;

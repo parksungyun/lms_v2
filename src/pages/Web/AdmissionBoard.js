@@ -1,11 +1,10 @@
 import styled from "styled-components"
 import WebWrapper from "../../components/WebWrapper"
 import { useState } from "react";
-import { useEffect } from "react";
 import { Table } from "../../components/Table";
 import '../../styles/table.css';
 import { Pagination } from "../../components/Pagination";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { admission_answers, admission_questions } from "../../assets/TempData";
 
 const Container = styled.div`

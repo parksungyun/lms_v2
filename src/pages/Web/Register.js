@@ -137,10 +137,10 @@ export function Register() {
             <input type="checkbox" id="agree" value={agree} onChange={(e) => setAgree(e.target.value)} />
             <label>개인정보 수집 및 이용에 동의합니다.</label>
         </Divider>
-        <Button type="submit">가입하기</Button>
+        <Button type="submit"><p>가입하기</p></Button>
         <FindWrapper>
           이미 계정이 있으십니까?
-          <Find onClick={() => navigate("/login")}>로그인</Find>
+          <Find onClick={() => navigate("/login")}><p>로그인</p></Find>
         </FindWrapper>
       </form>
     </Container>

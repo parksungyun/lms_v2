@@ -87,6 +87,8 @@ export function AdmissionWrite(){
   const [content, setContent] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
+
   function onSubmit(e) {
     e.preventDefault();
   }
@@ -150,8 +152,8 @@ export function AdmissionWrite(){
           <ContentInput id="content" value={content} onChange={(e) => setContent(e.target.value)} />
         </Div>
         <ButtonBox>
-          <PrimaryButton>등록</PrimaryButton>
-          <SecondaryButton>목록</SecondaryButton>
+          <PrimaryButton><p>등록</p></PrimaryButton>
+          <SecondaryButton onClick={()=>navigate("/admission")}><p>목록</p></SecondaryButton>
         </ButtonBox>
       </form>
     </Container>

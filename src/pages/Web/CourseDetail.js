@@ -1,6 +1,5 @@
 import styled from "styled-components"
 import WebWrapper from "../../components/WebWrapper"
-import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { courses, subjects } from "../../assets/TempData";
 

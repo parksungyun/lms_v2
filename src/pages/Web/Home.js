@@ -1,6 +1,5 @@
 import styled from "styled-components"
 import { Container, Row, Col } from "react-bootstrap";
-import main from '../../assets/img/main.jpg'
 import { BiWon, BiSolidBusiness } from "react-icons/bi";
 import { BsFillMortarboardFill, BsChevronRight } from "react-icons/bs";
 import { Course } from "../../components/Course";
@@ -41,7 +40,7 @@ const Section = styled.div`
   }
 `;
 
-const Button = styled.span`
+const Button = styled.button`
   background-color: #7f97d9;
   padding: 10px 40px;
   border-radius: 50px;
@@ -105,7 +104,7 @@ export function Home() {
             <Content className="text-center" style={{backgroundColor: "#5f7dcf"}}>
               <H2 className="text-center mb-0" style={{color: "white"}}>GOOD CHOICE</H2>
               <H3 className="text-center" style={{color: "white"}}>Y&Y ACADEMY</H3>
-              <Button onClick={() => navigate("/admission")}>입학 상담 <BsChevronRight className="mb-1"/></Button>
+              <Button onClick={() => navigate("/admission")}><p>입학 상담 <BsChevronRight className="mb-1"/></p></Button>
             </Content>
           </Col>
         </Col>
