@@ -129,7 +129,7 @@ const ContentInput = styled.textarea`
   resize: none;
 `;
 
-export function ManagerSubjectQnaReply() {
+export function ManagerCourseQnaReply() {
   const navigate = useNavigate();
   const [qna_reply, setQna_reply] = useState();
   return<>
