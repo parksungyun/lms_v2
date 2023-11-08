@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { BsDownload } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { academics, feedbacks, homeworks, submits, userList } from "../../assets/TempData";
 
 const Container = styled.div`
@@ -107,13 +107,14 @@ const SecondaryButton = styled.button`
 `;
 
 export function StudentHWReview() {
-  const id = 1; //homeworkid 받아오기
-  const studentid = 1;
-  const homework = homeworks.find(h => h.homework_id == id);
-  const submit = submits.filter(s => s.homework_id == id);
+  const studentid = 1; // 임의 student_id
+  const { state } = useLocation();
+  const navigate = useNavigate();
+  const homework = homeworks.find(h => h.homework_id == state);
+  const submit = submits.filter(s => s.homework_id == state);
   const student = submit.find(s => s.student_id == studentid);
   const feedback = feedbacks.find(f => f.submit_id == student.submit_id);
-  const navigate = useNavigate();
+
   return<>
     <Container>
       <TableBox>
@@ -134,8 +135,8 @@ export function StudentHWReview() {
         </Comment>
       </CommentBox>
       <Box>
-        <PrimaryButton onClick={()=>navigate("/lms/shw")}><p>다시 제출</p></PrimaryButton>
-        <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
+        <PrimaryButton onClick={()=>navigate(`/lms/s/homework/${homework.homework_id}/submit`, { state: homework.homework_id })}><p>다시 제출</p></PrimaryButton>
+        <SecondaryButton onClick={()=>navigate("/lms/s/homework")}><p>목록</p></SecondaryButton>
       </Box>
       </TableBox>
     </Container>

@@ -14,8 +14,10 @@ const PrimaryButton = styled.button`
   font-size: 0.8rem;
   border-radius: 5px;
   border: 0;
+  cursor: pointer;
   &.disabled{
     background-color: gray;
+    cursor: default;
   }
 `;
 
@@ -27,6 +29,7 @@ const SuccessButton = styled.button`
   font-size: 0.8rem;
   border-radius: 5px;
   border: 0;
+  cursor: pointer;
 `;
 
 const SecondaryButton = styled.button`
@@ -37,6 +40,7 @@ const SecondaryButton = styled.button`
   font-size: 0.8rem;
   border-radius: 5px;
   border: 0;
+  cursor: pointer;
 `;
 
 const Container = styled.div`
@@ -108,15 +112,10 @@ export function StudentHW() {
   const limit = 10;
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
-
-  const newDate = new Date();
-  const date =  newDate.getTime();
-
   const id = 1; // subject 값 받아오기
   const studentid = 1; // studentid 값 받아오기
   const homework = homeworks.filter(h => h.subject_id == id);
   const submit = submits.filter(s => s.student_id == studentid);
-  console.log(homework)
   
   const items = homework.map((h, i) => (
     {
@@ -125,7 +124,7 @@ export function StudentHW() {
       writer: userList.find(u => u.uid == academics.find(a => a.academic_id == h.academic_id).uid).user_name,
       startDate: h.hw_start_date,
       endDate: h.hw_end_date,
-      submit: disabledBtn(h.hw_end_date),
+      submit: disabledBtn(h.hw_end_date, h.homework_id),
       submitState: changeButton(submit.find(s => s.homework_id == h.homework_id).submit_id),
       submitTime: changeColor(h.hw_end_date, submit.find(s => s.homework_id == h.homework_id).submit_mod_date)
     }
@@ -142,22 +141,25 @@ export function StudentHW() {
     }
   };
 
-  function disabledBtn(end) {
-    end = new Date(end);
-    const endDate = end.getTime();
-    if(date < endDate){
-      return(<PrimaryButton onClick={()=>navigate(`/lms/s/homework/${id}/submit`)}><p>제출하기</p></PrimaryButton>)
+  function disabledBtn(end, id) {
+    const currentDate = new Date().getTime();
+    const endDate = new Date(end).getTime();
+    if(currentDate < endDate){
+      return(<PrimaryButton onClick={()=>navigate(`/lms/s/homework/${id}/submit`, { state: id })}><p>제출하기</p></PrimaryButton>)
     } else {
       return (<PrimaryButton className="disabled" disabled><p>제출하기</p></PrimaryButton>)
     }
   };
 
-  function changeButton(button) {
-    if(feedbacks.find(f => f.submit_id == button)) {return(<SuccessButton onClick={()=>navigate('/lms/s')}><p>결과확인</p></SuccessButton>)}
-    else {return(<SecondaryButton onClick={()=>navigate('/lms/s')}><p>제출확인</p></SecondaryButton>)};
+  function changeButton(id) {
+    if(feedbacks.find(f => f.submit_id == id)) {
+      return(<SuccessButton onClick={() => navigate(`/lms/s/homework/${id}/feedback`, { state: id })}><p>결과확인</p></SuccessButton>)
+    }
+    else {
+      return(<SecondaryButton onClick={() => navigate(`/lms/s/homework/${id}/feedback`, { state: id })}><p>제출확인</p></SecondaryButton>)
+    }
   };
 
-  
   function changeColor(end, submitDate) {
     const currentDate = new Date(submitDate);
     const endDate = new Date(end);

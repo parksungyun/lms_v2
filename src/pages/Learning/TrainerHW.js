@@ -153,10 +153,10 @@ export function TrainerHW() {
     const feedback = feedbacks.filter((h) => submit.find((s) => s.submit_id == h.submit_id));
 
     if(submit.length == feedback.length) {
-      return(<SuccessButton onClick={()=>navigate(`${id}/feedback`)}>채점완료</SuccessButton>)
+      return(<SuccessButton onClick={()=>navigate(`${id}/feedback`, { state : id })}><p>채점완료</p></SuccessButton>)
     }
     else {
-      return(<SecondaryButton onClick={()=>navigate(`${id}/feedback`)}>채점하기</SecondaryButton>)
+      return(<SecondaryButton onClick={()=>navigate(`${id}/feedback`, { state : id })}><p>채점하기</p></SecondaryButton>)
     };
   };
 
