@@ -135,15 +135,18 @@ export function Router() {
                   <Route path="sboard" element={<StudentSubjectBoard />}>
                     <Route path=":id" element={<BoardPost />} />
                   </Route>
-                  <Route path="homework" element={<StudentHW />}>
+                  <Route path="homework" element={<ParentsWrapper />}>
+                    <Route index element={<StudentHW />} />
                     <Route path="submit" element={<StudentHWSubmit />} />
                     <Route path="review" element={<StudentHWReview />} />
                     <Route path=":id" element={<HWPost />} />
                   </Route>
-                  <Route path="lecture" element={<StudentLecture />}>
+                  <Route path="lecture" element={<ParentsWrapper />}>
+                    <Route index element={<StudentLecture />} />
                     <Route path=":id" element={<LecturePost />} />
                   </Route>
-                  <Route path="sqna" element={<StudentSubjectQna />}>
+                  <Route path="sqna" element={<ParentsWrapper />}>
+                    <Route index element={<StudentSubjectQna />} />
                     <Route path="write" element={<StudentSubjectQnaWrite />} />
                     <Route path="mod" element={<StudentSubjectQnaMod />} />
                     <Route path=":id" element={<StudentSubjectQnaPost />} />
@@ -154,7 +157,8 @@ export function Router() {
                       <Route path=":id" element={<SubjectReview />} />
                     </Route>
                   </Route>
-                  <Route path="cqna" element={<StudentCourseQna />}>
+                  <Route path="cqna" element={<ParentsWrapper />}>
+                    <Route index element={<StudentCourseQna />} />
                     <Route path="write" element={<StudentCourseQnaWrite />} />
                     <Route path="mod" element={<StudentCourseQnaMod />} />
                     <Route path=":id" element={<StudentCourseQnaPost />} />
@@ -163,17 +167,20 @@ export function Router() {
                 <Route path="t" element={<ParentsWrapper />}>
                   <Route index element={<TrainerHome />} />
                   <Route path="subject" element={<TrainerSubject />} />
-                  <Route path="lecture" element={<TrainerLecture />}>
+                  <Route path="lecture" element={<ParentsWrapper />}>
+                    <Route index element={<TrainerLecture />} />
                     <Route path="write" element={<TrainerLectureWrite />} />
                     <Route path="mod" element={<TrainerLectureMod />} />
                     <Route path=":id" element={<LecturePost />} />
                   </Route>
-                  <Route path="board" element={<TrainerSubjectBoard />}>
+                  <Route path="board" element={<ParentsWrapper />}>
+                    <Route index element={<TrainerSubjectBoard />} />
                     <Route path="write" element={<BoardPostWrite />} />
                     <Route path="mod" element={<BoardPostMod />} />
                     <Route path=":id" element={<BoardPost />} />
                   </Route>
-                  <Route path="homework" element={<TrainerHW />}>
+                  <Route path="homework" element={<ParentsWrapper />}>
+                    <Route index element={<TrainerHW />} />
                     <Route path="write" element={<HWPostWrite />} />
                     <Route path="mod" element={<HWPostMod />} />
                     <Route path=":id" element={<HWPost />} />
