@@ -32,7 +32,7 @@ const Box = styled.div`
   align-items: center;
   text-align: center;
   margin: 10px 0;
-  &.btn{
+  &.button{
     justify-content: center;
     margin-top: 1rem;
     margin-bottom: 0;
@@ -170,7 +170,7 @@ export function LecturePost() {
         <Attached><p className="fw-bold">첨부파일</p></Attached>
         <div><A href="">파일.pdf<Icon><BsDownload /></Icon></A></div>
       </AttachedBox>
-      <Box className="btn">
+      <Box className="button">
         {isStudent == 1 ? null : <PrimaryButton className="button"><p>수정</p></PrimaryButton>}
         <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
       </Box>

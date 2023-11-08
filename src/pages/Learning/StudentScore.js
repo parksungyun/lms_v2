@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { courses, students, userList, subjects, academics, studies, attendances, feedbacks, submits, homeworks, lectures } from "../../assets/TempData";
 import { Table } from "../../components/Table";
-import { useState } from "react";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -10,14 +9,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
-`;
-
-const PrimaryButton = styled.button`
-  border: 0;
-  border-radius: 5px;
-  background-color: #5f7dcf;
-  padding: 0.8rem 1.4rem;
-  color: white;
 `;
 
 const Box = styled.div`

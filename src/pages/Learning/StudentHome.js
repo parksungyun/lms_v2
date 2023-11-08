@@ -2,7 +2,7 @@ import { Col, Row } from "react-bootstrap";
 import styled from "styled-components"
 import { Table } from "../../components/Table";
 import { Progress } from "../../components/Progress";
-import { academics, course_board, homeworks, subjects, userList } from "../../assets/TempData";
+import { academics, course_board, courses, homeworks, subjects, userList } from "../../assets/TempData";
 
 const cBoard = [
   {
@@ -27,7 +27,7 @@ const cBoard = [
   }
 ];
 
-const id = 1;
+const id = 1;  //courseid 값 임의로 받아옴
 const course = course_board.filter(c => c.cousre_id == id);
 
 const cBoardItems = course.map((c,i) => (
@@ -60,9 +60,7 @@ const hw = [
 ];
 
 const subject = subjects.filter(s => s.course_id == id);
-const homework = homeworks.filter(h => (subject.map((s) => s.subject_id == h.subject_id)))
-console.log(subject)
-console.log(homework)
+const homework = homeworks.filter(h => (subject.map((s) => s.subject_id == h.subject_id)));
 
 const hwItems = homework.map((h,i) => (
   {
@@ -112,11 +110,6 @@ const Content = styled.div`
   align-items: center;
 `;
 
-const Hr = styled.hr`
-  border: 0;
-  margin: 0;
-`;
-
 const Box = styled.div`
   background-color: white;
   border-radius: 1rem;
@@ -129,7 +122,7 @@ export function StudentHome() {
       <Content>
         <div>
           <H2 className='title'>내 클래스</H2>
-          <p>클래스 이름 받아오기</p>
+          <p>{courses.find(c => c.course_id == id).course_name}</p>
         </div>
         <PrimaryButton>출석 체크</PrimaryButton>
       </Content>

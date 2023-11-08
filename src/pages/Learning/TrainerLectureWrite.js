@@ -98,7 +98,7 @@ export function TrainerLectureWrite() {
           <Input type="file" name="lecture_file" id="lecture_file" value={lecture_file} onChange={(e)=>setLecture_file(e.target.value)}/>
           <Box>
             <PrimaryButton type="submit"><p>등록</p></PrimaryButton>
-            <SecondaryButton onClick={() => navigate(-1)}><p>목록</p></SecondaryButton>
+            <SecondaryButton onClick={() => navigate("/lms/t/lecture")}><p>목록</p></SecondaryButton>
           </Box>
         </form>
       </TableBox>
