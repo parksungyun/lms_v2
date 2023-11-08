@@ -66,7 +66,42 @@ const P = styled.p`
   &.active{
     color: red;
   }
-`
+`;
+
+const headers = [
+  {
+    text: 'No.',
+    value: 'no'
+  },
+  {
+    text: '제목',
+    value: 'title'
+  },
+  {
+    text: '작성자',
+    value: 'writer'
+  },
+  {
+    text: '시작일',
+    value: 'startDate'
+  },
+  {
+    text: '종료일',
+    value: 'endDate'
+  },
+  {
+    text: '제출',
+    value: 'submit'
+  },
+  {
+    text: '제출현황',
+    value: 'submitState'
+  },
+  {
+    text: '제출시간',
+    value: 'submitTime'
+  },
+];
 
 export function StudentHW() {
   const [page, setPage] = useState(1);
@@ -74,67 +109,8 @@ export function StudentHW() {
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
 
-  const postsData = (posts) => {
-    if(posts) {
-      let result = posts.slice(offset, offset + limit);
-      return result;
-    }
-  };
-
-  function changeButton(button) {
-    if(feedbacks.find(f => f.submit_id == button)) {return(<SuccessButton onClick={()=>navigate('/lms/s')}><p>결과확인</p></SuccessButton>)}
-    else {return(<SecondaryButton onClick={()=>navigate('/lms/s')}><p>제출확인</p></SecondaryButton>)};
-  };
-
   const newDate = new Date();
   const date =  newDate.getTime();
-
-  console.log(date);
-
-  function disabledBtn(end) {
-    end = new Date(end);
-    const endDate = end.getTime();
-    if(date < endDate){
-      return(<PrimaryButton onClick={()=>navigate('/lms/s')}><p>제출하기</p></PrimaryButton>)
-    } else {
-      return (<PrimaryButton className="disabled" disabled><p>제출하기</p></PrimaryButton>)
-    }
-  };
-  
-  const headers = [
-    {
-      text: 'No.',
-      value: 'no'
-    },
-    {
-      text: '제목',
-      value: 'title'
-    },
-    {
-      text: '작성자',
-      value: 'writer'
-    },
-    {
-      text: '시작일',
-      value: 'startDate'
-    },
-    {
-      text: '종료일',
-      value: 'endDate'
-    },
-    {
-      text: '제출',
-      value: 'submit'
-    },
-    {
-      text: '제출상황',
-      value: 'submitState'
-    },
-    {
-      text: '제출시간',
-      value: 'submitTime'
-    },
-  ];
 
   const id = 1; // subject 값 받아오기
   const studentid = 1; // studentid 값 받아오기
@@ -142,10 +118,10 @@ export function StudentHW() {
   const submit = submits.filter(s => s.student_id == studentid);
   console.log(homework)
   
-  const items = homework.map((h,i) => (
+  const items = homework.map((h, i) => (
     {
       no: i + 1,
-      title: h.hw_title,
+      title: titleLink(h.homework_id, h.hw_title),
       writer: userList.find(u => u.uid == academics.find(a => a.academic_id == h.academic_id).uid).user_name,
       startDate: h.hw_start_date,
       endDate: h.hw_end_date,
@@ -154,6 +130,32 @@ export function StudentHW() {
       submitTime: changeColor(h.hw_end_date, submit.find(s => s.homework_id == h.homework_id).submit_mod_date)
     }
   ));
+
+  function titleLink(id, title) {
+    return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
+  }
+
+  const postsData = (posts) => {
+    if(posts) {
+      let result = posts.slice(offset, offset + limit);
+      return result;
+    }
+  };
+
+  function disabledBtn(end) {
+    end = new Date(end);
+    const endDate = end.getTime();
+    if(date < endDate){
+      return(<PrimaryButton onClick={()=>navigate(`/lms/s/homework/${id}/submit`)}><p>제출하기</p></PrimaryButton>)
+    } else {
+      return (<PrimaryButton className="disabled" disabled><p>제출하기</p></PrimaryButton>)
+    }
+  };
+
+  function changeButton(button) {
+    if(feedbacks.find(f => f.submit_id == button)) {return(<SuccessButton onClick={()=>navigate('/lms/s')}><p>결과확인</p></SuccessButton>)}
+    else {return(<SecondaryButton onClick={()=>navigate('/lms/s')}><p>제출확인</p></SecondaryButton>)};
+  };
 
   
   function changeColor(end, submitDate) {

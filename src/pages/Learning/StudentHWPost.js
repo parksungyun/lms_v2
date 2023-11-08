@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { BsFillEyeFill } from "react-icons/bs";
 import { BsDownload } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { academics, homeworks, userList } from "../../assets/TempData";
 
 const TableBox = styled.div`
   padding: 2rem;
@@ -24,7 +25,7 @@ const Box = styled.div`
   align-items: center;
   text-align: center;
   margin: 10px 0;
-  &.btn{
+  &.button{
     justify-content: center;
     margin-top: 1rem;
     margin-bottom: 0;
@@ -110,39 +111,36 @@ const BadgePrimary = styled.span`
   border-radius: 5px;
 `;
 
-export function HWPost({userState}) {
+export function StudentHWPost() {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const post = homeworks.find((h) => h.homework_id == id);
+  const trainer = userList.find((u) => u.uid == (academics.find((a) => a.academic_id == post.academic_id).uid));
+
   return<>
     <TableBox>
-      <H2>피라미드 만들기</H2>
+      <H2>{post.hw_title}</H2>
       <Box>
-        <P>안경태</P>
+        <P>{trainer.user_name}</P>
         <P>|</P>
-        <P>2023-09-01</P>
-        <P>|</P>
-        <IconBox>
-          <BsFillEyeFill />
-          <P>3</P>
-        </IconBox>
+        <P>{post.hw_reg_date}</P>
       </Box>
       <Hr />
       <Content>
         <Box className="Badge">
           <BadgePrimary>시작일</BadgePrimary>
-          <P>2023-09-05</P>
+          <P>{post.hw_start_date}</P>
           <BadgeDanger>종료일</BadgeDanger>
-          <P>2023-09-10</P>
+          <P>{post.hw_end_date}</P>
         </Box>
-        안녕하세요, Y&Y아카데미학원입니다. <br />
-        2023년 8월에 개강하는 과목을 안내해 드립니다.
+        {post.hw_content}
       </Content>
       <AttachedBox>
         <Attached><p className="fw-bold">첨부파일</p></Attached>
-        <div><A href="">파일.pdf<Icon><BsDownload /></Icon></A></div>
+        <div><A href={post.hw_fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
       </AttachedBox>
-      <Box className="btn">
-        {userState = 0 ? null : <PrimaryButton>수정</PrimaryButton>}
-        <SecondaryButton onClick={()=>navigate(-1)}>목록</SecondaryButton>
+      <Box className="button">
+        <SecondaryButton onClick={()=>navigate("/lms/s/homework")}><p>목록</p></SecondaryButton>
       </Box>
     </TableBox>
   </>

@@ -163,9 +163,9 @@ export function StudentSubjectQna() {
             <option key="writer" value="writer">작성자</option>
           </select>
           <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={onSearch}>검색</button>
+          <button onClick={onSearch}><p>검색</p></button>
         </SearchBox>
-        <PrimaryButton onClick={() => navigate("/lms/s/sqna/write")}><p>작성</p></PrimaryButton>
+        <PrimaryButton onClick={() => navigate("write")}><p>작성</p></PrimaryButton>
       </ButtonBox>
       <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
     </Container>

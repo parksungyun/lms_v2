@@ -1,6 +1,10 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { admission_answers, admission_questions, courses } from "../../assets/TempData";
+import { useEffect } from "react";
+import { ReplyWrite } from "../../components/ReplyWrite";
+import { ReplyPost } from "../../components/ReplyPost";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -118,73 +122,63 @@ const Hr = styled.hr`
 `;
 
 export function ManagerAdmissionBoardPost(){
-  const [admission_reply, setAdmission_reply] = useState();
+  const { id } = useParams();
+  const [isReply, setIsReply] = useState();
   const navigate = useNavigate();
-  const isAnswer = 1;
+  const question = admission_questions.find((q) => q.a_question_id == id);
+  let answer;
+  if(admission_answers.find(data => data.a_question_id == question.a_question_id)){
+    answer = admission_answers.find(data => data.a_question_id == question.a_question_id);
+  }
+
+  useEffect(() => {
+    if(answer) setIsReply(1);
+  }, [answer])
+
   return<>
     <Container>
       <TableBox>
-        <H2>교육 상담[title]</H2>
+        <H2>{question.a_question_title}</H2>
         <Box>
-          <P>안경태</P>
+          <P>{question.writer_name}</P>
           <P>|</P>
-          <P>2023-09-01</P>
+          <P>{question.a_question_reg_date}</P>
         </Box>
         <Hr />
         <Table>
           <tr>
-            <th>작성일</th>
-            <td>2023-08-30</td>
-          </tr>
-          <tr>
             <th>이름</th>
-            <td>유세나</td>
+            <td>{question.writer_name}</td>
           </tr>
           <tr>
             <th>나이</th>
-            <td>22</td>
+            <td>{question.age}</td>
           </tr>
           <tr>
             <th>연락처</th>
-            <td>010-1234-5678</td>
+            <td>{question.phone}</td>
           </tr>
           <tr>
             <th>최종학력</th>
-            <td>고졸</td>
+            <td>{question.final_school}</td>
           </tr>
           <tr>
             <th>수강희망과목</th>
-            <td>메타버스 에듀테크 개발</td>
-          </tr>
-          <tr>
-            <th>제목</th>
-            <td>교육상담</td>
+            <td>{courses.find((c) => c.course_id == question.desired_course).course_name}</td>
           </tr>
           <ContentRow>
             <th>내용</th>
-            <td className="overflow-y-scroll">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusantium voluptas a ex velit animi quod nihil, voluptatibus perferendis sunt accusamus hic quasi neque doloremque illum consequuntur ullam. Corporis deleniti harum corrupti? At rerum, cum similique facere corrupti dolor ipsum impedit quae, numquam perferendis quasi pariatur reprehenderit provident ea deleniti quam expedita quis magni autem fugiat illum? Maiores magnam, laudantium totam nobis porro dignissimos minus, earum fugiat amet impedit id ab excepturi eaque sequi facere quo reiciendis natus nesciunt expedita dolores tenetur. Ipsa vitae laudantium magnam temporibus sunt aliquam corporis voluptatem esse beatae pariatur, ratione facilis minima nihil. Quis, doloremque dolorem?</td>
+            <td className="overflow-y-scroll">{question.a_question_content}</td>
           </ContentRow>
         </Table>
         {
-          isAnswer == 1 ? 
-          <><CommentBox>
-            <CommentWriter>
-              <Text>황기현 | 2023-09-01</Text>
-            </CommentWriter>
-            <Comment>
-              <Text>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</Text>
-            </Comment>
-          </CommentBox>
-          <ButtonBox>
-            <PrimaryButton>답변 수정</PrimaryButton>
-            <SecondaryButton>목록</SecondaryButton>
-          </ButtonBox></> : <form action="" method="POST" >
-            <ContentInput type="text" name="admission_reply" id="admission_reply" value={admission_reply}  onChange={(e)=>setAdmission_reply(e.target.value)} placeholder="내용을 입력해주세요"/>
+          isReply == 1 ? <>
+            <ReplyPost id={question.a_question_id} type={"a"} />
             <ButtonBox>
-              <PrimaryButton type="submit">답변 등록</PrimaryButton>
-              <SecondaryButton onClick={()=>navigate(-1)}>목록</SecondaryButton>
+              <PrimaryButton onClick={() => setIsReply(0)}><p>수정</p></PrimaryButton>
+              <SecondaryButton onClick={() => navigate("/lms/m/admission")}><p>목록</p></SecondaryButton>
             </ButtonBox>
-          </form>
+          </> : <ReplyWrite id={question.a_question_id} type={"m/admission"} />
         }
       </TableBox>
     </Container>
