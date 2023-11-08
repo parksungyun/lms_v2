@@ -1,19 +1,8 @@
-import { Col, ProgressBar, Row } from "react-bootstrap";
 import styled from "styled-components"
 import { RiUserSettingsLine } from "react-icons/ri";
 import { LmsHomeButtonWrapper } from "../../components/LmsHomeButtonWrapper";
 import { courses } from "../../assets/TempData";
 import { useNavigate } from "react-router-dom";
-
-const id = 1; // academicid 임의로 받아옴
-const course = courses.filter(c => c.academic_id == id)
-
-const courseNumber = course.map((c) => (
-  {
-    name: c.course_name,
-    id: c.course_id,
-  }
-));
 
 const items = courseNumber.map((c)=>(
   [
@@ -79,6 +68,16 @@ const ButtonBox = styled.div`
 
 export function ManagerHome() {
   const navigate = useNavigate();
+  const id = 1; // academicid 임의로 받아옴
+  const course = courses.filter(c => c.academic_id == id)
+
+  const courseNumber = course.map((c) => (
+    {
+      name: c.course_name,
+      id: c.course_id,
+    }
+  ));
+  
   return <>
     <Container>
       <Content>
