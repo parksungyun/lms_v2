@@ -115,9 +115,7 @@ export function Router() {
               <Route path="admission" element={<ParentsWrapper />}>
                 <Route index element={<AdmissionBoard />} />
                 <Route path="write" element={<AdmissionWrite />} />
-                <Route path="post" element={<ParentsWrapper />}>
-                  <Route path=":id" element={<AdmissionPost />} />
-                </Route>
+                <Route path=":id" element={<AdmissionPost />} />
               </Route>
               <Route path="contact" element={<Contact />} />
               <Route path="login" element={<Login />} />
@@ -131,34 +129,24 @@ export function Router() {
                 <Route path="s" element={<ParentsWrapper />}>
                   <Route index element={<StudentHome />} />
                   <Route path="cboard" element={<StudentCourseBoard />}>
-                    <Route path="post" element={<ParentsWrapper />}>
-                      <Route path=":id" element={<BoardPost />} />
-                    </Route>
+                    <Route path=":id" element={<BoardPost />} />
                   </Route>
                   <Route path="subject" element={<StudentSubject />} />
                   <Route path="sboard" element={<StudentSubjectBoard />}>
-                    <Route path="post" element={<ParentsWrapper />}>
-                      <Route path=":id" element={<BoardPost />} />
-                    </Route>
+                    <Route path=":id" element={<BoardPost />} />
                   </Route>
                   <Route path="homework" element={<StudentHW />}>
                     <Route path="submit" element={<StudentHWSubmit />} />
                     <Route path="review" element={<StudentHWReview />} />
-                    <Route path="post" element={<ParentsWrapper />}>
-                      <Route path=":id" element={<HWPost />} />
-                    </Route>
+                    <Route path=":id" element={<HWPost />} />
                   </Route>
                   <Route path="lecture" element={<StudentLecture />}>
-                    <Route path="post" element={<ParentsWrapper />}>
-                      <Route path=":id" element={<LecturePost />} />
-                    </Route>
+                    <Route path=":id" element={<LecturePost />} />
                   </Route>
                   <Route path="sqna" element={<StudentSubjectQna />}>
                     <Route path="write" element={<StudentSubjectQnaWrite />} />
                     <Route path="mod" element={<StudentSubjectQnaMod />} />
-                    <Route path="post" element={<ParentsWrapper />}>
-                      <Route path=":id" element={<StudentSubjectQnaPost />} />
-                    </Route>
+                    <Route path=":id" element={<StudentSubjectQnaPost />} />
                   </Route>
                   <Route path="mypage" element={<ParentsWrapper />}>
                     <Route index element={<StudentMypage />} />
@@ -169,9 +157,7 @@ export function Router() {
                   <Route path="cqna" element={<StudentCourseQna />}>
                     <Route path="write" element={<StudentCourseQnaWrite />} />
                     <Route path="mod" element={<StudentCourseQnaMod />} />
-                    <Route path="post" element={<ParentsWrapper />}>
-                      <Route path=":id" element={<StudentCourseQnaPost />} />
-                    </Route>
+                    <Route path=":id" element={<StudentCourseQnaPost />} />
                   </Route>
                 </Route>
                 <Route path="t" element={<ParentsWrapper />}>
@@ -180,29 +166,21 @@ export function Router() {
                   <Route path="lecture" element={<TrainerLecture />}>
                     <Route path="write" element={<TrainerLectureWrite />} />
                     <Route path="mod" element={<TrainerLectureMod />} />
-                    <Route path="post" element={<ParentsWrapper />}>
-                      <Route path=":id" element={<LecturePost />} />
-                    </Route>
+                    <Route path=":id" element={<LecturePost />} />
                   </Route>
                   <Route path="board" element={<TrainerSubjectBoard />}>
                     <Route path="write" element={<BoardPostWrite />} />
                     <Route path="mod" element={<BoardPostMod />} />
-                    <Route path="post" element={<ParentsWrapper />}>
-                      <Route path=":id" element={<BoardPost />} />
-                    </Route>
+                    <Route path=":id" element={<BoardPost />} />
                   </Route>
                   <Route path="homework" element={<TrainerHW />}>
                     <Route path="write" element={<HWPostWrite />} />
                     <Route path="mod" element={<HWPostMod />} />
-                    <Route path="post" element={<ParentsWrapper />}>
-                      <Route path=":id" element={<HWPost />} />
-                    </Route>
+                    <Route path=":id" element={<HWPost />} />
                   </Route>
                   <Route path="qna" element={<TrainerSubjectQna />}>
-                    <Route path="post" element={<ParentsWrapper />}>
-                      <Route path=":id" element={<TrainerSubjectQnaReply />}>
-                        <Route path="mod" element={<TrainerSubjectQnaReplyMod />} />
-                      </Route>
+                    <Route path=":id" element={<TrainerSubjectQnaReply />}>
+                      <Route path="mod" element={<TrainerSubjectQnaReplyMod />} />
                     </Route>
                   </Route>
                   <Route path="mypage" element={<TrainerMypage />} />
@@ -219,15 +197,11 @@ export function Router() {
                   <Route path="board" element={<ManagerCourseBoard />}>
                     <Route path="write" element={<BoardPostWrite />} />
                     <Route path="mod" element={<BoardPostMod />} />
-                    <Route path="post" element={<ParentsWrapper />}>
-                      <Route path=":id" element={<BoardPost />} />
-                    </Route>
+                    <Route path=":id" element={<BoardPost />} />
                   </Route>
                   <Route path="qna" element={<ManagerCourseQna />}>
-                    <Route path="post" element={<ParentsWrapper />}>
-                      <Route path=":id" element={<ManagerCourseQnaReply />}>
-                        <Route path="mod" element={<ManagerCourseQnaReplyMod />} />
-                      </Route>
+                    <Route path=":id" element={<ManagerCourseQnaReply />}>
+                      <Route path="mod" element={<ManagerCourseQnaReplyMod />} />
                     </Route>
                   </Route>
                   <Route path="review" element={<ManagerCourseReview />} />

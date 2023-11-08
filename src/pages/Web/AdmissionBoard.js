@@ -103,7 +103,7 @@ export function AdmissionBoard() {
   ))
 
   function titleLink(id, title) {
-    return (<p onClick={() => navigate(`post/${id}`)}>{title}</p>);
+    return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
   }
 
   function checkReply(id) {
