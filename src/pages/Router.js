@@ -200,8 +200,7 @@ export function Router() {
                   </Route>
                   <Route path="qna" element={<TrainerSubjectQna />}>
                     <Route path="post" element={<ParentsWrapper />}>
-                      <Route path=":id" element={<ParentsWrapper />}>
-                        <Route index element={<TrainerSubjectQnaReply />} />
+                      <Route path=":id" element={<TrainerSubjectQnaReply />}>
                         <Route path="mod" element={<TrainerSubjectQnaReplyMod />} />
                       </Route>
                     </Route>
@@ -226,8 +225,7 @@ export function Router() {
                   </Route>
                   <Route path="qna" element={<ManagerCourseQna />}>
                     <Route path="post" element={<ParentsWrapper />}>
-                      <Route path=":id" element={<ParentsWrapper />}>
-                        <Route index element={<ManagerCourseQnaReply />} />
+                      <Route path=":id" element={<ManagerCourseQnaReply />}>
                         <Route path="mod" element={<ManagerCourseQnaReplyMod />} />
                       </Route>
                     </Route>
