@@ -1,8 +1,12 @@
 import styled from "styled-components";
 import { BsDownload } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BsFillEyeFill } from "react-icons/bs";
 import { useState } from "react";
+import { course_answers, course_questions, students, userList } from "../../assets/TempData";
+import { ReplyPost } from "../../components/ReplyPost";
+import { ReplyWrite } from "../../components/ReplyWrite";
+import { useEffect } from "react";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -129,51 +133,47 @@ const ContentInput = styled.textarea`
   resize: none;
 `;
 
-export function ManagerCourseQnaReply() {
+export function ManagerCourseQnaPost() {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [qna_reply, setQna_reply] = useState();
+  const [isReply, setIsReply] = useState();
+  const question = course_questions.find((q) => q.c_question_id == id);
+  const student = userList.find(data => data.uid == (students.find(d => d.student_id == question.student_id)).uid);
+  let answer;
+
+  if(course_answers.find(data => data.c_question_id == question.c_question_id)){
+    answer = course_answers.find(data => data.c_question_id == question.c_question_id);
+  }
+
+  useEffect(() => {
+    if(answer) setIsReply(1);
+  }, [answer])
+
   return<>
     <Container>
       <TableBox>
-        <H2>반복문을 잘 모르겠어요</H2>
+        <H2>{question.c_question_title}</H2>
         <Box>
-          <P>안경태</P>
+          <P>{student.user_name}</P>
           <P>|</P>
-          <P>2023-09-01</P>
-          <P>|</P>
-          <IconBox>
-            <BsFillEyeFill />
-            <P>3</P>
-          </IconBox>
+          <P>{question.c_question_reg_date}</P>
         </Box>
         <Hr />
-        <Content>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut ratione tenetur pariatur molestiae beatae corrupti illo, vel, amet delectus obcaecati aspernatur suscipit voluptas doloribus veniam magni assumenda impedit deserunt sint.
-        </Content>
+        <Content>{question.c_question_content}</Content>
         <AttachedBox>
           <Attached><p className="fw-bold">첨부파일</p></Attached>
-          <div><A href="">파일.pdf<Icon><BsDownload /></Icon></A></div>
+          <div><A href={question.c_question_fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
         </AttachedBox>
         <Hr />
-        <CommentBox>
-        <CommentWriter>
-          <Text>황기현 | 2023-09-01</Text>
-        </CommentWriter>
-        <Comment>
-          <Text>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</Text>
-        </Comment>
-      </CommentBox>
-      <Box className="btn">
-        <PrimaryButton onClick={()=>navigate("/lms/t")}>답변 수정</PrimaryButton>
-        <SecondaryButton onClick={()=>navigate(-1)}>목록</SecondaryButton>
-      </Box>
-      <form action="" method="POST" >
-        <ContentInput type="text" name="qna_reply" id="qna_reply" value={qna_reply}  onChange={(e)=>setQna_reply(e.target.value)} placeholder="내용을 입력해주세요"/>
-        <Box className="btn">
-          <PrimaryButton type="submit">답변 등록</PrimaryButton>
-          <SecondaryButton onClick={()=>navigate(-1)}>목록</SecondaryButton>
-        </Box>
-      </form>
+        {
+          isReply == 1 ? <>
+            <ReplyPost id={question.c_question_id} type={"c"} />
+            <Box className="btn">
+              <PrimaryButton onClick={()=>setIsReply(0)}><p>수정</p></PrimaryButton>
+              <SecondaryButton onClick={()=>navigate("/lms/m/qna")}><p>목록</p></SecondaryButton>
+            </Box>
+          </> : <ReplyWrite id={question.c_question_id} type={"m/qna"} />
+        }
       </TableBox>
     </Container>
   </>

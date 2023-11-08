@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
 import { Pagination } from "../../components/Pagination";
-import { course_answers, course_questions, courses } from "../../assets/TempData";
+import { course_answers, course_questions, courses, students } from "../../assets/TempData";
 
 const BadgeSuccess = styled.span`
   background-color: green;
@@ -61,12 +61,44 @@ const PrimaryButton = styled.button`
   color: white;
 `;
 
+const headers = [
+  {
+    text: 'No.',
+    value: 'no'
+  },
+  {
+    text: '제목',
+    value: 'title'
+  },
+  {
+    text: '등록일',
+    value: 'regDate'
+  },
+  {
+    text: '답변상태',
+    value: 'replyState'
+  },
+];
+
 export function StudentCourseQna() {
   const [page, setPage] = useState(1);
   const limit = 10;
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
 
+  const id = 1; // 임시 student_id
+  const student = students.find((s) => s.student_id == id);
+  const question = course_questions.filter((c) => (c.course_id == student.course_id) && (c.student_id == student.student_id));
+  
+  const items = question.map((q, i) => (
+    {
+      no: i + 1,
+      title: titleLink(q.c_question_id, q.c_question_title),
+      regDate: q.c_question_reg_date,
+      replyState: changeReply(q.c_question_id)
+    }
+  ));
+    
   const postsData = (posts) => {
     if(posts) {
       let result = posts.slice(offset, offset + limit);
@@ -78,41 +110,6 @@ export function StudentCourseQna() {
     if(course_answers.find(c => c.c_question_id == reply)) {return(<BadgeSuccess>답변완료</BadgeSuccess>)}
     else {return(<BadgeSecondary>답변대기</BadgeSecondary>)};
   };
-
-  const headers = [
-    {
-      text: 'No.',
-      value: 'no'
-    },
-    {
-      text: '제목',
-      value: 'title'
-    },
-    {
-      text: '등록일',
-      value: 'regDate'
-    },
-    {
-      text: '답변상태',
-      value: 'replyState'
-    },
-  ];
-
-  const id = 1;
-  const studentid = 1;
-  const course = course_questions.filter(c => c.course_id == id);
-  const question = course.filter((s) => s.student_id == studentid);
-  console.log(question);
-  console.log(course.filter((s) => s.student_id == studentid));
-  
-  const items = question.map((q, i) => (
-    {
-      no: i + 1,
-      title: titleLink(q.c_question_id, q.c_question_title),
-      regDate: q.c_question_reg_date,
-      replyState: changeReply(q.c_question_id)
-    }
-  ));
 
   function titleLink(id, title) {
     return (<p onClick={() => navigate(`${id}`)}>{title}</p>);

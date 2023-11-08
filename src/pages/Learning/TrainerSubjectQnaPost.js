@@ -140,7 +140,6 @@ export function TrainerSubjectQnaPost() {
   const question = subject_questions.find(data => data.s_question_id == id);
   const student = userList.find(data => data.uid == (students.find(d => d.student_id == question.student_id)).uid);
   let answer;
-  let trainer;
 
   if(subject_answers.find(data => data.s_question_id == question.s_question_id)){
     answer = subject_answers.find(data => data.s_question_id == question.s_question_id);

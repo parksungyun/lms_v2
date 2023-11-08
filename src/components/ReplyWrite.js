@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components"
-import { academics, subject_answers, subject_questions, userList } from "../assets/TempData";
+import { academics, course_answers, course_questions, subject_answers, subject_questions, userList } from "../assets/TempData";
 import { useEffect } from "react";
 
 const ContentInput = styled.textarea`
@@ -68,11 +68,19 @@ export function ReplyWrite({ id, user, type }) {
         setIsReply(1);
       }
     }
+    if(type == "m/qna") {
+      question = course_questions.find(data => data.c_question_id == id);
+      if(course_answers.find(data => data.c_question_id == question.c_question_id)) {
+        answer = course_answers.find(data => data.c_question_id == question.c_question_id);
+        setQna_reply(answer.c_answer_content);
+        setIsReply(1);
+      }
+    }
   }, [answer]);
   
   return <>
     <form action="" method="POST" >
-      <ContentInput type="text" name="qna_reply" id="qna_reply" value={qna_reply}  onChange={(e)=>setQna_reply(e.target.value)} placeholder="답변 내용을 입력해주세요"/>
+      <ContentInput type="text" name="qna_reply" id="qna_reply" value={qna_reply} onChange={(e)=>setQna_reply(e.target.value)} placeholder="답변 내용을 입력해주세요" />
       <Box className="btn">
         {
           isReply == 1 ? <>

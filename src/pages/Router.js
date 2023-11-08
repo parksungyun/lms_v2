@@ -75,8 +75,7 @@ import { LecturePost } from "../components/LecturePost"
 import { TrainerLectureWrite } from "./Learning/TrainerLectureWrite"
 import { TrainerLectureMod } from "./Learning/TrainerLectureMod"
 import { TrainerSubjectQnaPost } from "./Learning/TrainerSubjectQnaPost"
-import { ManagerCourseQnaReply } from "./Learning/ManagerCourseQnaReply"
-import { ManagerCourseQnaReplyMod } from "./Learning/ManagerCourseQnaReplyMod"
+import { ManagerCourseQnaPost } from "./Learning/ManagerCourseQnaPost"
 
 export const SideContext = createContext();
 
@@ -220,9 +219,7 @@ export function Router() {
                   </Route>
                   <Route path="qna" element={<ParentsWrapper />}>
                     <Route index element={<ManagerCourseQna />} />
-                    <Route path=":id" element={<ManagerCourseQnaReply />}>
-                      <Route path="mod" element={<ManagerCourseQnaReplyMod />} />
-                    </Route>
+                    <Route path=":id" element={<ManagerCourseQnaPost />} />
                   </Route>
                   <Route path="review" element={<ManagerCourseReview />} />
                   <Route path="mypage" element={<ManagerMypage />} />
