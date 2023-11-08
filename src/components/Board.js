@@ -95,7 +95,7 @@ export function Board({board, item, write}) {
         <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
         <button onClick={onSearch}>검색</button>
       </SearchBox>
-      {write == true ? <PrimaryButton onClick={() => navigate("/")}>작성</PrimaryButton> : null}
+      {write == true ? <PrimaryButton onClick={() => navigate("/")}><p>작성</p></PrimaryButton> : null}
     </ButtonBox>
     <Pagination limit={limit} page={page} totalPosts={item.length} setPage={setPage} />
   </>  

@@ -46,9 +46,9 @@ export function ManagerMypage() {
   return<>
     <Container>
       <TableBox>
-        <Btn className={active[0]} onClick={()=>{setPage(<ManagerCourseHistory />); changeActive(1)}}>과정 이력</Btn>
-        <Btn className={active[1]} onClick={()=>{setPage(<ManagerDetailForm />); changeActive(2)}}>개인정보수정</Btn>
-        <Btn className={active[2]} onClick={()=>{setPage(<ChangePW />); changeActive(3)}}>비밀번호수정</Btn>
+        <Btn className={active[0]} onClick={()=>{setPage(<ManagerCourseHistory />); changeActive(1)}}><p>과정 이력</p></Btn>
+        <Btn className={active[1]} onClick={()=>{setPage(<ManagerDetailForm />); changeActive(2)}}><p>개인정보수정</p></Btn>
+        <Btn className={active[2]} onClick={()=>{setPage(<ChangePW />); changeActive(3)}}><p>비밀번호수정</p></Btn>
         <div>
           {page}
         </div>

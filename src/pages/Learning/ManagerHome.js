@@ -2,48 +2,38 @@ import { Col, ProgressBar, Row } from "react-bootstrap";
 import styled from "styled-components"
 import { RiUserSettingsLine } from "react-icons/ri";
 import { LmsHomeButtonWrapper } from "../../components/LmsHomeButtonWrapper";
+import { courses } from "../../assets/TempData";
 
-const classTest = [
-  {
-    name: "class이름1",
-    id: 0,
-  },
-  {
-    name: "class이름2",
-    id: 0,
-  },
-  {
-    name: "class이름3",
-    id: 0,
-  },
-  {
-    name: "class이름4",
-    id: 0,
-  },
-  {
-    name: "class이름5",
-    id: 0,
-  },
-];
+const id = 1; // academicid 임의로 받아옴
+const course = courses.filter(c => c.academic_id == id)
 
-const mItems = [
+const courseNumber = course.map((c) => (
   {
-    text: "class이름",
-    link: '/lms/m'
-  },
-  {
-    text: "공지",
-    link: '/lms/m'
-  },
-  {
-    text: "1:1 문의",
-    link: '/lms/m'
-  },
-  {
-    text: "강의평가",
-    link: '/lms/m'
-  },
-];
+    name: c.course_name,
+    id: c.course_id,
+  }
+));
+
+const items = courseNumber.map((c)=>(
+  [
+    {
+      text: c.name,
+      link: `/lms/m/info/${c.id}`
+    },
+    {
+      text: "공지",
+      link: '/lms/m/board'
+    },
+    {
+      text: "1:1 문의",
+      link: '/lms/m/qna'
+    },
+    {
+      text: "강의평가",
+      link: '/lms/m/review'
+    }
+  ]
+));
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -96,11 +86,10 @@ export function ManagerHome() {
         <PrimaryButton>관리자 페이지<RiUserSettingsLine /></PrimaryButton>
       </Content>
       <Box>
-        <H2>진행중인 과목: {classTest.length}</H2>
-        {/* 하위 부분은 수정이 필요합니다. 주의하세요 */}
+        <H2>진행중인 과목: {courseNumber.length}</H2>
         {
-          classTest.map((c, i) => (
-            <ButtonBox><LmsHomeButtonWrapper items={mItems} /></ButtonBox>
+          courseNumber.map((c, i) => (
+            <ButtonBox><LmsHomeButtonWrapper items={items[i]} /></ButtonBox>
           ))
         }
       </Box>
