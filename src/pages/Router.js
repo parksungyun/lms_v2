@@ -187,17 +187,17 @@ export function Router() {
                   </Route>
                   <Route path="qna" element={<ParentsWrapper />}>
                     <Route index element={<TrainerSubjectQna />} />
-                    <Route path=":id" element={<TrainerSubjectQnaReply />}>
-                      <Route path="mod" element={<TrainerSubjectQnaReplyMod />} />
-                    </Route>
+                    <Route path=":id" element={<TrainerSubjectQnaReply />} />
                   </Route>
                   <Route path="mypage" element={<TrainerMypage />} />
                 </Route>
                 <Route path="m" element={<ParentsWrapper />}>
                   <Route index element={<ManagerHome />} />
                   <Route path="info" element={<ParentsWrapper />}>
-                    <Route index element={<ManagerCourseInfo />} />
-                    <Route path=":id" element={<ManagerCourseStudentDetail />} />
+                    <Route path=":id" element={<ManagerCourseInfo />} />
+                    <Route path="detail" element={<ParentsWrapper />}>
+                      <Route path=":id" element={<ManagerCourseStudentDetail />} />
+                    </Route>
                     <Route path="attend" elements={<ParentsWrapper />}>
                       <Route path=":id" element={<ManagerCourseStudentAttendance />} />
                     </Route>
