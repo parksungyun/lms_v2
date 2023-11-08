@@ -1,7 +1,6 @@
 import styled from "styled-components"
 import { academics, admission_answers, admission_questions, course_answers, course_questions, subject_answers, subject_questions, userList } from "../assets/TempData";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 const CommentBox = styled.div`
   margin-top: 2rem;

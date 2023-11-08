@@ -44,27 +44,6 @@ const ContentRow = styled.tr`
   vertical-align: top;
 `;
 
-const CommentBox = styled.div`
-  margin-top: 2rem;
-  border: 1px solid #ddd;
-  border-radius: 7px;
-`;
-
-const CommentWriter = styled.div`
-  border-bottom: 1px solid #ddd;
-  padding: 10px;
-`;
-
-const Comment = styled.div`
-  height: 150px;
-  vertical-align: top;
-  padding: 10px;
-`;
-
-const Text = styled.p`
-  font-size: 1.1rem;
-`;
-
 const PrimaryButton = styled.button`
   border: 0;
   border-radius: 5px;
@@ -86,16 +65,6 @@ const ButtonBox = styled.div`
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-`;
-
-const ContentInput = styled.textarea`
-  margin-top: 2rem;
-  width: 100%;
-  height: 150px;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid lightgray;
-  resize: none;
 `;
 
 const H2 = styled.p`

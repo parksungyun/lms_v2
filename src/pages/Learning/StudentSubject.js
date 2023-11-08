@@ -31,167 +31,6 @@ const BadgeSecondary = styled.span`
   border-radius: 5px;
 `;
 
-const studentSBoard = [
-  {
-    text: 'No.',
-    value: 'no'
-  },
-  {
-    text: '제목',
-    value: 'title'
-  },
-  {
-    text: '작성자',
-    value: 'writer'
-  },
-  {
-    text: '등록일',
-    value: 'regDate'
-  },
-  {
-    text: '조회수',
-    value: 'hits'
-  }
-];
-
-const subjectid = 1;
-const board = subject_board.filter(s => s.subject_id == subjectid);
-
-const SSBItems = board.map((b,i) => (
-  {
-    no: i + 1,
-    title: b.s_post_title,
-    writer: userList.find(u => u.uid == academics.find(a => a.academic_id == b.academic_id).uid).user_name,
-    regDate: b.s_post_reg_date,
-    hits: b.s_post_hits
-  }
-));
-
-
-const studentSHW = [
-  {
-    text: 'No.',
-    value: 'no'
-  },
-  {
-    text: '제목',
-    value: 'title'
-  },
-  {
-    text: '시작일',
-    value: 'startDate'
-  },
-  {
-    text: '종료일',
-    value: 'endDate'
-  },
-  {
-    text: '제출',
-    value: 'submit'
-  }
-];
-
-function changeReplyHW(reply) {
-  if(feedbacks.find(f => f.submit_id == submit.find(s => s.homework_id == reply).submit_id)) return(<BadgeSuccess>채점완료</BadgeSuccess>);
-  else if (submit.find(s => s.homework_id == reply)) return (<BadgePrimary>제출완료</BadgePrimary>);
-  else return(<BadgeSecondary>제출대기</BadgeSecondary>);
-};
-
-const studentid =1;
-
-const submit = submits.filter(s => s.student_id == studentid);
-
-const homework = homeworks.filter(h => h.subject_id == subjectid);
-
-const SSHWItems = homework.map((h,i) => (
-  {
-    no: i + 1,
-    title: h.hw_title,
-    startDate: h.hw_start_date,
-    endDate: h.hw_end_date,
-    submit: changeReplyHW(h.homework_id)
-  }
-));
-
-function changeReplyLec(reply) {
-  if(reply === 2) return(<BadgePrimary>학습중</BadgePrimary>);
-  else if (reply == 1) return(<BadgeSuccess>학습끝</BadgeSuccess>);
-  else return(<BadgeSecondary>미학습</BadgeSecondary>);
-};
-
-const studentSLec = [
-  {
-    text: 'No.',
-    value: 'no'
-  },
-  {
-    text: '제목',
-    value: 'title'
-  },
-  {
-    text: '수강상태',
-    value: 'state'
-  }
-];
-
-const SSLECItems = [
-  {
-    no: 1,
-    title: '교육상담아무말이나해봐아무',
-    state: changeReplyLec(1)
-  },
-  {
-    no: 2,
-    title: '교육상담아무말이나해봐아무',
-    state: changeReplyLec(2)
-  },
-  {
-    no: 3,
-    title: '교육상담아무말이나해봐아무',
-    state: changeReplyLec(0)
-  },
-];
-
-const studentSQNA = [
-  {
-    text: 'No.',
-    value: 'no'
-  },
-  {
-    text: '제목',
-    value: 'title'
-  },
-  {
-    text: '작성자',
-    value: 'writer'
-  },
-  {
-    text: '등록일',
-    value: 'regDate'
-  },
-  {
-    text: '답변상태',
-    value: 'state'
-  }
-];
-
-function changeReplyQNA(reply) {
-  if(subject_answers.find(s => s.s_question_id == reply)) return(<BadgeSuccess>답변완료</BadgeSuccess>);
-  else return(<BadgeSecondary>답변대기</BadgeSecondary>);
-};
-
-const question = subject_questions.filter(s => s.subject_id == subjectid);
-
-const SSQNAItems = question.map((q,i) => (
-  {
-    no: i + 1,
-    title: q.s_question_title,
-    writer: userList.find(u => u.uid == students.find(s => s.student_id == q.student_id).uid).user_name,
-    regDate: q.s_question_reg_date,
-    state: changeReplyQNA(q.s_question_id)
-  }
-));
-
 const Container = styled.div`
   padding: 1.5rem 2rem;
   padding-bottom: 2rem;
@@ -236,9 +75,169 @@ const ProgressBox = styled.div`
   color: #111;
 `;
 
+
+const studentSBoard = [
+  {
+    text: 'No.',
+    value: 'no'
+  },
+  {
+    text: '제목',
+    value: 'title'
+  },
+  {
+    text: '작성자',
+    value: 'writer'
+  },
+  {
+    text: '등록일',
+    value: 'regDate'
+  },
+  {
+    text: '조회수',
+    value: 'hits'
+  }
+];
+
+
+const studentSHW = [
+  {
+    text: 'No.',
+    value: 'no'
+  },
+  {
+    text: '제목',
+    value: 'title'
+  },
+  {
+    text: '시작일',
+    value: 'startDate'
+  },
+  {
+    text: '종료일',
+    value: 'endDate'
+  },
+  {
+    text: '제출',
+    value: 'submit'
+  }
+];
+
+const studentSLec = [
+  {
+    text: 'No.',
+    value: 'no'
+  },
+  {
+    text: '제목',
+    value: 'title'
+  },
+  {
+    text: '수강상태',
+    value: 'state'
+  }
+];
+
+const studentSQNA = [
+  {
+    text: 'No.',
+    value: 'no'
+  },
+  {
+    text: '제목',
+    value: 'title'
+  },
+  {
+    text: '작성자',
+    value: 'writer'
+  },
+  {
+    text: '등록일',
+    value: 'regDate'
+  },
+  {
+    text: '답변상태',
+    value: 'state'
+  }
+];
+
 export function StudentSubject() {
   const maxItem = 30;
 	let availableItem = 15;
+  
+  const subjectid = 1;
+  const board = subject_board.filter(s => s.subject_id == subjectid);
+
+  const SSBItems = board.map((b,i) => (
+    {
+      no: i + 1,
+      title: b.s_post_title,
+      writer: userList.find(u => u.uid == academics.find(a => a.academic_id == b.academic_id).uid).user_name,
+      regDate: b.s_post_reg_date,
+      hits: b.s_post_hits
+    }
+  ));
+
+  function changeReplyHW(reply) {
+    if(feedbacks.find(f => f.submit_id == submit.find(s => s.homework_id == reply).submit_id)) return(<BadgeSuccess>채점완료</BadgeSuccess>);
+    else if (submit.find(s => s.homework_id == reply)) return (<BadgePrimary>제출완료</BadgePrimary>);
+    else return(<BadgeSecondary>제출대기</BadgeSecondary>);
+  };
+
+  const studentid =1;
+  const submit = submits.filter(s => s.student_id == studentid);
+  const homework = homeworks.filter(h => h.subject_id == subjectid);
+
+  const SSHWItems = homework.map((h,i) => (
+    {
+      no: i + 1,
+      title: h.hw_title,
+      startDate: h.hw_start_date,
+      endDate: h.hw_end_date,
+      submit: changeReplyHW(h.homework_id)
+    }
+  ));
+
+  function changeReplyLec(reply) {
+    if(reply === 2) return(<BadgePrimary>학습중</BadgePrimary>);
+    else if (reply == 1) return(<BadgeSuccess>학습끝</BadgeSuccess>);
+    else return(<BadgeSecondary>미학습</BadgeSecondary>);
+  };
+
+  const SSLECItems = [
+    {
+      no: 1,
+      title: '교육상담아무말이나해봐아무',
+      state: changeReplyLec(1)
+    },
+    {
+      no: 2,
+      title: '교육상담아무말이나해봐아무',
+      state: changeReplyLec(2)
+    },
+    {
+      no: 3,
+      title: '교육상담아무말이나해봐아무',
+      state: changeReplyLec(0)
+    },
+  ];
+
+  function changeReplyQNA(reply) {
+    if(subject_answers.find(s => s.s_question_id == reply)) return(<BadgeSuccess>답변완료</BadgeSuccess>);
+    else return(<BadgeSecondary>답변대기</BadgeSecondary>);
+  };
+
+  const question = subject_questions.filter(s => s.subject_id == subjectid);
+
+  const SSQNAItems = question.map((q,i) => (
+    {
+      no: i + 1,
+      title: q.s_question_title,
+      writer: userList.find(u => u.uid == students.find(s => s.student_id == q.student_id).uid).user_name,
+      regDate: q.s_question_reg_date,
+      state: changeReplyQNA(q.s_question_id)
+    }
+  ));
 
   return<>
     <Container>

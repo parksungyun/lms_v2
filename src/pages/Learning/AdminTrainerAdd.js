@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { department, trainerPosition, userList, academics } from "../../assets/TempData";
+import { department, trainerPosition, userList } from "../../assets/TempData";
 import defaultImg from "../../assets/img/default.png";
 
 const Container = styled.div`
@@ -183,7 +183,7 @@ export function AdminTrainerAdd() {
         <LoadBox>
           <LoadInfo>
             <Input type="text" name="user_search" id="user_search" value={search} onChange={(e) => {setSearch(e.target.value)}} placeholder="검색할 사용자 아이디를 입력하세요." />
-            <PrimaryButton onClick={() => {onSearch(search); setSearch("");}}>사용자 불러오기</PrimaryButton>
+            <PrimaryButton onClick={() => {onSearch(search); setSearch("");}}><p>사용자 불러오기</p></PrimaryButton>
           </LoadInfo>
           <LoadUser>
             <LoadText>{loadText}</LoadText>
@@ -263,8 +263,8 @@ export function AdminTrainerAdd() {
               <Check type="checkbox" name="user_available" id="user_available" value={userAvailable} onChange={(e) => {setUserAvailable(e.target.value)}} /> 비활성화
             </Detail>
             <ButtonBox>
-              <PrimaryButton type="submit" onClick={onSubmit}>등록</PrimaryButton>
-              <SecondaryButton onClick={() => navigate("/lms/a/trainerSetting")}>목록</SecondaryButton>
+              <PrimaryButton type="submit" onClick={onSubmit}><p>등록</p></PrimaryButton>
+              <SecondaryButton onClick={() => navigate("/lms/a/trainerSetting")}><p>목록</p></SecondaryButton>
             </ButtonBox>
           </Details>
         </ContentDivide>

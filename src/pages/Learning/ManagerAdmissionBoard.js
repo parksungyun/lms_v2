@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Board } from "../../components/Board";
 import { Table } from "../../components/Table";
 import { Pagination } from "../../components/Pagination";
 import { useState } from "react";
@@ -98,14 +97,6 @@ const ButtonBox = styled.div`
   justify-content: space-between;
   margin-top: 2rem;
   margin-right: 1.4rem;
-`;
-
-const PrimaryButton = styled.button`
-  border: 0;
-  border-radius: 5px;
-  background-color: #5f7dcf;
-  padding: 0.6rem 1.4rem;
-  color: white;
 `;
 
 export function ManagerAdmissionBoard() {

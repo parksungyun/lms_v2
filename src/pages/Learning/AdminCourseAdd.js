@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { userList, academics } from "../../assets/TempData";
@@ -310,8 +310,8 @@ export function AdminCourseAdd() {
               <Check type="checkbox" name="user_available" id="user_available" value={courseAvailable} onChange={(e) => {setCourseAvailable(e.target.value)}} /> 비활성화
             </Detail>
             <ButtonBox>
-              <PrimaryButton type="submit" onClick={onSubmit}>수정</PrimaryButton>
-              <SecondaryButton onClick={() => navigate("/lms/a/courseSetting")}>목록</SecondaryButton>
+              <PrimaryButton type="submit" onClick={onSubmit}><p>수정</p></PrimaryButton>
+              <SecondaryButton onClick={() => navigate("/lms/a/courseSetting")}><p>목록</p></SecondaryButton>
             </ButtonBox>
         </Details>
         </ContentDivide>

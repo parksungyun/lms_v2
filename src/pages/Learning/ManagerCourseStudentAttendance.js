@@ -50,14 +50,6 @@ const SecondaryButton = styled.button`
   color: white;
 `;
 
-const DangerButton = styled.button`
-  border: 0;
-  border-radius: 5px;
-  background-color: red;
-  padding: 0.8rem 1.4rem;
-  color: white;
-`;
-
 const ButtonBox = styled.div`
   display: flex;
   justify-content: center;
@@ -292,7 +284,7 @@ export function ManagerCourseStudentAttendance() {
             ~
             <InputDate type="date" name="end_date" id="end_date"  value={searchEndDate} onChange={(e) => {setSearchEndDate(e.target.value)}} />
           </Detail>
-          <PrimaryButton onClick={onSearch}>검색</PrimaryButton>
+          <PrimaryButton onClick={onSearch}><p>검색</p></PrimaryButton>
         </Search>
         <Table 
           headers={headers}
@@ -301,7 +293,7 @@ export function ManagerCourseStudentAttendance() {
         />
         <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
         <ButtonBox>
-          <SecondaryButton onClick={() => navigate(`/lms/m/info/${course.course_id}`)}>목록</SecondaryButton>
+          <SecondaryButton onClick={() => navigate(`/lms/m/info/${course.course_id}`)}><p>목록</p></SecondaryButton>
         </ButtonBox>
       </Content>
     </Container>

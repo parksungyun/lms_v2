@@ -1,4 +1,3 @@
-import img from "../assets/img/trainers/t2.jpg"
 import styled from "styled-components";
 import { BsTelephoneFill } from "react-icons/bs";
 import { academics, userList, trainerPosition, managerPosition } from "../assets/TempData";

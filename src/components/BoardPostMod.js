@@ -86,9 +86,9 @@ export function BoardPostMod() {
         <ContentInput type="text" name="board_content" id="board_content" value={board_content}  onChange={(e)=>setBoard_content(e.target.value)}/>
         <Input type="file" name="board_file" id="board_file" accept="" />
         <Box>
-          <PrimaryButton type="submit">수정</PrimaryButton>
-          <DangerButton>삭제</DangerButton>
-          <SecondaryButton onClick={() => navigate(-1)}>목록</SecondaryButton>
+          <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
+          <DangerButton><p>삭제</p></DangerButton>
+          <SecondaryButton onClick={() => navigate(-1)}><p>목록</p></SecondaryButton>
         </Box>
       </form>
     </TableBox>

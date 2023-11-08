@@ -55,7 +55,7 @@ export function Progress({subjectName}) {
 	let availableItem = 15
   return<>
     <Container>
-      <PrimaryButton>{subjectName}</PrimaryButton>
+      <PrimaryButton><p>{subjectName}</p></PrimaryButton>
       <Box>
         <ProgressBar>
           <ProgressBox width = {100-(availableItem*100/maxItem)}/>

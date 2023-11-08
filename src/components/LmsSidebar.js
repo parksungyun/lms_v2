@@ -1,11 +1,10 @@
-import { useContext, useState } from "react";
-import { Menu, MenuItem, Sidebar, SubMenu, sidebarClasses, menuClasses } from "react-pro-sidebar";
+import { useContext } from "react";
+import { Menu, MenuItem, Sidebar, SubMenu } from "react-pro-sidebar";
 import { BsFillPersonFill, BsDash } from "react-icons/bs";
 import { RiMacbookLine, RiLogoutBoxRLine, RiMailLine, RiBookletFill } from "react-icons/ri";
 import styled from "styled-components";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { SideContext } from "../pages/Router";
-import { useEffect } from "react";
 import { courses, subjects } from "../assets/TempData";
 
 const Container = styled.div`

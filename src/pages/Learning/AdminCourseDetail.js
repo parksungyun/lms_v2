@@ -300,12 +300,12 @@ export function AdminCourseDetail() {
             <Detail>
               <Label>활성화</Label>
               {
-                course.available == 1 ? <DangerButton>비활성화</DangerButton> : <PrimaryButton>활성화</PrimaryButton>
+                course.available == 1 ? <DangerButton><p>비활성화</p></DangerButton> : <PrimaryButton><p>활성화</p></PrimaryButton>
               }
             </Detail>
             <ButtonBox>
-              <PrimaryButton type="submit" onClick={onSubmit}>수정</PrimaryButton>
-              <SecondaryButton onClick={() => navigate("/lms/a/courseSetting")}>목록</SecondaryButton>
+              <PrimaryButton type="submit" onClick={onSubmit}><p>수정</p></PrimaryButton>
+              <SecondaryButton onClick={() => navigate("/lms/a/courseSetting")}><p>목록</p></SecondaryButton>
             </ButtonBox>
         </Details>
       </Content>

@@ -141,8 +141,8 @@ export function BoardPost({userState}) {
         <div><A href="">파일.pdf<Icon><BsDownload /></Icon></A></div>
       </AttachedBox>
       <Box className="button">
-        {userState = 0 ? null : <PrimaryButton>수정</PrimaryButton>}
-        <SecondaryButton>목록</SecondaryButton>
+        {userState = 0 ? null : <PrimaryButton><p>수정</p></PrimaryButton>}
+        <SecondaryButton><p>목록</p></SecondaryButton>
       </Box>
     </TableBox>
   </>

@@ -6,6 +6,7 @@ import { LmsSidebar } from "./LmsSidebar";
 import { useContext, useEffect, useState } from "react";
 import { SideContext } from "../pages/Router";
 import { LmsFooter } from "./LmsFooter";
+import { userList } from "../assets/TempData";
 
 const Container = styled.div`
   width: 100%;
@@ -71,13 +72,15 @@ const Footer = styled.div`
 export function LmsHeader(){
   const { toggled, setToggled, setSelectedMenu, userType } = useContext(SideContext);
   const navigate = useNavigate();
+  const id = 1; //임시 uid
+  const user = userList.find(u => u.uid == id);
   
   return<>
     <Container>  
       <Header>
         <Img src={logo} alt="logo" onClick={() => {setSelectedMenu("Home"); navigate(`/lms/${userType}`);}}/>
         <Content>
-          <UserName>송승현</UserName>
+          <UserName>{user.user_name}</UserName>
           <BsList className="icon" onClick={() => setToggled(!toggled)} />
         </Content>
       </Header>

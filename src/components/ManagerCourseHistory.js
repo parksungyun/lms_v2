@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Table } from "./Table";
-import { userList, courses, subjects, academics } from "../assets/TempData";
+import { courses, academics } from "../assets/TempData";
 import styled from "styled-components";
 
 const header = [
@@ -83,7 +83,7 @@ export function ManagerCourseHistory() {
       startDate: course[0].start_date,
       endDate: course[0].end_date,
       state: changeReply(course[0].end_date),
-      link: <PrimaryButton onClick={()=>navigate('/lms/m/info')}>바로가기</PrimaryButton>,
+      link: <PrimaryButton onClick={()=>navigate('/lms/m/info')}><p>바로가기</p></PrimaryButton>,
     },
   ];
   return<>

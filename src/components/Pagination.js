@@ -34,8 +34,8 @@ export function Pagination ({page, totalPosts, limit, setPage}){
             </Button>
             <Button 
                 onClick={() => setPage(firstNum)}
-                aria-current={page === firstNum ? "page" : null}>
-                {firstNum}
+                aria-current={page === firstNum ? "page" : null}><p>
+                {firstNum}</p>
             </Button>
             {Array(4).fill().map((_, i) =>{
                 if(i <=2){
@@ -44,8 +44,8 @@ export function Pagination ({page, totalPosts, limit, setPage}){
                             border="true" 
                             key={i+1} 
                             onClick={() => {setPage(firstNum+1+i)}}
-                            aria-current={page === firstNum+1+i ? "page" : null}>
-                            {firstNum+1+i}
+                            aria-current={page === firstNum+1+i ? "page" : null}><p>
+                            {firstNum+1+i}</p>
                         </Button>
                     )
                 }
@@ -55,8 +55,8 @@ export function Pagination ({page, totalPosts, limit, setPage}){
                             border="true" 
                             key ={i+1}
                             onClick={() => setPage(lastNum)}
-                            aria-current={page === lastNum ? "page" : null}>
-                            {lastNum}
+                            aria-current={page === lastNum ? "page" : null}><p>
+                            {lastNum}</p>
                         </Button>
                     )  
                 }
