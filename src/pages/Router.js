@@ -178,7 +178,8 @@ export function Router() {
                     <Route path="mod" element={<HWPostMod />} />
                     <Route path=":id" element={<HWPost />} />
                   </Route>
-                  <Route path="qna" element={<TrainerSubjectQna />}>
+                  <Route path="qna" element={<ParentsWrapper />}>
+                    <Route index element={<TrainerSubjectQna />} />
                     <Route path=":id" element={<TrainerSubjectQnaReply />}>
                       <Route path="mod" element={<TrainerSubjectQnaReplyMod />} />
                     </Route>
@@ -199,7 +200,8 @@ export function Router() {
                     <Route path="mod" element={<BoardPostMod />} />
                     <Route path=":id" element={<BoardPost />} />
                   </Route>
-                  <Route path="qna" element={<ManagerCourseQna />}>
+                  <Route path="qna" element={<ParentsWrapper />}>
+                    <Route index element={<ManagerCourseQna />} />
                     <Route path=":id" element={<ManagerCourseQnaReply />}>
                       <Route path="mod" element={<ManagerCourseQnaReplyMod />} />
                     </Route>
