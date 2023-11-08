@@ -96,7 +96,7 @@ const headers = [
 ];
 
 export function ManagerCourseQna() {
-  const id = 1; // 임시
+  const id = 1; // 임시 course_id
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [searchOption, setSearchOption] = useState("all");
