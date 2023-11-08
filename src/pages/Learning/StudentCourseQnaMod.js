@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { course_questions } from "../../assets/TempData";
 
@@ -82,15 +82,15 @@ const ContentInput = styled.textarea`
 `;
 
 export function StudentCourseQnaMod() {
-  const id = 1;
-  const question = course_questions.find(c => c.c_question_id == id)
+  const { state } = useLocation();
+  const question = course_questions.find(c => c.c_question_id == state)
   const [qna_content, setQna_content] = useState(question.c_question_content);
   const [qna_title, setQna_title] = useState(question.c_question_title);
   const navigate = useNavigate();
   return<>
     <Container>
       <TableBox>
-        <H2>1:1문의 수정</H2>
+        <H2>1:1 문의 수정</H2>
         <form action="" method="POST">
           <Input type="text" name="qna_title" id="qna_title" value={qna_title} onChange={(e)=>setQna_title(e.target.value)}/>
           <Hr />
@@ -99,7 +99,7 @@ export function StudentCourseQnaMod() {
           <Box>
             <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
             <DangerButton><p>삭제</p></DangerButton>
-            <SecondaryButton onClick={() => navigate(-1)}><p>목록</p></SecondaryButton>
+            <SecondaryButton onClick={() => navigate(`/lms/s/cqna/${question.c_question_id}`)}><p>목록</p></SecondaryButton>
           </Box>
         </form>
       </TableBox>

@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { BsDownload } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BsFillEyeFill } from "react-icons/bs";
 import { academics, students, subject_answers, subject_questions, userList } from "../../assets/TempData";
+import { ReplyPost } from "../../components/ReplyPost";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -121,10 +122,11 @@ const IconBox = styled.div`
 
 
 export function StudentSubjectQnaPost() {
-  const id = 1; //s_question_id 임의로 받아옴
+  const { id } = useParams();
   const question = subject_questions.find(s => s.s_question_id == id);
-  const answer = subject_answers.find(s => s.s_question_id == id);
+  const answer = subject_answers.find(s => s.s_question_id == question.s_question_id);
   const navigate = useNavigate();
+
   return<>
     <Container>
       <TableBox>
@@ -146,18 +148,13 @@ export function StudentSubjectQnaPost() {
           <div><A href={question.s_question_fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
         </AttachedBox>
         <Hr />
-        <CommentBox>
-        <CommentWriter>
-          <Text>{userList.find(u => u.uid == academics.find(a => a.academic_id == answer.academic_id).uid).user_name} | {answer.s_answer_reg_date}</Text>
-        </CommentWriter>
-        <Comment>
-          <Text>{answer.s_answer_content}</Text>
-        </Comment>
-      </CommentBox>
-      <Box className="btn">
-        <PrimaryButton onClick={()=>navigate("/lms/s")}><p>수정</p></PrimaryButton>
-        <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
-      </Box>
+        {
+          answer && <ReplyPost id={answer.s_question_id} type={"s"} />
+        }
+        <Box className="btn">
+          <PrimaryButton onClick={()=>navigate("mod", { state: question.s_question_id })}><p>수정</p></PrimaryButton>
+          <SecondaryButton onClick={()=>navigate("/lms/s/sqna")}><p>목록</p></SecondaryButton>
+        </Box>
       </TableBox>
     </Container>
   </>

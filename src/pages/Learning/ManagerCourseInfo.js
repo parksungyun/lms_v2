@@ -94,27 +94,19 @@ export function ManagerCourseInfo(){
 
   const student = students.filter((s) => s.course_id == courses[0].course_id);
 
-  const items = [
+  const items = student.map((s, i) => (
     {
-      no: 1,
-      name: userList[students[0].uid - 1].user_name,
-      birth: userList[students[0].uid - 1].user_birth,
-      phone: userList[students[0].uid - 1].user_phone,
-      attendance: <PrimaryButton onClick={() => onAttend(students[0].student_id)}>출결관리</PrimaryButton>,
-      info: <SecondaryButton onClick={() => onDetail(students[0].student_id)}>상세정보</SecondaryButton>
-    },
-    {
-      no: 2,
-      name: userList[students[2].uid - 1].user_name,
-      birth: userList[students[2].uid - 1].user_birth,
-      phone: userList[students[2].uid - 1].user_phone,
-      attendance: <PrimaryButton onClick={() => onAttend(students[2].student_id)}>출결관리</PrimaryButton>,
-      info: <SecondaryButton onClick={() => onDetail(students[2].student_id)}>상세정보</SecondaryButton>
-    },
-  ];
+      no: i + 1,
+      name: userList[s.uid - 1].user_name,
+      birth: userList[s.uid - 1].user_birth,
+      phone: userList[s.uid - 1].user_phone,
+      attendance: <PrimaryButton onClick={() => onAttend(s.student_id)}>출결관리</PrimaryButton>,
+      info: <SecondaryButton onClick={() => onDetail(s.student_id)}>상세정보</SecondaryButton>
+    }
+  ))
 
   function onDetail(id) {
-    navigate(`${id}`);
+    navigate(`detail/${id}`);
   }
 
   function onAttend(id) {

@@ -105,14 +105,18 @@ export function StudentCourseQna() {
   console.log(question);
   console.log(course.filter((s) => s.student_id == studentid));
   
-  const items = question.map((q,i) => (
+  const items = question.map((q, i) => (
     {
       no: i + 1,
-      title: q.c_question_title,
+      title: titleLink(q.c_question_id, q.c_question_title),
       regDate: q.c_question_reg_date,
       replyState: changeReply(q.c_question_id)
     }
   ));
+
+  function titleLink(id, title) {
+    return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
+  }
 
   return<>
     <Container>
@@ -125,7 +129,7 @@ export function StudentCourseQna() {
         />
       </TableBox>
       <ButtonBox>
-        <PrimaryButton onClick={() => navigate("/lms/s")}><p>1:1 문의하기</p></PrimaryButton>
+        <PrimaryButton onClick={() => navigate("write")}><p>1:1 문의하기</p></PrimaryButton>
       </ButtonBox>
       <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
     </Container>
