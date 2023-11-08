@@ -4,27 +4,6 @@ import { LmsHomeButtonWrapper } from "../../components/LmsHomeButtonWrapper";
 import { courses } from "../../assets/TempData";
 import { useNavigate } from "react-router-dom";
 
-const items = courseNumber.map((c)=>(
-  [
-    {
-      text: c.name,
-      link: `/lms/m/info/${c.id}`
-    },
-    {
-      text: "공지",
-      link: '/lms/m/board'
-    },
-    {
-      text: "1:1 문의",
-      link: '/lms/m/qna'
-    },
-    {
-      text: "강의평가",
-      link: '/lms/m/review'
-    }
-  ]
-));
-
 const Container = styled.div`
   padding: 1.5rem 2rem;
   padding-bottom: 2rem;
@@ -78,6 +57,27 @@ export function ManagerHome() {
     }
   ));
   
+  const items = courseNumber.map((c)=>(
+    [
+      {
+        text: c.name,
+        link: `/lms/m/info/${c.id}`
+      },
+      {
+        text: "공지",
+        link: '/lms/m/board'
+      },
+      {
+        text: "1:1 문의",
+        link: '/lms/m/qna'
+      },
+      {
+        text: "강의평가",
+        link: '/lms/m/review'
+      }
+    ]
+  ));
+
   return <>
     <Container>
       <Content>
