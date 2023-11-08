@@ -4,73 +4,6 @@ import { Table } from "../../components/Table";
 import { Progress } from "../../components/Progress";
 import { academics, course_board, courses, homeworks, subjects, userList } from "../../assets/TempData";
 
-const cBoard = [
-  {
-    text: 'No.',
-    value: 'no'
-  },
-  {
-    text: '제목',
-    value: 'title'
-  },
-  {
-    text: '작성자',
-    value: 'writer'
-  },
-  {
-    text: '등록일',
-    value: 'regDate'
-  },
-  {
-    text: '조회수',
-    value: 'hits'
-  }
-];
-
-const id = 1;  //courseid 값 임의로 받아옴
-const course = course_board.filter(c => c.cousre_id == id);
-
-const cBoardItems = course.map((c,i) => (
-  {
-    no: i + 1,
-    title: c.c_post_title,
-    writer: userList.find(u => u.uid == academics.find(a => a.academic_id == c.academic_id).uid).user_name,
-    regDate: c.c_post_reg_date,
-    hits: c.c_post_hits
-  }
-));
-
-const hw = [
-  {
-    text: '과목.',
-    value: 'subject'
-  },
-  {
-    text: '제목',
-    value: 'title'
-  },
-  {
-    text: '시작일',
-    value: 'startDate'
-  },
-  {
-    text: '종료일',
-    value: 'endDate'
-  },
-];
-
-const subject = subjects.filter(s => s.course_id == id);
-const homework = homeworks.filter(h => (subject.map((s) => s.subject_id == h.subject_id)));
-
-const hwItems = homework.map((h,i) => (
-  {
-    subject: subject.find(s => s.subject_id == h.subject_id).subject_name,
-    title: h.hw_title,
-    startDate: h.hw_start_date,
-    endDate: h.hw_end_date,
-  }
-))
-
 const Container = styled.div`
   padding: 1.5rem 2rem;
   padding-bottom: 2rem;
@@ -116,7 +49,74 @@ const Box = styled.div`
   padding: 2rem;
 `;
 
+const cBoard = [
+  {
+    text: 'No.',
+    value: 'no'
+  },
+  {
+    text: '제목',
+    value: 'title'
+  },
+  {
+    text: '작성자',
+    value: 'writer'
+  },
+  {
+    text: '등록일',
+    value: 'regDate'
+  },
+  {
+    text: '조회수',
+    value: 'hits'
+  }
+];
+
+const hw = [
+  {
+    text: '과목.',
+    value: 'subject'
+  },
+  {
+    text: '제목',
+    value: 'title'
+  },
+  {
+    text: '시작일',
+    value: 'startDate'
+  },
+  {
+    text: '종료일',
+    value: 'endDate'
+  },
+];
+
 export function StudentHome() {
+  const id = 1;  //courseid 값 임의로 받아옴
+  const course = course_board.filter(c => c.cousre_id == id);
+
+  const cBoardItems = course.map((c,i) => (
+    {
+      no: i + 1,
+      title: c.c_post_title,
+      writer: userList.find(u => u.uid == academics.find(a => a.academic_id == c.academic_id).uid).user_name,
+      regDate: c.c_post_reg_date,
+      hits: c.c_post_hits
+    }
+  ));
+  
+  const subject = subjects.filter(s => s.course_id == id);
+  const homework = homeworks.filter(h => (subject.map((s) => s.subject_id == h.subject_id)));
+
+  const hwItems = homework.map((h,i) => (
+    {
+      subject: subject.find(s => s.subject_id == h.subject_id).subject_name,
+      title: h.hw_title,
+      startDate: h.hw_start_date,
+      endDate: h.hw_end_date,
+    }
+  ));
+
   return <>
     <Container>
       <Content>

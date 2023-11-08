@@ -94,22 +94,6 @@ const P = styled.p`
   margin: 0;
 `;
 
-const IconBox = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-const ContentInput = styled.textarea`
-  margin-top: 2rem;
-  width: 100%;
-  height: 150px;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid lightgray;
-  resize: none;
-`;
-
 export function ManagerCourseQnaPost() {
   const { id } = useParams();
   const navigate = useNavigate();

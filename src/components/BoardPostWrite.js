@@ -77,8 +77,8 @@ export function BoardPostWrite() {
         <ContentInput type="text" name="board_content" id="board_content" value={board_content}  onChange={(e)=>setBoard_content(e.target.value)} placeholder="내용 입력해주세요"/>
         <Input type="file" name="board_file" id="board_file" accept="" />
         <Box>
-          <PrimaryButton>등록</PrimaryButton>
-          <SecondaryButton onClick={() => navigate(-1)}>목록</SecondaryButton>
+          <PrimaryButton><p>등록</p></PrimaryButton>
+          <SecondaryButton onClick={() => navigate(-1)}><p>목록</p></SecondaryButton>
         </Box>
       </form>
     </TableBox>

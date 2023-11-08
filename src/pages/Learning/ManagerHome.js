@@ -48,7 +48,7 @@ const ButtonBox = styled.div`
 export function ManagerHome() {
   const navigate = useNavigate();
   const id = 1; // academicid 임의로 받아옴
-  const course = courses.filter(c => c.academic_id == id)
+  const course = courses.filter(c => c.academic_id == id);
 
   const courseNumber = course.map((c) => (
     {

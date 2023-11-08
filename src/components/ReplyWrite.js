@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components"
-import { academics, admission_answers, admission_questions, course_answers, course_questions, subject_answers, subject_questions, userList } from "../assets/TempData";
+import { admission_answers, admission_questions, course_answers, course_questions, subject_answers, subject_questions } from "../assets/TempData";
 import { useEffect } from "react";
 
 const ContentInput = styled.textarea`

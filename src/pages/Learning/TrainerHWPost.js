@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { BsFillEyeFill } from "react-icons/bs";
 import { BsDownload } from "react-icons/bs";
 import { useNavigate, useParams } from "react-router-dom";
 import { academics, homeworks, userList } from "../../assets/TempData";
@@ -37,12 +36,6 @@ const Box = styled.div`
 
 const P = styled.p`
   margin: 0;
-`;
-
-const IconBox = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 `;
 
 const Hr = styled.hr`

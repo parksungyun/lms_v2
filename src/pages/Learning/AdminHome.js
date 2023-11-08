@@ -1,21 +1,7 @@
 import styled from "styled-components"
 import { RiUserReceivedLine } from "react-icons/ri";
 import { LmsHomeButtonWrapper } from "../../components/LmsHomeButtonWrapper";
-
-const items = [
-  {
-    text: "강사 관리",
-    link: 'trainerSetting'
-  },
-  {
-    text: "매니저 관리",
-    link: 'managerSetting'
-  },
-  {
-    text: "과정 관리",
-    link: 'courseSetting'
-  },
-];
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -80,6 +66,7 @@ const BadgePrimary = styled.span`
   `;
 
 export function AdminHome() {
+  const navigate = useNavigate();
   const auth = 3;
   function authBadge(auth) {
     if(auth === 3) {
@@ -102,13 +89,29 @@ export function AdminHome() {
       return (<BadgePrimary>Courses</BadgePrimary>);
     }
   }
+
+  const items = [
+    {
+      text: "강사 관리",
+      link: 'trainerSetting'
+    },
+    {
+      text: "매니저 관리",
+      link: 'managerSetting'
+    },
+    {
+      text: "과정 관리",
+      link: 'courseSetting'
+    },
+  ];
+
   return <>
     <Container>
       <Content>
         <div>
           <H2 className='title'>관리자 페이지</H2>
         </div>
-        <PrimaryButton>사용자 페이지<RiUserReceivedLine /></PrimaryButton>
+        <PrimaryButton onClick={()=>navigate(`/lms/m`)}><p>사용자 페이지<RiUserReceivedLine /></p></PrimaryButton>
       </Content>
       <Box>
       <HeaderBox><H2>보유 권한: </H2><AuthBox> {authBadge(auth)} </AuthBox></HeaderBox>

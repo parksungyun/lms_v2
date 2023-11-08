@@ -138,7 +138,7 @@ export function AdminManagerDetail() {
             </Detail>
             <Detail>
               <Label>비밀번호</Label>
-              <PrimaryButton>비밀번호 초기화</PrimaryButton>
+              <PrimaryButton><p>비밀번호 초기화</p></PrimaryButton>
             </Detail>
             <Detail>
               <Label>생년월일</Label>
@@ -191,12 +191,12 @@ export function AdminManagerDetail() {
             <Detail>
               <Label>활성화</Label>
               {
-                academic.available == 1 ? <DangerButton>비활성화</DangerButton> : <PrimaryButton>활성화</PrimaryButton>
+                academic.available == 1 ? <DangerButton><p>비활성화</p></DangerButton> : <PrimaryButton><p>활성화</p></PrimaryButton>
               }
             </Detail>
             <ButtonBox>
-              <PrimaryButton type="submit" onClick={onSubmit}>수정</PrimaryButton>
-              <SecondaryButton onClick={() => navigate("/lms/a/managerSetting")}>목록</SecondaryButton>
+              <PrimaryButton type="submit" onClick={onSubmit}><p>수정</p></PrimaryButton>
+              <SecondaryButton onClick={() => navigate("/lms/a/managerSetting")}><p>목록</p></SecondaryButton>
             </ButtonBox>
         </Details>
       </Content>

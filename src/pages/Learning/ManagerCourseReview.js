@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { CourseReview } from "../../components/CourseReview";
 import { useState } from "react";
-import { course_reviews, courses, students, subjects, userList } from "../../assets/TempData";
-import { useEffect } from "react";
+import { course_reviews, students, subjects, userList } from "../../assets/TempData";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;

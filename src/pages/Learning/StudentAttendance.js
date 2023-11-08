@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import { userList, students, courses, attendances, absence_code, academics } from "../../assets/TempData";
@@ -20,28 +19,6 @@ const PrimaryButton = styled.button`
   background-color: #5f7dcf;
   padding: 0.8rem 1.4rem;
   color: white;
-`;
-
-const SecondaryButton = styled.button`
-  border: 0;
-  border-radius: 5px;
-  background-color: gray;
-  padding: 0.8rem 1.4rem;
-  color: white;
-`;
-
-const DangerButton = styled.button`
-  border: 0;
-  border-radius: 5px;
-  background-color: red;
-  padding: 0.8rem 1.4rem;
-  color: white;
-`;
-
-const ButtonBox = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
 `;
 
 const Box = styled.div`

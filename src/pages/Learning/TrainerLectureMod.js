@@ -112,7 +112,7 @@ export function TrainerLectureMod() {
           <Box>
             <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
             <DangerButton><p>삭제</p></DangerButton>
-            <SecondaryButton onClick={() => navigate(-1)}><p>목록</p></SecondaryButton>
+            <SecondaryButton onClick={() => navigate("/lms/t/lecture")}><p>목록</p></SecondaryButton>
           </Box>
         </form>
       </TableBox>

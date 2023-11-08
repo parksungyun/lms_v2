@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { academics, userList, department, trainerPosition, managerPosition } from "../assets/TempData";
+import { academics, userList, department, managerPosition } from "../assets/TempData";
 import styled from "styled-components";
 import { useState } from "react";
 
@@ -64,7 +64,7 @@ const Select = styled.select`
 
 export function ManagerDetailForm() {
   const navigate = useNavigate();
-  const  id  = 1;
+  const { id } = useParams();
   const academic = academics.find((a) => a.academic_id == id);
   const user = userList.find((u) => u.uid == academic.uid);
   const dept = department.find((d) => d.dept_id == academic.dept);
@@ -143,7 +143,7 @@ export function ManagerDetailForm() {
           <Input type="text" name="remark" id="remark" value={Remark} onChange={(e) => {setRemark(e.target.value)}} />
         </Detail>
         <ButtonBox>
-          <PrimaryButton type="submit" onClick={onSubmit}>수정</PrimaryButton>
+          <PrimaryButton type="submit" onClick={onSubmit}><p>수정</p></PrimaryButton>
         </ButtonBox>
       </Details>
     </Content>

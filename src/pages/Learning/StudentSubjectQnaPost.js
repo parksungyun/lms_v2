@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { BsDownload } from "react-icons/bs";
 import { useNavigate, useParams } from "react-router-dom";
 import { BsFillEyeFill } from "react-icons/bs";
-import { academics, students, subject_answers, subject_questions, userList } from "../../assets/TempData";
+import { students, subject_answers, subject_questions, userList } from "../../assets/TempData";
 import { ReplyPost } from "../../components/ReplyPost";
 
 const Container = styled.div`

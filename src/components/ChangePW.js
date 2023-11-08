@@ -84,7 +84,7 @@ export function ChangePW() {
           <Input type="text" name="user_id" id="user_id"  value={''} onChange={(e) => {setUserId(e.target.value)}}/>
         </Detail>
         <ButtonBox>
-          <PrimaryButton type="submit" onClick={onSubmit}>수정</PrimaryButton>
+          <PrimaryButton type="submit" onClick={onSubmit}><p>수정</p></PrimaryButton>
         </ButtonBox>
       </Details>
     </Content>
