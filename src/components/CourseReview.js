@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Table } from "./Table";
+import { academics, courses, students, subjects, userList } from "../assets/TempData";
 
 const Box = styled.div`
   border-bottom: 2px solid #ddd;
@@ -41,28 +42,38 @@ const headers = [
   },
 ];
 
-export function CourseReview({items}) {
+export function CourseReview({items, info, index}) {
+  console.log(info.find(i => i.subject_id == index))
+  const subject = subjects.find(s => s.subject_id == info.find(i => i.subject_id == index).subject_id)
+  const course = courses.find(c => c.course_id == subjects.find(s => s.subject_id == info.find(i => i.subject_id == index).subject_id).course_id)
+  const student = students.filter(s => s.course_id == course.course_id);
+  let sum = 0;
+  let average = 0;
+  info.map((i) => {
+    sum += i.review_score;
+  });
+  average = sum / info.length;
   return<>
     <Box>
       <ContentBox className='col-2'>
         <Bold>강사</Bold>
-        <p>안경태</p>
+        <p>{userList.find(u => u.uid == academics.find(a => a.academic_id == subject.academic_id).uid).user_name}</p>
       </ContentBox>
       <ContentBox className='col-3'>
         <Bold>전체</Bold>
-        <p>30</p>
+        <p>{student.length}</p>
       </ContentBox>
       <ContentBox className='col-3'>
         <Bold>제출</Bold>
-        <p>25</p>
+        <p>{info.length}</p>
       </ContentBox>
       <ContentBox className='col-3'>
         <Bold>미제출</Bold>
-        <p>5</p>
+        <p>{student.length - info.length}</p>
       </ContentBox>
       <ContentBox className='col-1'>
         <Bold>평균</Bold>
-        <p>3</p>
+        <p>{average}</p>
       </ContentBox>
     </Box>
     <Table 

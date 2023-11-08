@@ -1,171 +1,8 @@
 import styled from "styled-components";
 import { CourseReview } from "../../components/CourseReview";
 import { useState } from "react";
-
-const items1 = [
-  {
-    no: 1,
-    writer: '가나다',
-    score: 5,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 2,
-    writer: '가나다',
-    score: 5,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 3,
-    writer: '가나다',
-    score: 5,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 4,
-    writer: '가나다',
-    score: 5,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 5,
-    writer: '가나다',
-    score: 5,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-];
-
-const items2 = [
-  {
-    no: 1,
-    writer: '가나다',
-    score: 4,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 2,
-    writer: '가나다',
-    score: 4,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 3,
-    writer: '가나다',
-    score: 4,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 4,
-    writer: '가나다',
-    score: 4,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 5,
-    writer: '가나다',
-    score: 4,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-];
-
-const items3 = [
-  {
-    no: 1,
-    writer: '가나다',
-    score: 3,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 2,
-    writer: '가나다',
-    score: 3,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 3,
-    writer: '가나다',
-    score: 3,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 4,
-    writer: '가나다',
-    score: 3,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 5,
-    writer: '가나다',
-    score: 3,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-];
-
-const items4 = [
-  {
-    no: 1,
-    writer: '가나다',
-    score: 2,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 2,
-    writer: '가나다',
-    score: 2,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 3,
-    writer: '가나다',
-    score: 2,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 4,
-    writer: '가나다',
-    score: 2,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 5,
-    writer: '가나다',
-    score: 2,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-];
-
-const items5 = [
-  {
-    no: 1,
-    writer: '가나다',
-    score: 1,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 2,
-    writer: '가나다',
-    score: 1,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 3,
-    writer: '가나다',
-    score: 1,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 4,
-    writer: '가나다',
-    score: 1,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-  {
-    no: 5,
-    writer: '가나다',
-    score: 1,
-    content: '몇점을 주어야 할까요 그냥 만점 드렸습니다'
-  },
-];
+import { course_reviews, courses, students, subjects, userList } from "../../assets/TempData";
+import { useEffect } from "react";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -210,8 +47,23 @@ const Btn = styled.button`
 `;
 
 export function ManagerCourseReview() {
-  const [item, setItem] = useState(items1);
   const [active, setActive] = useState(['active', '', '', '', '']);
+  const [index, setIndex] = useState(1);
+
+  const id = 1; //couresid 값 임의로 셋팅
+  const subject = subjects.filter(s => s.course_id == id);
+  let temp;
+
+  temp = course_reviews.filter((c) => c.subject_id == index);
+
+  const items = temp.map((c, i) => (
+    {
+      no: i + 1,
+      writer: userList.find(u => u.uid == students.find(s => s.student_id == c.student_id).uid).user_name,
+      score: c.review_score,
+      content: c.review_comment
+    }
+  ));
   
   function changeActive(i) {
     let temp = ['', '', '', '', ''];
@@ -223,13 +75,15 @@ export function ManagerCourseReview() {
       <TableBox>
         <H2>강의평가</H2>
         <Hr />
-        <Btn className={active[0]} onClick={()=>{setItem(items1); changeActive(1)}}>강의1</Btn>
-        <Btn className={active[1]} onClick={()=>{setItem(items2); changeActive(2)}}>강의2</Btn>
-        <Btn className={active[2]} onClick={()=>{setItem(items3); changeActive(3)}}>강의3</Btn>
-        <Btn className={active[3]} onClick={()=>{setItem(items4); changeActive(4)}}>강의4</Btn>
-        <Btn className={active[4]} onClick={()=>{setItem(items5); changeActive(5)}}>강의5</Btn>
+        {
+          subject.map((s, i) => (
+            <>            
+            <Btn className={active[i]} onClick={()=>{setIndex(i+1); changeActive(i+1)}}><p>{s.subject_name}</p></Btn>
+            </>
+          ))
+        }
         <div>
-          <CourseReview items={item}/>
+          <CourseReview items={items} info={temp} index={index}/>
         </div>
       </TableBox>
     </Container>
