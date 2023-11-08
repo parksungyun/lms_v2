@@ -145,10 +145,10 @@ export function TrainerHWFeedback() {
 
   function changeButton(id) {
     if(feedbacks.find((f) => f.submit_id == id)) {
-      return (<SuccessButton onClick={()=>navigate()}>채점완료</SuccessButton>)
+      return <SuccessButton onClick={()=>navigate()}><p>채점완료</p></SuccessButton>
     }
     else {
-      return (<SecondaryButton onClick={()=>navigate()}>채점대기</SecondaryButton>)
+      return <SecondaryButton onClick={()=>navigate()}><p>채점대기</p></SecondaryButton>
     }
   };
 
