@@ -23,7 +23,7 @@ const Box = styled.div`
   align-items: center;
   text-align: center;
   margin: 10px 0;
-  &.btn{
+  &.button{
     justify-content: center;
     margin-top: 1rem;
     margin-bottom: 0;
@@ -140,7 +140,7 @@ export function BoardPost({userState}) {
         <Attached><p className="fw-bold">첨부파일</p></Attached>
         <div><A href="">파일.pdf<Icon><BsDownload /></Icon></A></div>
       </AttachedBox>
-      <Box className="btn">
+      <Box className="button">
         {userState = 0 ? null : <PrimaryButton>수정</PrimaryButton>}
         <SecondaryButton>목록</SecondaryButton>
       </Box>

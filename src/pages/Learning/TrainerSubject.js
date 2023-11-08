@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_subject_table.css';
-import { courses, students, studies, userList } from "../../assets/TempData";
+import { courses, homeworks, lectures, students, studies, subject_answers, subject_board, subject_questions, subjects, submits, userList } from "../../assets/TempData";
 
 const headers = [
   {
@@ -29,23 +29,6 @@ const headers = [
     value: 'HWCount'
   },
 ];
-
-const id = 1;
-
-const course = courses.find(c => c.course_id == id);
-const student = students.filter(u => u.course_id == course.course_id);
-console.log(student);
-console.log(course);
-const items = courses.map((d,i)=>(
-  {
-    no: i+1,
-    name: userList.find(u => u.uid == student[i].uid).user_name,
-    birth: userList.find(u => u.uid == student[i].uid).user_birth,
-    phone: userList.find(u => u.uid == student[i].uid).user_phone,
-    lectureCount: studies.filter(s => s.student_id == student[i].student_id).filter(i => i.is_study == 2).length,
-    HWCount: '3'
-  }
-));
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -90,6 +73,24 @@ const Bold = styled.p`
 `;
 
 export function TrainerSubject() {
+  const id = 1; // subjectid 임의로 받아옴
+  const subject = subjects.find(s => s.subject_id == id);
+  const course = courses.find(c => c.course_id == subject.course_id);
+  const student = students.filter(s => s.course_id == course.course_id);
+  const homework = homeworks.filter(h => h.subject_id == id);
+  const question = subject_questions.filter(s => s.subject_id == subject.subject_id);
+
+  const items = courses.map((d,i)=>(
+    {
+      no: i+1,
+      name: userList.find(u => u.uid == student[i].uid).user_name,
+      birth: userList.find(u => u.uid == student[i].uid).user_birth,
+      phone: userList.find(u => u.uid == student[i].uid).user_phone,
+      lectureCount: studies.filter(s => s.student_id == student[i].student_id).filter(i => i.is_study == 2).length,
+      HWCount: homework.filter((h) => (submits.filter(s => s.student_id == student[i].student_id).find((t) => t.homework_id == h.homework_id))).length
+    }
+  ));
+
   return<>
     <Container>
       <TableBox>
@@ -97,37 +98,37 @@ export function TrainerSubject() {
         <Box>
           <ContentBox className="col-3">
             <Bold>과정명</Bold>
-            <p>스마트 UI/UX 디지털 디자인 2회차</p>
+            <p>{course.course_name}</p>
           </ContentBox>
           <ContentBox className="col-3">
             <Bold>과목명</Bold>
-            <p>HTML</p>
+            <p>{subject.subject_name}</p>
           </ContentBox>
           <ContentBox className="col-3">
             <Bold>기간</Bold>
-            <p>2023.06.07 ~ 2023.12.19</p>
+            <p>{course.start_date} ~ {course.end_date}</p>
           </ContentBox>
           <ContentBox className="col-3">
             <Bold>학생수</Bold>
-            <p>30명</p>
+            <p>{student.length}명</p>
           </ContentBox>
         </Box>
         <Box>
           <ContentBox className="col-3">
             <Bold>등록한 공지</Bold>
-            <p>3</p>
+            <p>{subject_board.filter(s => s.subject_id == subject.subject_id).length}</p>
           </ContentBox>
           <ContentBox className="col-3">
             <Bold>등록한 강의</Bold>
-            <p>30</p>
+            <p>{lectures.filter(l => l.subject_id == subject.subject_id).length}</p>
           </ContentBox>
           <ContentBox className="col-3">
             <Bold>등록한 과제</Bold>
-            <p>15</p>
+            <p>{homework.length}</p>
           </ContentBox>
           <ContentBox className="col-3">
             <Bold>답변 대기 질문</Bold>
-            <p>5</p>
+            <p>{subject_questions.filter(s => s.subject_id == subject.subject_id).length - subject_answers.filter(s => question.find(q => q.s_question_id == s.s_question_id)).length}</p>
           </ContentBox>
         </Box>
         <Table 

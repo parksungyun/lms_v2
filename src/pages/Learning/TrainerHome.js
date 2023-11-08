@@ -2,6 +2,7 @@ import styled from "styled-components"
 import { RiUserSettingsLine } from "react-icons/ri";
 import { LmsHomeButtonWrapper } from "../../components/LmsHomeButtonWrapper";
 import { courses } from "../../assets/TempData";
+import { useNavigate } from "react-router-dom";
 
 const id = 1; // academicid 임의로 받아옴
 const course = courses.filter(c => c.academic_id == id)
@@ -80,13 +81,14 @@ const ButtonBox = styled.div`
 `;
 
 export function TrainerHome() {
+  const navigate = useNavigate()
   return <>
     <Container>
       <Content>
         <div>
           <H2 className='title'>내 과목 관리</H2>
         </div>
-        <PrimaryButton><p>관리자 페이지<RiUserSettingsLine /></p></PrimaryButton>
+        <PrimaryButton onClick={()=>navigate("/lms/a")}><p>관리자 페이지<RiUserSettingsLine /></p></PrimaryButton>
       </Content>
       <Box>
         <H2>진행중인 과목: {courseNumber.length}</H2>
