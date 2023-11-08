@@ -59,35 +59,13 @@ const Content = styled.p`
   overflow-y: scroll;
 `;
 
-const CommentBox = styled.div`
-  margin-top: 2rem;
-  border: 1px solid #ddd;
-  border-radius: 7px;
-`;
-
-const CommentWriter = styled.div`
-  border-bottom: 1px solid #ddd;
-  padding: 10px;
-`;
-
-const Comment = styled.div`
-  height: 100px;
-  vertical-align: top;
-  padding: 10px;
-  overflow-y: scroll;
-`;
-
-const Text = styled.p`
-  font-size: 1.1rem;
-`;
-
 const Box = styled.div`
   display: flex;
   gap: 1rem;
   align-items: center;
   text-align: center;
   margin: 10px 0;
-  &.btn{
+  &.button{
     justify-content: center;
     margin-top: 1rem;
     margin-bottom: 0;
@@ -151,7 +129,7 @@ export function StudentSubjectQnaPost() {
         {
           answer && <ReplyPost id={answer.s_question_id} type={"s"} />
         }
-        <Box className="btn">
+        <Box className="button">
           <PrimaryButton onClick={()=>navigate("mod", { state: question.s_question_id })}><p>수정</p></PrimaryButton>
           <SecondaryButton onClick={()=>navigate("/lms/s/sqna")}><p>목록</p></SecondaryButton>
         </Box>

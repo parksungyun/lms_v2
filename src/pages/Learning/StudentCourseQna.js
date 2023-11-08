@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
 import { Pagination } from "../../components/Pagination";
-import { course_answers, course_questions, courses, students } from "../../assets/TempData";
+import { course_answers, course_questions, students } from "../../assets/TempData";
 
 const BadgeSuccess = styled.span`
   background-color: green;

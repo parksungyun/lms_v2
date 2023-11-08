@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { homeworks } from "../../assets/TempData";
 
 const TableBox = styled.div`
   padding: 2rem;
@@ -22,7 +23,7 @@ const Box = styled.div`
   gap: 1rem;
   align-items: center;
   margin: 10px 0;
-  &.btn{
+  &.button{
     justify-content: center;
     margin-top: 1rem;
     margin-bottom: 0;
@@ -50,6 +51,14 @@ const PrimaryButton = styled.button`
   border: 0;
   border-radius: 5px;
   background-color: #5f7dcf;
+  padding: 0.6rem 1.4rem;
+  color: white;
+`;
+
+const DangerButton = styled.button`
+  border: 0;
+  border-radius: 5px;
+  background-color: red;
   padding: 0.6rem 1.4rem;
   color: white;
 `;
@@ -82,17 +91,20 @@ const ContentInput = styled.textarea`
   resize: none;
 `;
 
-export function HWPostWrite() {
-  const [hw_content, setHw_content] = useState("");
-  const [hw_title, setHw_title] = useState("");
-  const [hw_start_date, setHw_start_date] = useState("");
-  const [hw_end_date, setHw_end_date] = useState("");
+export function TrainerHWPostMod() {
+  const { state } = useLocation();
+  const post = homeworks.find((h) => h.homework_id == state);
+  const [hw_title, setHw_title] = useState(post.hw_title);
+  const [hw_content, setHw_content] = useState(post.Content);
+  const [hw_start_date, setHw_start_date] = useState(post.hw_start_date);
+  const [hw_end_date, setHw_end_date] = useState(post.hw_end_date);
   const navigate = useNavigate();
+
   return<>
     <TableBox>
-      <H2>과제 등록</H2>
+      <H2>과제 수정</H2>
       <form action="" method="POST">
-        <Input type="text" name="hw_title" id="hw_title" value={hw_title} onChange={(e)=>setHw_title(e.target.value)} placeholder="제목을 입력해주세요"/>
+        <Input type="text" name="hw_title" id="hw_title" value={hw_title} onChange={(e)=>setHw_title(e.target.value)} />
         <Hr />
         <Content>
           <Box className="text">
@@ -103,12 +115,13 @@ export function HWPostWrite() {
             <Input className="date" type="date" name="hw_start_date" id="hw_start_date" value={hw_start_date} onChange={(e)=>setHw_start_date(e.target.value)}/>
             <Input className="date" type="date" name="hw_end_date" id="hw_end_date" value={hw_end_date}  onChange={(e)=>setHw_end_date(e.target.value)}/>
           </Box>
-          <ContentInput type="text" name="hw_content" id="hw_content" value={hw_content}  onChange={(e)=>setHw_content(e.target.value)} placeholder="내용을 입력해주세요"/>
+          <ContentInput type="text" name="hw_content" id="hw_content" value={hw_content}  onChange={(e)=>setHw_content(e.target.value)}/>
         </Content>
         <Input type="file" name="hw_file" id="hw_file" accept="" />
-        <Box className="btn">
-          <PrimaryButton type="submit">등록</PrimaryButton>
-          <SecondaryButton onClick={()=>navigate(-1)}>목록</SecondaryButton>
+        <Box className="button">
+          <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
+          <DangerButton><p>삭제</p></DangerButton>
+          <SecondaryButton onClick={()=>navigate(`/lms/t/homework/${post.homework_id}`)}><p>목록</p></SecondaryButton>
         </Box>
       </form>
     </TableBox>

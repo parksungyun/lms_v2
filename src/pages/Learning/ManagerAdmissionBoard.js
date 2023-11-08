@@ -4,8 +4,19 @@ import { Table } from "../../components/Table";
 import { Pagination } from "../../components/Pagination";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { admission_answers, admission_questions } from "../../assets/TempData";
 
-const managerABoard = [
+
+const BadgeSuccess = styled.span`
+  background-color: green;
+  padding: 2px 15px;
+  color: white;
+  font-weight: 500;
+  font-size: 0.8rem;
+  border-radius: 5px;
+  `;
+
+const headers = [
   {
     text: 'No.',
     value: 'no'
@@ -20,26 +31,17 @@ const managerABoard = [
   },
   {
     text: '작성일',
-    value: 'writeDate'
+    value: 'regDate'
   },
   {
-    text: '등록일',
-    value: 'regDate'
+    text: '답변일',
+    value: 'replyDate'
   },
   {
     text: '답변상태',
     value: 'replyState'
   }
 ];
-
-const BadgeSuccess = styled.span`
-  background-color: green;
-  padding: 2px 15px;
-  color: white;
-  font-weight: 500;
-  font-size: 0.8rem;
-  border-radius: 5px;
-  `;
 
 const BadgeSecondary = styled.span`
   background-color: gray;
@@ -49,94 +51,6 @@ const BadgeSecondary = styled.span`
   font-size: 0.8rem;
   border-radius: 5px;
 `;
-
-function changeReply(reply) {
-  if(reply === 1) return(<BadgeSuccess>답변완료</BadgeSuccess>);
-  else return(<BadgeSecondary>답변대기</BadgeSecondary>);
-};
-
-const MAItems = [
-  {
-    no: 1,
-    title: '교육상담아무말이나해봐아무말이나해봐아무해봐아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    regDate: '2023-10-25',
-    replyState: changeReply(0)
-  },
-  {
-    no: 2,
-    title: '교육상담아무말이나무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    regDate: '2023-10-25',
-    replyState: changeReply(0)
-  },
-  {
-    no: 3,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    regDate: '2023-10-25',
-    replyState: changeReply(1)
-  },
-  {
-    no: 4,
-    title: '교육상담아무말이나해봐아무말이나해무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    regDate: '2023-10-25',
-    replyState: changeReply(0)
-  },
-  {
-    no: 5,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    regDate: '2023-10-25',
-    replyState: changeReply(0)
-  },
-  {
-    no: 6,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    regDate: '2023-10-25',
-    replyState: changeReply(1)
-  },
-  {
-    no: 7,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    regDate: '2023-10-25',
-    replyState: changeReply(1)
-  },
-  {
-    no: 8,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    regDate: '2023-10-25',
-    replyState: changeReply(0)
-  },
-  {
-    no: 9,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    regDate: '2023-10-25',
-    replyState: changeReply(1)
-  },
-  {
-    no: 10,
-    title: '교육상담아무말이나해봐아무말이나해봐아무말이나해봐',
-    writer: '가나다',
-    writeDate: '2023-10-25',
-    regDate: '2023-10-25',
-    replyState: changeReply(1)
-  },
-];
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -201,6 +115,40 @@ export function ManagerAdmissionBoard() {
   const navigate = useNavigate();
   const limit = 10;
   const offset = (page - 1) * limit;
+  const answer = admission_answers.filter((a) => admission_questions.map((q) => q.a_question_id == a.a_question_id));
+
+  const items = admission_questions.map((q, i) => (
+    {
+      no: i + 1,
+      title: titleLink(q.a_question_id, q.a_question_title),
+      writer: q.writer_name,
+      regDate: q.a_question_reg_date,
+      replyDate: findReplyDate(q.a_question_id),
+      replyState: changeReply(q.a_question_id)
+    }
+  ))
+
+  function findReplyDate(id) {
+    let temp;
+    if(answer.find((a) => a.a_question_id == id)){
+      temp = answer.find((a) => a.a_question_id == id);
+      return temp.a_answer_mod_date;
+    }
+    else return "";
+  }
+
+  function changeReply(id) {
+    if(answer.find((a) => a.a_question_id == id)){
+      return(<BadgeSuccess>답변완료</BadgeSuccess>)
+    }
+    else {
+      return(<BadgeSecondary>답변대기</BadgeSecondary>)
+    }
+  };
+
+  function titleLink(id, title) {
+    return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
+  }
 
   const postsData = (posts) => {
     if(posts) {
@@ -219,8 +167,8 @@ export function ManagerAdmissionBoard() {
         <H2>입학상담</H2>
         <Hr />
         <Table 
-          headers={managerABoard}
-          items={postsData(MAItems)}
+          headers={headers}
+          items={postsData(items)}
           selectable={false}
         />
         <ButtonBox>
@@ -231,11 +179,10 @@ export function ManagerAdmissionBoard() {
               <option key="writer" value="writer">작성자</option>
             </select>
             <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
-            <button onClick={onSearch}>검색</button>
+            <button onClick={onSearch}><p>검색</p></button>
           </SearchBox>
-          <PrimaryButton onClick={() => navigate("/")}>작성</PrimaryButton>
         </ButtonBox>
-        <Pagination limit={limit} page={page} totalPosts={MAItems.length} setPage={setPage} />
+        <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
       </TableBox>
     </Container>
   </>

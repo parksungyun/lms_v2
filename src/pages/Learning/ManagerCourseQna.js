@@ -133,7 +133,7 @@ export function ManagerCourseQna() {
     else {
       return(<BadgeSecondary>답변대기</BadgeSecondary>)
     }
-  };
+  }
 
   function titleLink(id, title) {
     return (<p onClick={() => navigate(`${id}`)}>{title}</p>);

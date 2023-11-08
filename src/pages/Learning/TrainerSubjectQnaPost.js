@@ -3,7 +3,7 @@ import { BsDownload } from "react-icons/bs";
 import { useNavigate, useParams } from "react-router-dom";
 import { BsFillEyeFill } from "react-icons/bs";
 import { useState } from "react";
-import { academics, students, subject_answers, subject_questions, userList } from "../../assets/TempData";
+import { students, subject_answers, subject_questions, userList } from "../../assets/TempData";
 import { ReplyPost } from "../../components/ReplyPost";
 import { ReplyWrite } from "../../components/ReplyWrite";
 import { useEffect } from "react";
@@ -62,35 +62,13 @@ const Content = styled.p`
   overflow-y: scroll;
 `;
 
-const CommentBox = styled.div`
-  margin-top: 2rem;
-  border: 1px solid #ddd;
-  border-radius: 7px;
-`;
-
-const CommentWriter = styled.div`
-  border-bottom: 1px solid #ddd;
-  padding: 10px;
-`;
-
-const Comment = styled.div`
-  height: 100px;
-  vertical-align: top;
-  padding: 10px;
-  overflow-y: scroll;
-`;
-
-const Text = styled.p`
-  font-size: 1.1rem;
-`;
-
 const Box = styled.div`
   display: flex;
   gap: 1rem;
   align-items: center;
   text-align: center;
   margin: 10px 0;
-  &.btn{
+  &.button{
     justify-content: center;
     margin-top: 1rem;
     margin-bottom: 0;
@@ -121,16 +99,6 @@ const IconBox = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-`;
-
-const ContentInput = styled.textarea`
-  margin-top: 2rem;
-  width: 100%;
-  height: 150px;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid lightgray;
-  resize: none;
 `;
 
 export function TrainerSubjectQnaPost() {
@@ -173,7 +141,7 @@ export function TrainerSubjectQnaPost() {
       {
         isReply == 1 ? <>
         <ReplyPost id={id} type={"s"} />
-        <Box className="btn">
+        <Box className="button">
           <PrimaryButton onClick={()=>setIsReply(0)}><p>수정</p></PrimaryButton>
           <SecondaryButton onClick={()=>navigate("/lms/t/qna")}><p>목록</p></SecondaryButton>
         </Box>

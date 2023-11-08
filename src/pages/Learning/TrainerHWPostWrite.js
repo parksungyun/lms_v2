@@ -22,7 +22,7 @@ const Box = styled.div`
   gap: 1rem;
   align-items: center;
   margin: 10px 0;
-  &.btn{
+  &.button{
     justify-content: center;
     margin-top: 1rem;
     margin-bottom: 0;
@@ -50,14 +50,6 @@ const PrimaryButton = styled.button`
   border: 0;
   border-radius: 5px;
   background-color: #5f7dcf;
-  padding: 0.6rem 1.4rem;
-  color: white;
-`;
-
-const DangerButton = styled.button`
-  border: 0;
-  border-radius: 5px;
-  background-color: red;
   padding: 0.6rem 1.4rem;
   color: white;
 `;
@@ -90,17 +82,17 @@ const ContentInput = styled.textarea`
   resize: none;
 `;
 
-export function HWPostMod() {
-  const [hw_content, setHw_content] = useState("반복문을 이용하여 과제를 해결하세요. 아래 첨부파일을 확인하고 과제해결 후 제출하세요!");
-  const [hw_title, setHw_title] = useState("피라미드 만들기");
-  const [hw_start_date, setHw_start_date] = useState("2023-09-05");
-  const [hw_end_date, setHw_end_date] = useState("2023-09-10");
+export function TrainerHWPostWrite() {
+  const [hw_content, setHw_content] = useState("");
+  const [hw_title, setHw_title] = useState("");
+  const [hw_start_date, setHw_start_date] = useState("");
+  const [hw_end_date, setHw_end_date] = useState("");
   const navigate = useNavigate();
   return<>
     <TableBox>
-      <H2>과제 수정</H2>
+      <H2>과제 등록</H2>
       <form action="" method="POST">
-        <Input type="text" name="hw_title" id="hw_title" value={hw_title} onChange={(e)=>setHw_title(e.target.value)} />
+        <Input type="text" name="hw_title" id="hw_title" value={hw_title} onChange={(e)=>setHw_title(e.target.value)} placeholder="제목을 입력해주세요"/>
         <Hr />
         <Content>
           <Box className="text">
@@ -111,13 +103,12 @@ export function HWPostMod() {
             <Input className="date" type="date" name="hw_start_date" id="hw_start_date" value={hw_start_date} onChange={(e)=>setHw_start_date(e.target.value)}/>
             <Input className="date" type="date" name="hw_end_date" id="hw_end_date" value={hw_end_date}  onChange={(e)=>setHw_end_date(e.target.value)}/>
           </Box>
-          <ContentInput type="text" name="hw_content" id="hw_content" value={hw_content}  onChange={(e)=>setHw_content(e.target.value)}/>
+          <ContentInput type="text" name="hw_content" id="hw_content" value={hw_content}  onChange={(e)=>setHw_content(e.target.value)} placeholder="내용을 입력해주세요"/>
         </Content>
         <Input type="file" name="hw_file" id="hw_file" accept="" />
-        <Box className="btn">
-          <PrimaryButton type="submit">수정</PrimaryButton>
-          <DangerButton>삭제</DangerButton>
-          <SecondaryButton onClick={()=>navigate(-1)}>목록</SecondaryButton>
+        <Box className="button">
+          <PrimaryButton type="submit"><p>등록</p></PrimaryButton>
+          <SecondaryButton onClick={()=>navigate("/lms/t/homework")}><p>목록</p></SecondaryButton>
         </Box>
       </form>
     </TableBox>

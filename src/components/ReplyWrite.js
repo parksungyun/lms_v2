@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components"
-import { academics, course_answers, course_questions, subject_answers, subject_questions, userList } from "../assets/TempData";
+import { academics, admission_answers, admission_questions, course_answers, course_questions, subject_answers, subject_questions, userList } from "../assets/TempData";
 import { useEffect } from "react";
 
 const ContentInput = styled.textarea`
@@ -20,7 +20,7 @@ const Box = styled.div`
   align-items: center;
   text-align: center;
   margin: 10px 0;
-  &.btn{
+  &.button{
     justify-content: center;
     margin-top: 1rem;
     margin-bottom: 0;
@@ -53,7 +53,7 @@ const DangerButton = styled.button`
 
 export function ReplyWrite({ id, user, type }) {
   const navigate = useNavigate();
-  const [qna_reply, setQna_reply] = useState("");
+  const [reply, setReply] = useState("");
   const [isReply, setIsReply] = useState(0);
   
   let question;
@@ -64,7 +64,7 @@ export function ReplyWrite({ id, user, type }) {
       question = subject_questions.find(data => data.s_question_id == id);
       if(subject_answers.find(data => data.s_question_id == question.s_question_id)) {
         answer = subject_answers.find(data => data.s_question_id == question.s_question_id);
-        setQna_reply(answer.s_answer_content);
+        setReply(answer.s_answer_content);
         setIsReply(1);
       }
     }
@@ -72,7 +72,15 @@ export function ReplyWrite({ id, user, type }) {
       question = course_questions.find(data => data.c_question_id == id);
       if(course_answers.find(data => data.c_question_id == question.c_question_id)) {
         answer = course_answers.find(data => data.c_question_id == question.c_question_id);
-        setQna_reply(answer.c_answer_content);
+        setReply(answer.c_answer_content);
+        setIsReply(1);
+      }
+    }
+    if(type == "m/admission") {
+      question = admission_questions.find(data => data.a_question_id == id);
+      if(admission_answers.find(data => data.a_question_id == question.a_question_id)) {
+        answer = admission_answers.find(data => data.a_question_id == question.a_question_id);
+        setReply(answer.a_answer_content);
         setIsReply(1);
       }
     }
@@ -80,8 +88,8 @@ export function ReplyWrite({ id, user, type }) {
   
   return <>
     <form action="" method="POST" >
-      <ContentInput type="text" name="qna_reply" id="qna_reply" value={qna_reply} onChange={(e)=>setQna_reply(e.target.value)} placeholder="답변 내용을 입력해주세요" />
-      <Box className="btn">
+      <ContentInput type="text" name="qna_reply" id="qna_reply" value={reply} onChange={(e)=>setReply(e.target.value)} placeholder="답변 내용을 입력해주세요" />
+      <Box className="button">
         {
           isReply == 1 ? <>
             <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
