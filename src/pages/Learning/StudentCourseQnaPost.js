@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { BsDownload } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BsFillEyeFill } from "react-icons/bs";
-import { academics, course_answers, course_questions, students, userList } from "../../assets/TempData";
+import { course_answers, course_questions, students, userList } from "../../assets/TempData";
+import { ReplyPost } from "../../components/ReplyPost";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -114,16 +115,17 @@ const P = styled.p`
 `;
 
 export function StudentCourseQnaPost() {
-  const id = 1;
-  const question = course_questions.find(c => c.course_id == id);
+  const { id } = useParams();
+  const question = course_questions.find(c => c.c_question_id == id);
   const answer = course_answers.find(c => c.c_question_id == question.c_question_id);
   const navigate = useNavigate();
+
   return<>
     <Container>
       <TableBox>
         <H2>{question.c_question_title}</H2>
         <Box>
-          <P>{userList.find(u => u.uid == students.find(s => s.student_id == question.student_id).uid).user_name}</P>
+          <P>{userList.find(u => u.uid == (students.find(s => s.student_id == question.student_id)).uid).user_name}</P>
           <P>|</P>
           <P>{question.c_question_reg_date}</P>
         </Box>
@@ -134,18 +136,13 @@ export function StudentCourseQnaPost() {
           <div><A href={question.c_question_fileURL}>휴가계.pdf<Icon><BsDownload /></Icon></A></div>
         </AttachedBox>
         <Hr />
-        <CommentBox>
-        <CommentWriter>
-          <Text>{userList.find(u => u.uid == academics.find(a => a.academic_id == answer.academic_id).uid).user_name} | {answer.c_answer_reg_date}</Text>
-        </CommentWriter>
-        <Comment>
-          <Text>{answer.c_answer_content}</Text>
-        </Comment>
-      </CommentBox>
-      <Box className="btn">
-        <PrimaryButton onClick={()=>navigate("/lms/s")}><p>수정</p></PrimaryButton>
-        <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
-      </Box>
+        {
+          answer && <ReplyPost id={question.c_question_id} type={"c"} />
+        }
+        <Box className="btn">
+          <PrimaryButton onClick={()=>navigate("mod", { state: question.c_question_id })}><p>수정</p></PrimaryButton>
+          <SecondaryButton onClick={()=>navigate("/lms/s/cqna")}><p>목록</p></SecondaryButton>
+        </Box>
       </TableBox>
     </Container>
   </>

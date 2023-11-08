@@ -56,7 +56,7 @@ const SecondaryButton = styled.button`
 `;
 
 const Input = styled.input`
-  width: 90%;
+  width: 100%;
   padding: 0.7rem;
   border: 1px solid lightgray;
   border-radius: 0.5rem;
@@ -78,17 +78,17 @@ export function StudentCourseQnaWrite() {
   return<>
     <Container>
       <TableBox>
-        <H2>1:1문의 등록</H2>
+        <H2>1:1 문의 등록</H2>
         <form action="" method="POST">
-        <Input type="text" name="qna_title" id="qna_title" value={qna_title} onChange={(e)=>setQna_title(e.target.value)} placeholder="제목 입력해주세요"/>
-        <Hr />
-        <ContentInput type="text" name="qna_content" id="qna_content" value={qna_content}  onChange={(e)=>setQna_content(e.target.value)} placeholder="내용 입력해주세요"/>
-        <Input type="file" name="qna_file" id="qna_file" accept="" />
-        <Box>
-          <PrimaryButton><p>등록</p></PrimaryButton>
-          <SecondaryButton onClick={() => navigate(-1)}><p>목록</p></SecondaryButton>
-        </Box>
-      </form>
+          <Input type="text" name="qna_title" id="qna_title" value={qna_title} onChange={(e)=>setQna_title(e.target.value)} placeholder="제목 입력해주세요"/>
+          <Hr />
+          <ContentInput type="text" name="qna_content" id="qna_content" value={qna_content}  onChange={(e)=>setQna_content(e.target.value)} placeholder="내용 입력해주세요"/>
+          <Input type="file" name="qna_file" id="qna_file" accept="" />
+          <Box>
+            <PrimaryButton type="submit"><p>등록</p></PrimaryButton>
+            <SecondaryButton onClick={() => navigate("/lms/s/cqna")}><p>목록</p></SecondaryButton>
+          </Box>
+        </form>
       </TableBox>
     </Container>
   </>

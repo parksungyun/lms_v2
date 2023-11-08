@@ -133,13 +133,17 @@ export function StudentSubjectQna() {
   const items = question.map((s,i) => (
     {
       no: i + 1,
-      title: s.s_question_title,
+      title: titleLink(s.s_question_id, s.s_question_title),
       writer: userList.find(u => u.uid == students.find(student => student.student_id == s.student_id).uid).user_name,
       regDate: s.s_question_reg_date,
       Hits: s.s_question_hits,
       replyState: changeReply(s.s_question_id)
     }
   ));
+
+  function titleLink(id, title) {
+    return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
+  }
 
   return<>
     <Container>
@@ -161,7 +165,7 @@ export function StudentSubjectQna() {
           <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
           <button onClick={onSearch}>검색</button>
         </SearchBox>
-        <PrimaryButton onClick={() => navigate("/lms/s")}><p>작성</p></PrimaryButton>
+        <PrimaryButton onClick={() => navigate("/lms/s/sqna/write")}><p>작성</p></PrimaryButton>
       </ButtonBox>
       <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
     </Container>

@@ -4,6 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { BsFillEyeFill } from "react-icons/bs";
 import { useState } from "react";
 import { academics, students, subject_answers, subject_questions, userList } from "../../assets/TempData";
+import { ReplyPost } from "../../components/ReplyPost";
+import { ReplyWrite } from "../../components/ReplyWrite";
+import { useEffect } from "react";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -130,19 +133,23 @@ const ContentInput = styled.textarea`
   resize: none;
 `;
 
-export function TrainerSubjectQnaReply() {
+export function TrainerSubjectQnaPost() {
+  const navigate = useNavigate();
   const { id } = useParams();
+  const [isReply, setIsReply] = useState();
   const question = subject_questions.find(data => data.s_question_id == id);
   const student = userList.find(data => data.uid == (students.find(d => d.student_id == question.student_id)).uid);
   let answer;
   let trainer;
+
   if(subject_answers.find(data => data.s_question_id == question.s_question_id)){
     answer = subject_answers.find(data => data.s_question_id == question.s_question_id);
-    trainer = userList.find(data => data.uid == (academics.find(d => d.academic_id == answer.academic_id)).uid);
   }
+
+  useEffect(() => {
+    if(answer) setIsReply(1);
+  }, [answer])
   
-  const navigate = useNavigate();
-  const [qna_reply, setQna_reply] = useState();
   return<>
     <Container>
       <TableBox>
@@ -165,29 +172,13 @@ export function TrainerSubjectQnaReply() {
         </AttachedBox>
         <Hr />
       {
-        answer ? 
-          <>
-            <CommentBox>
-            <CommentWriter>
-              <Text>{trainer.user_name} | {answer.s_answer_reg_date}</Text>
-            </CommentWriter>
-            <Comment>
-              <Text>{answer.s_answer_content}</Text>
-            </Comment>
-            </CommentBox>
-            <Box className="btn">
-              <PrimaryButton onClick={()=>navigate(`${id}/mod`)}><p>답변 수정</p></PrimaryButton>
-              <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
-            </Box>
-          </>:<>
-            <form action="" method="POST" >
-              <ContentInput type="text" name="qna_reply" id="qna_reply" value={qna_reply}  onChange={(e)=>setQna_reply(e.target.value)} placeholder="내용을 입력해주세요"/>
-              <Box className="btn">
-                <PrimaryButton type="submit"><p>답변 등록</p></PrimaryButton>
-                <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
-              </Box>
-            </form>
-          </>
+        isReply == 1 ? <>
+        <ReplyPost id={id} type={"s"} />
+        <Box className="btn">
+          <PrimaryButton onClick={()=>setIsReply(0)}><p>수정</p></PrimaryButton>
+          <SecondaryButton onClick={()=>navigate("/lms/t/qna")}><p>목록</p></SecondaryButton>
+        </Box>
+        </> : <ReplyWrite id={id} type={"t/qna"} />
       }
       </TableBox>
     </Container>
