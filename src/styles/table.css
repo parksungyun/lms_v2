@@ -17,6 +17,7 @@ table tbody tr td {
   padding: 10px;
   margin: 0;
   border-bottom: 1px solid #ddd;
+  cursor: default;
 }
 
 table tbody tr td:nth-child(1) {
@@ -26,6 +27,7 @@ table tbody tr td:nth-child(1) {
 table tbody tr td:nth-child(2) {
   width: 60%;
   text-align: left;
+  cursor: pointer;
 }
 
 table tbody tr td:nth-child(3) {
@@ -42,7 +44,6 @@ table tbody tr td:nth-child(5) {
 
 table tbody tr:hover {
   background-color: #ddd;
-  cursor: pointer;
 }
 
 .select_row {
@@ -51,7 +52,6 @@ table tbody tr:hover {
 
 table tbody tr.disabled_row:hover {
   background-color: transparent;
-  cursor: default;
 }
 
 .disabled_row {

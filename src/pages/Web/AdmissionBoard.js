@@ -95,12 +95,16 @@ export function AdmissionBoard() {
   const items = admission_questions.map((a, i) => (
     {
       no: i + 1,
-      title: a.a_question_title,
+      title: titleLink(a.a_question_id, a.a_question_title),
       writer: a.writer_name,
       writeDate: a.a_question_reg_date,
       reply: changeReply(checkReply(a.a_question_id)),
     }
   ))
+
+  function titleLink(id, title) {
+    return (<p onClick={() => navigate(`post/${id}`)}>{title}</p>);
+  }
 
   function checkReply(id) {
     if(admission_answers.find((a) => a.a_question_id == id)) return 1;
