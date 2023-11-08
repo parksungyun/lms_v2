@@ -125,13 +125,17 @@ export function TrainerSubjectQna() {
   const items = question.map((q,i) => (
     {
       no: i+1,
-      title: q.s_question_title,
+      title: titleLink(q.s_question_id, q.s_question_title),
       writer: userList.find(d => d.uid == students.find(d => d.student_id == q.student_id).uid).user_name,
       regDate: q.s_question_reg_date,
       Hits: q.s_question_hits,
       replyState: changeReply(q.s_question_id)
     }
   ));
+
+  function titleLink(id, title) {
+    return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
+  }
 
   return<>
     <Container>

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { BsDownload } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BsFillEyeFill } from "react-icons/bs";
 import { useState } from "react";
 import { academics, students, subject_answers, subject_questions, userList } from "../../assets/TempData";
@@ -131,12 +131,16 @@ const ContentInput = styled.textarea`
 `;
 
 export function TrainerSubjectQnaReply() {
-  const id = 1;
-  const question = subject_questions.find(data => data.subject_id == id);
-  const answer = subject_answers.find(data => data.s_question_id == question.s_question_id);
+  const { id } = useParams();
+  const question = subject_questions.find(data => data.s_question_id == id);
   const student = userList.find(data => data.uid == (students.find(d => d.student_id == question.student_id)).uid);
-  const trainer = userList.find(data => data.uid == (academics.find(d => d.academic_id == answer.academic_id)).uid);
-
+  let answer;
+  let trainer;
+  if(subject_answers.find(data => data.s_question_id == question.s_question_id)){
+    answer = subject_answers.find(data => data.s_question_id == question.s_question_id);
+    trainer = userList.find(data => data.uid == (academics.find(d => d.academic_id == answer.academic_id)).uid);
+  }
+  
   const navigate = useNavigate();
   const [qna_reply, setQna_reply] = useState();
   return<>
@@ -160,25 +164,31 @@ export function TrainerSubjectQnaReply() {
           <div><A href={question.s_question_fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
         </AttachedBox>
         <Hr />
-        <CommentBox>
-        <CommentWriter>
-          <Text>{trainer.user_name} | {answer.s_answer_reg_date}</Text>
-        </CommentWriter>
-        <Comment>
-          <Text>{answer.s_answer_content}</Text>
-        </Comment>
-      </CommentBox>
-      <Box className="btn">
-        <PrimaryButton onClick={()=>navigate("/lms/t")}><p>답변 수정</p></PrimaryButton>
-        <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
-      </Box>
-      <form action="" method="POST" >
-        <ContentInput type="text" name="qna_reply" id="qna_reply" value={qna_reply}  onChange={(e)=>setQna_reply(e.target.value)} placeholder="내용을 입력해주세요"/>
-        <Box className="btn">
-          <PrimaryButton type="submit"><p>답변 등록</p></PrimaryButton>
-          <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
-        </Box>
-      </form>
+      {
+        answer ? 
+          <>
+            <CommentBox>
+            <CommentWriter>
+              <Text>{trainer.user_name} | {answer.s_answer_reg_date}</Text>
+            </CommentWriter>
+            <Comment>
+              <Text>{answer.s_answer_content}</Text>
+            </Comment>
+            </CommentBox>
+            <Box className="btn">
+              <PrimaryButton onClick={()=>navigate(`${id}/mod`)}><p>답변 수정</p></PrimaryButton>
+              <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
+            </Box>
+          </>:<>
+            <form action="" method="POST" >
+              <ContentInput type="text" name="qna_reply" id="qna_reply" value={qna_reply}  onChange={(e)=>setQna_reply(e.target.value)} placeholder="내용을 입력해주세요"/>
+              <Box className="btn">
+                <PrimaryButton type="submit"><p>답변 등록</p></PrimaryButton>
+                <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
+              </Box>
+            </form>
+          </>
+      }
       </TableBox>
     </Container>
   </>
