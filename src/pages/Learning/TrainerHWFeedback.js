@@ -139,7 +139,7 @@ export function TrainerHWFeedback() {
       content: s.submit_content,
       attached: s.submit_fileURL,
       submitTime: changeColor(homework.hw_end_date, s.submit_mod_date),
-      submitstate: changeButton(s.submit_id),
+      submitState: changeButton(s.submit_id),
     }
   ))
 
