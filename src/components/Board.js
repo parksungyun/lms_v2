@@ -78,7 +78,6 @@ export function Board({board, item, write}) {
   return<>
     <TableBox>
       <H2>공지 사항</H2>
-      <Hr />
       <Table 
         headers={board}
         items={postsData(item)}
