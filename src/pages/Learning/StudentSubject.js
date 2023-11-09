@@ -180,9 +180,15 @@ export function StudentSubject() {
     else return(<BadgeSecondary>제출대기</BadgeSecondary>);
   };
   
-  function changeReplyLec(reply) {
-    if(reply === 1) return(<BadgePrimary>학습중</BadgePrimary>);
+  function changeReplyLecture(reply) {
+    if(reply) {
+      return(<BadgePrimary>학습중</BadgePrimary>);
+    }
     else return(<BadgeSecondary>미학습</BadgeSecondary>);
+  };
+
+  function sliceLecture(){
+   
   };
 
   function changeReplyQNA(reply) {
@@ -228,10 +234,9 @@ export function StudentSubject() {
     {
       no: i + 1,
       title: l.lecture_title,
-      state: changeReplyLec(study.find(s => s.lecture_id == l.lecture_id).is_study)
+      state: changeReplyLecture(study.find(s => s.lecture_id == l.lecture_id))
     }
   ));
-
   const SSQNAItems = question.map((q,i) => (
     {
       no: i + 1,
