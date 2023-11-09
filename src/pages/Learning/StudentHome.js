@@ -74,7 +74,7 @@ const cBoard = [
 
 const hw = [
   {
-    text: '과목.',
+    text: '과목',
     value: 'subject'
   },
   {
