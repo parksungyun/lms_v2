@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { students, userList } from "../assets/TempData";
 import styled from "styled-components";
 import { useState } from "react";
@@ -57,7 +57,7 @@ const ButtonBox = styled.div`
 
 export function StudentDetailForm() {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const id = 1; // 임시
   const student = students.find((a) => a.student_id == id);
   const user = userList.find((u) => u.uid == student.uid);
   
