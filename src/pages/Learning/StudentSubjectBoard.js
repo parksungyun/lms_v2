@@ -47,7 +47,7 @@ export function StudentSubjectBoard() {
 `;
   return<>
     <Container>
-      <Board board={studentSBoard} item={items} write={true}/>
+      <Board board={studentSBoard} item={items} write={false}/>
     </Container>
   </>
 }

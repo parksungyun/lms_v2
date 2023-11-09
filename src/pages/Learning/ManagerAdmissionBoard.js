@@ -156,7 +156,6 @@ export function ManagerAdmissionBoard() {
     <Container>
       <TableBox>
         <H2>입학상담</H2>
-        <Hr />
         <Table 
           headers={headers}
           items={postsData(items)}

@@ -54,7 +54,7 @@ export function StudentCourseBoard() {
   
   return<>
     <Container>
-      <Board board={studentCBoard} item={SCBItems} write={true}/>
+      <Board board={studentCBoard} item={SCBItems} write={false}/>
     </Container>
   </>
 }
