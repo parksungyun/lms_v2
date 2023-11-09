@@ -137,7 +137,8 @@ export function Router() {
                   <Route path=":id" element={<BoardPost />} />
                 </Route>
                 <Route path="subject" element={<StudentSubject />} />
-                <Route path="sboard" element={<StudentSubjectBoard />}>
+                <Route path="sboard" element={<ParentsWrapper />}>
+                  <Route index element={<StudentSubjectBoard />} />
                   <Route path=":id" element={<BoardPost />} />
                 </Route>
                 <Route path="homework" element={<ParentsWrapper />}>
