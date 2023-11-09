@@ -2,7 +2,8 @@ import styled from "styled-components";
 import { Table } from "../../components/Table";
 import { Col, Row } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import { academics, feedbacks, homeworks, students, subject_answers, subject_board, subject_questions, submits, userList } from "../../assets/TempData";
+import { academics, feedbacks, homeworks, students, subject_answers, subject_board, subject_questions, submits, userList, lectures, studies } from "../../assets/TempData";
+import { useParams, useNavigate } from "react-router-dom";
 
 const BadgePrimary = styled.span`
   background-color: #5f7dcf;
@@ -53,6 +54,7 @@ const TableBox = styled.div`
   background-color: white;
   border-radius: 1rem;
   margin-bottom: 2rem;
+  height: 360px;
 `;
 
 const ProgressBar = styled.div`
@@ -74,7 +76,6 @@ const ProgressBox = styled.div`
   background-color: #5f7dcf;
   color: #111;
 `;
-
 
 const studentSBoard = [
   {
@@ -98,7 +99,6 @@ const studentSBoard = [
     value: 'hits'
   }
 ];
-
 
 const studentSHW = [
   {
@@ -164,75 +164,78 @@ const studentSQNA = [
 export function StudentSubject() {
   const maxItem = 30;
 	let availableItem = 15;
-  
-  const subjectid = 1;
-  const board = subject_board.filter(s => s.subject_id == subjectid);
-
-  const SSBItems = board.map((b,i) => (
-    {
-      no: i + 1,
-      title: b.s_post_title,
-      writer: userList.find(u => u.uid == academics.find(a => a.academic_id == b.academic_id).uid).user_name,
-      regDate: b.s_post_reg_date,
-      hits: b.s_post_hits
-    }
-  ));
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const board = subject_board.filter(s => s.subject_id == id);
+  const studentid = 1;
+  const submit = submits.filter(s => s.student_id == studentid);
+  const homework = homeworks.filter(h => h.subject_id == studentid);  
+  const question = subject_questions.filter(s => s.subject_id == id);
+  const lecture = lectures.filter(l => l.subject_id == id);
+  const study = studies.filter(s => s.student_id == studentid);
 
   function changeReplyHW(reply) {
     if(feedbacks.find(f => f.submit_id == submit.find(s => s.homework_id == reply).submit_id)) return(<BadgeSuccess>채점완료</BadgeSuccess>);
     else if (submit.find(s => s.homework_id == reply)) return (<BadgePrimary>제출완료</BadgePrimary>);
     else return(<BadgeSecondary>제출대기</BadgeSecondary>);
   };
-
-  const studentid =1;
-  const submit = submits.filter(s => s.student_id == studentid);
-  const homework = homeworks.filter(h => h.subject_id == subjectid);
-
-  const SSHWItems = homework.map((h,i) => (
-    {
-      no: i + 1,
-      title: h.hw_title,
-      startDate: h.hw_start_date,
-      endDate: h.hw_end_date,
-      submit: changeReplyHW(h.homework_id)
-    }
-  ));
-
+  
   function changeReplyLec(reply) {
-    if(reply === 2) return(<BadgePrimary>학습중</BadgePrimary>);
-    else if (reply == 1) return(<BadgeSuccess>학습끝</BadgeSuccess>);
+    if(reply === 1) return(<BadgePrimary>학습중</BadgePrimary>);
     else return(<BadgeSecondary>미학습</BadgeSecondary>);
   };
-
-  const SSLECItems = [
-    {
-      no: 1,
-      title: '교육상담아무말이나해봐아무',
-      state: changeReplyLec(1)
-    },
-    {
-      no: 2,
-      title: '교육상담아무말이나해봐아무',
-      state: changeReplyLec(2)
-    },
-    {
-      no: 3,
-      title: '교육상담아무말이나해봐아무',
-      state: changeReplyLec(0)
-    },
-  ];
 
   function changeReplyQNA(reply) {
     if(subject_answers.find(s => s.s_question_id == reply)) return(<BadgeSuccess>답변완료</BadgeSuccess>);
     else return(<BadgeSecondary>답변대기</BadgeSecondary>);
   };
 
-  const question = subject_questions.filter(s => s.subject_id == subjectid);
+  const shortenTitle = (str, length) => {
+    let result = '';
+    if (str.length > length) {
+      result = str.substr(0, length - 2) + '...';
+    } else {
+      result = str;
+    }
+    return result;
+  };
+
+  function titleLink(id, title, type) {
+    return (<p onClick={() => navigate(`${type}/${id}`)}>{title}</p>);
+  }
+
+  const SSBItems = board.map((b,i) => (
+    {
+      no: i + 1,
+      title: titleLink(b.subject_board_id, shortenTitle(b.s_post_title, 20), `/lms/s/${id}/sboard`),
+      writer: userList.find(u => u.uid == academics.find(a => a.academic_id == b.academic_id).uid).user_name,
+      regDate: b.s_post_reg_date,
+      hits: b.s_post_hits
+    }
+  ));
+
+  const SSHWItems = homework.map((h,i) => (
+    {
+      no: i + 1,
+      title: titleLink(h.homework_id, shortenTitle(h.hw_title, 20), `/lms/s/${id}/homework`),
+      startDate: h.hw_start_date,
+      endDate: h.hw_end_date,
+      submit: changeReplyHW(h.homework_id)
+    }
+  ));
+
+  const SSLECItems = lecture.map((l,i) => (
+    {
+      no: i + 1,
+      title: l.lecture_title,
+      state: changeReplyLec(study.find(s => s.lecture_id == l.lecture_id).is_study)
+    }
+  ));
 
   const SSQNAItems = question.map((q,i) => (
     {
       no: i + 1,
-      title: q.s_question_title,
+      title: titleLink(q.s_question_id, shortenTitle(q.s_question_title, 20), `/lms/s/${id}/sqna`),
       writer: userList.find(u => u.uid == students.find(s => s.student_id == q.student_id).uid).user_name,
       regDate: q.s_question_reg_date,
       state: changeReplyQNA(q.s_question_id)
@@ -247,7 +250,7 @@ export function StudentSubject() {
             <StyledNavLink to='/lms/s/sboard'>공지 사항</StyledNavLink>
             <Table
               headers={studentSBoard}
-              items={SSBItems}
+              items={SSBItems.reverse().slice(0, 5)}
               selectable={false}
             />
           </TableBox>
@@ -257,7 +260,7 @@ export function StudentSubject() {
             <StyledNavLink to='/lms/s/homework'>과제</StyledNavLink>
             <Table
               headers={studentSHW}
-              items={SSHWItems}
+              items={SSHWItems.reverse().slice(0, 5)}
               selectable={false}
             />
           </TableBox>
@@ -268,12 +271,12 @@ export function StudentSubject() {
           <TableBox>
             <StyledNavLink to='/lms/s/lecture'>강의</StyledNavLink>
             <ProgressBar>
-              <ProgressBox width = {100-(availableItem*100/maxItem)}/>
+              <ProgressBox width = {100-(availableItem*100/`${lecture.length}`)}/>
             </ProgressBar>
-            <p>현재 진행률 15/30강</p>
+            <p>현재 진행률 15/{lecture.length}강</p>
             <Table
               headers={studentSLec}
-              items={SSLECItems}
+              items={SSLECItems.reverse().slice(0, 3)}
               selectable={false}
             />
           </TableBox>
@@ -283,7 +286,7 @@ export function StudentSubject() {
             <StyledNavLink to='/lms/s/sqna'>Q&A</StyledNavLink>
             <Table
               headers={studentSQNA}
-              items={SSQNAItems}
+              items={SSQNAItems.reverse().slice(0, 5)}
               selectable={false}
             />
           </TableBox>

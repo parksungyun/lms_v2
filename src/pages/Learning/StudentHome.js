@@ -2,7 +2,8 @@ import { Col, Row } from "react-bootstrap";
 import styled from "styled-components"
 import { Table } from "../../components/Table";
 import { Progress } from "../../components/Progress";
-import { academics, course_board, courses, homeworks, subjects, userList } from "../../assets/TempData";
+import { academics, course_board, courses, homeworks, lectures, students, studies, subjects, userList } from "../../assets/TempData";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -17,6 +18,7 @@ const TableBox = styled.div`
   background-color: white;
   border-radius: 1rem;
   margin-bottom: 2rem;
+  height: 360px;
 `;
 
 const H2 = styled.p`
@@ -25,6 +27,11 @@ const H2 = styled.p`
   margin: 10px 0;
   &.title{
     margin: 0;
+  }
+  &.pointer{
+    &:hover{
+      cursor: pointer;
+    }
   }
 `;
 
@@ -92,26 +99,47 @@ const hw = [
 ];
 
 export function StudentHome() {
-  const id = 1;  //courseid 값 임의로 받아옴
-  const course = course_board.filter(c => c.cousre_id == id);
+  const id = 1;  //studentid 값 임의로 받아옴
+  const student = students.find(s => s.student_id == id);
+  const courseBoard = course_board.filter(c => c.cousre_id == student.course_id);  
+  const subject = subjects.filter(s => s.course_id == student.course_id);
+  const homework = homeworks.filter(h => (subject.map((s) => s.subject_id == h.subject_id)));
+  const study = studies.filter(s => s.student_id == id);
 
-  const cBoardItems = course.map((c,i) => (
+  const navigate = useNavigate();
+
+  const shortenTitle = (str, length) => {
+    let result = '';
+    if (str.length > length) {
+      result = str.substr(0, length - 2) + '...';
+    } else {
+      result = str;
+    }
+    return result;
+  };
+
+  function titleLink(id, title, type) {
+    return (<p onClick={() => navigate(`${type}/${id}`)}>{title}</p>);
+  }
+
+  function attendCheck() {
+
+  }
+
+  const cBoardItems = courseBoard.map((c,i) => (
     {
       no: i + 1,
-      title: c.c_post_title,
+      title: titleLink(c.course_board_id, shortenTitle(c.c_post_title, 20, "cboard")),
       writer: userList.find(u => u.uid == academics.find(a => a.academic_id == c.academic_id).uid).user_name,
       regDate: c.c_post_reg_date,
       hits: c.c_post_hits
     }
   ));
-  
-  const subject = subjects.filter(s => s.course_id == id);
-  const homework = homeworks.filter(h => (subject.map((s) => s.subject_id == h.subject_id)));
 
   const hwItems = homework.map((h,i) => (
     {
-      subject: subject.find(s => s.subject_id == h.subject_id).subject_name,
-      title: h.hw_title,
+      subject: shortenTitle(subject.find(s => s.subject_id == h.subject_id).subject_name, 11),
+      title: titleLink(h.homework_id ,shortenTitle(h.hw_title), 20, "homework"),
       startDate: h.hw_start_date,
       endDate: h.hw_end_date,
     }
@@ -124,15 +152,15 @@ export function StudentHome() {
           <H2 className='title'>내 클래스</H2>
           <p>{courses.find(c => c.course_id == id).course_name}</p>
         </div>
-        <PrimaryButton>출석 체크</PrimaryButton>
+        <PrimaryButton onClick={attendCheck()}>출석 체크</PrimaryButton>
       </Content>
       <Row>
         <Col>
         <TableBox>
-          <H2>공지 사항</H2>
+          <H2 onClick={()=> navigate("cboard")} className="pointer">공지 사항</H2>
           <Table 
             headers={cBoard}
-            items={cBoardItems}
+            items={cBoardItems.reverse().slice(0,5)}
             selectable={false}
           />
         </TableBox>
@@ -142,7 +170,7 @@ export function StudentHome() {
           <H2>과제</H2>
           <Table 
             headers={hw}
-            items={hwItems}
+            items={hwItems.reverse().slice(0,5)}
             selectable={false}
           />
         </TableBox>
@@ -153,7 +181,12 @@ export function StudentHome() {
         {
           subject.map((s) => (
             <>
-              <Progress subjectName={s.subject_name} />
+              <Progress
+                subjectName={s.subject_name}
+                max={lectures.filter(l => l.subject_id == s.subject_id).length}
+                item={study.filter((data) => lectures.filter(l => l.lecture_id == data.lecture_id).find(lecture => lecture.subject_id == s.subject_id)).length}
+                link={`${s.subject_id}/subject`}
+                />
             </>
           ))
         }
