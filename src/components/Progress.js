@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -16,8 +17,8 @@ const PrimaryButton = styled.button`
   background-color: #5f7dcf;
   padding: 0.6rem 1.4rem;
   color: white;
-  width: 15rem;
-  font-size: 1.8rem;
+  width: 25rem;
+  font-size: 1.5rem;
 `;
 
 const ProgressBar = styled.div`
@@ -50,17 +51,22 @@ const P = styled.p`
   font-size: 1.2rem;
 `;
 
-export function Progress({subjectName}) {
-  const maxItem = 30
-	let availableItem = 15
+export function Progress({subjectName, max, item, link}) {
+  const navigate = useNavigate();
+  let i = 100 - (item * 100 / max);
+  if (i == 0) {
+    i = 100;
+  } else if (i == 100) {
+    i = 0;
+  }
   return<>
     <Container>
-      <PrimaryButton><p>{subjectName}</p></PrimaryButton>
+      <PrimaryButton onClick={()=>navigate(link)}><p>{subjectName}</p></PrimaryButton>
       <Box>
         <ProgressBar>
-          <ProgressBox width = {100-(availableItem*100/maxItem)}/>
+          <ProgressBox width = {i}/>
         </ProgressBar>
-        <P>현재 진행률 15/30강</P>
+        <P>현재 진행률 {item}/{max}강</P>
       </Box>
     </Container>
   </>
