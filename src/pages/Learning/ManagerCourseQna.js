@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
@@ -96,7 +96,7 @@ const headers = [
 ];
 
 export function ManagerCourseQna() {
-  const id = 1; // 임시 course_id
+  const { id } = useParams();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [searchOption, setSearchOption] = useState("all");
@@ -105,11 +105,21 @@ export function ManagerCourseQna() {
   const navigate = useNavigate();
   const questions = course_questions.filter((q) => q.course_id == id)
   const answer = course_answers.filter((a) => questions.map((q) => q.c_question_id == a.c_question_id));
+
+  const shortenTitle = (str, length) => {
+    let result = '';
+    if (str.length > length) {
+      result = str.substr(0, length - 2) + '...';
+    } else {
+      result = str;
+    }
+    return result;
+  };
   
   const items = questions.map((c, i) => (
     {
       no: i + 1,
-      title: titleLink(c.c_question_id, c.c_question_title),
+      title: titleLink(c.c_question_id, shortenTitle(c.c_question_title, 35)),
       writer: userList.find((u) => u.uid == (students.find((s) => s.student_id == c.student_id).uid)).user_name,
       regDate: c.c_question_reg_date,
       replyDate: findReplyDate(c.c_question_id),

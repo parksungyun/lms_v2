@@ -47,7 +47,7 @@ const ButtonBox = styled.div`
 
 export function ManagerHome() {
   const navigate = useNavigate();
-  const id = 1; // academicid 임의로 받아옴
+  const id = 3; // academicid 임의로 받아옴
   const course = courses.filter(c => c.academic_id == id);
 
   const courseNumber = course.map((c) => (
@@ -61,19 +61,19 @@ export function ManagerHome() {
     [
       {
         text: c.name,
-        link: `/lms/m/info/${c.id}`
+        link: `/lms/m/${c.id}/info`
       },
       {
         text: "공지",
-        link: '/lms/m/board'
+        link: `/lms/m/${c.id}/board`
       },
       {
         text: "1:1 문의",
-        link: '/lms/m/qna'
+        link: `/lms/m/${c.id}/qna`
       },
       {
         text: "강의평가",
-        link: '/lms/m/review'
+        link: `/lms/m/${c.id}/review`
       }
     ]
   ));
@@ -84,7 +84,7 @@ export function ManagerHome() {
         <div>
           <H2 className='title'>내 클래스 관리</H2>
         </div>
-        <PrimaryButton onClick={()=>navigate("/lms/a")}><p>관리자 페이지</p><RiUserSettingsLine /></PrimaryButton>
+        <PrimaryButton onClick={()=>navigate("/lms/a")}><p>관리자 페이지<RiUserSettingsLine /></p></PrimaryButton>
       </Content>
       <Box>
         <H2>진행중인 과목: {courseNumber.length}</H2>

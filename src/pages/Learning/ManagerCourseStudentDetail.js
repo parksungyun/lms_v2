@@ -146,7 +146,7 @@ export function ManagerCourseStudentDetail() {
           </Detail>
           <ButtonBox>
             <PrimaryButton type="submit" onClick={onSubmit}><p>수정</p></PrimaryButton>
-            <SecondaryButton onClick={() => navigate(`/lms/m/info/${student.course_id}`)}><p>목록</p></SecondaryButton>
+            <SecondaryButton onClick={() => navigate(`/lms/m/${student.course_id}/info`)}><p>목록</p></SecondaryButton>
           </ButtonBox>
         </Details>
       </Content>

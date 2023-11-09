@@ -124,7 +124,7 @@ export function StudentHW() {
       writer: userList.find(u => u.uid == academics.find(a => a.academic_id == h.academic_id).uid).user_name,
       startDate: h.hw_start_date,
       endDate: h.hw_end_date,
-      submit: disabledBtn(h.hw_end_date, h.homework_id),
+      submit: disabledBtn(h.homework_id),
       submitState: changeButton(submit.find(s => s.homework_id == h.homework_id).submit_id),
       submitTime: changeColor(h.hw_end_date, submit.find(s => s.homework_id == h.homework_id).submit_mod_date)
     }
@@ -141,10 +141,16 @@ export function StudentHW() {
     }
   };
 
-  function disabledBtn(end, id) {
-    const currentDate = new Date().getTime();
-    const endDate = new Date(end).getTime();
-    if(currentDate < endDate){
+  function disabledBtn(id) {
+    let temp;
+    let isFeedback = false;
+    if(submit.find((s) => s.homework_id == id)) {
+      temp = submit.find((s) => s.homework_id == id);
+      if(feedbacks.find((f) => f.submit_id == temp.submit_id)) {
+        isFeedback = true;
+      }
+    }
+    if(!isFeedback){
       return(<PrimaryButton onClick={()=>navigate(`/lms/s/homework/${id}/submit`, { state: id })}><p>제출하기</p></PrimaryButton>)
     } else {
       return (<PrimaryButton className="disabled" disabled><p>제출하기</p></PrimaryButton>)
@@ -152,11 +158,17 @@ export function StudentHW() {
   };
 
   function changeButton(id) {
-    if(feedbacks.find(f => f.submit_id == id)) {
-      return(<SuccessButton onClick={() => navigate(`/lms/s/homework/${id}/feedback`, { state: id })}><p>결과확인</p></SuccessButton>)
+    let temp;
+    if(feedbacks.find((f) => f.submit_id == id)) {
+      temp = submits.find((h) => h.submit_id == id).homework_id;
+      return(<SuccessButton onClick={() => navigate(`/lms/s/homework/${temp}/feedback`, { state: temp })}><p>결과확인</p></SuccessButton>)
+    }
+    else if(id) {
+      temp = submits.find((h) => h.submit_id == id).homework_id;
+      return(<PrimaryButton onClick={() => navigate(`/lms/s/homework/${temp}/feedback`, { state: temp })}><p>제출확인</p></PrimaryButton>)
     }
     else {
-      return(<SecondaryButton onClick={() => navigate(`/lms/s/homework/${id}/feedback`, { state: id })}><p>제출확인</p></SecondaryButton>)
+      return(<SecondaryButton><p>제출대기</p></SecondaryButton>)
     }
   };
 

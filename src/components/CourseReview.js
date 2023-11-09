@@ -43,16 +43,19 @@ const headers = [
 ];
 
 export function CourseReview({items, info, index}) {
-  console.log(info.find(i => i.subject_id == index))
-  const subject = subjects.find(s => s.subject_id == info.find(i => i.subject_id == index).subject_id)
-  const course = courses.find(c => c.course_id == subjects.find(s => s.subject_id == info.find(i => i.subject_id == index).subject_id).course_id)
+  const subject = subjects.find(s => s.subject_id == index);
+  const course = courses.find(c => c.course_id == subject.course_id);
   const student = students.filter(s => s.course_id == course.course_id);
+
   let sum = 0;
   let average = 0;
-  info.map((i) => {
-    sum += i.review_score;
-  });
-  average = sum / info.length;
+  if(info.length > 0) {
+    info.map((i) => {
+      sum += i.review_score;
+    });
+    average = sum / info.length;
+  }
+
   return<>
     <Box>
       <ContentBox className='col-2'>

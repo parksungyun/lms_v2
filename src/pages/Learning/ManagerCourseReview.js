@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { CourseReview } from "../../components/CourseReview";
 import { useState } from "react";
 import { course_reviews, students, subjects, userList } from "../../assets/TempData";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -46,29 +48,43 @@ const Btn = styled.button`
 `;
 
 export function ManagerCourseReview() {
-  const [active, setActive] = useState(['active', '', '', '', '']);
-  const [index, setIndex] = useState(1);
-
-  const id = 1; //couresid 값 임의로 셋팅
+  const { id } = useParams();
   const subject = subjects.filter(s => s.course_id == id);
-  let temp;
+  const [index, setIndex] = useState(1);
+  let temp = new Array(subject.length);
+  console.log(subject);
+  
+  useEffect(() => {
+    temp.map((t) => t = "");  
+    temp[0] = "active";
+  }, []);
+  
+  const [active, setActive] = useState(temp);
+  let review;
+  review = course_reviews.filter((r) => r.subject_id == subject[index - 1].subject_id);
+  let items;
 
-  temp = course_reviews.filter((c) => c.subject_id == index);
-
-  const items = temp.map((c, i) => (
-    {
-      no: i + 1,
-      writer: userList.find(u => u.uid == students.find(s => s.student_id == c.student_id).uid).user_name,
-      score: c.review_score,
-      content: c.review_comment
-    }
-  ));
+  if(review) {
+    items = review.map((c, i) => (
+      {
+        no: i + 1,
+        writer: userList.find(u => u.uid == students.find(s => s.student_id == c.student_id).uid).user_name,
+        score: c.review_score,
+        content: c.review_comment
+      }
+    ));
+  }
+  else {
+    items = {};
+  }
   
   function changeActive(i) {
-    let temp = ['', '', '', '', ''];
-    temp[i-1] = 'active';
+    let temp = new Array(subject.length);
+    temp.map((t) => t = "");
+    temp[i-1] = "active";
     setActive(temp);
   }
+
   return<>
     <Container>
       <TableBox>
@@ -82,7 +98,7 @@ export function ManagerCourseReview() {
           ))
         }
         <div>
-          <CourseReview items={items} info={temp} index={index}/>
+          <CourseReview items={items} info={review} index={subject[index - 1].subject_id} />
         </div>
       </TableBox>
     </Container>

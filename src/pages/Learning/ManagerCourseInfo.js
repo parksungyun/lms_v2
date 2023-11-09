@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Table } from "../../components/Table";
 import { userList, students, courses } from "../../assets/TempData";
 import '../../styles/trainer_subject_table.css';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -91,17 +91,19 @@ const courseInfo = [
 
 export function ManagerCourseInfo(){
   const navigate = useNavigate();
-
-  const student = students.filter((s) => s.course_id == courses[0].course_id);
+  const { id } = useParams();
+  
+  const course = courses.find((c) => c.course_id == id);
+  const student = students.filter((s) => s.course_id == course.course_id);
 
   const items = student.map((s, i) => (
     {
       no: i + 1,
-      name: userList[s.uid - 1].user_name,
-      birth: userList[s.uid - 1].user_birth,
-      phone: userList[s.uid - 1].user_phone,
-      attendance: <PrimaryButton onClick={() => onAttend(s.student_id)}>출결관리</PrimaryButton>,
-      info: <SecondaryButton onClick={() => onDetail(s.student_id)}>상세정보</SecondaryButton>
+      name: userList.find((u) => u.uid == s.uid).user_name,
+      birth: userList.find((u) => u.uid == s.uid).user_birth,
+      phone: userList.find((u) => u.uid == s.uid).user_phone,
+      attendance: <PrimaryButton onClick={() => onAttend(s.student_id)}><p>출결관리</p></PrimaryButton>,
+      info: <SecondaryButton onClick={() => onDetail(s.student_id)}><p>상세정보</p></SecondaryButton>
     }
   ))
 
@@ -120,15 +122,15 @@ export function ManagerCourseInfo(){
         <Box>
           <ContentBox className="col-3">
             <Bold>과정명</Bold>
-            <p>{courses[0].course_name}</p>
+            <p>{course.course_name}</p>
           </ContentBox>
           <ContentBox className="col-3">
             <Bold>과목수</Bold>
-            <p>{courses[0].subject_no}</p>
+            <p>{course.subject_no}</p>
           </ContentBox>
           <ContentBox className="col-3">
             <Bold>기간</Bold>
-            <p>{courses[0].start_date} ~ {courses[0].end_date}</p>
+            <p>{course.start_date} ~ {course.end_date}</p>
           </ContentBox>
           <ContentBox className="col-3">
             <Bold>학생수</Bold>

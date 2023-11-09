@@ -3,7 +3,7 @@ import { Table } from "../../components/Table";
 import { Pagination } from "../../components/Pagination";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { admission_answers, admission_questions } from "../../assets/TempData";
+import { academics, admission_answers, admission_questions, userList } from "../../assets/TempData";
 
 
 const BadgeSuccess = styled.span`
@@ -31,6 +31,10 @@ const headers = [
   {
     text: '작성일',
     value: 'regDate'
+  },
+  {
+    text: '답변자',
+    value: 'replyWriter'
   },
   {
     text: '답변일',
@@ -108,16 +112,37 @@ export function ManagerAdmissionBoard() {
   const offset = (page - 1) * limit;
   const answer = admission_answers.filter((a) => admission_questions.map((q) => q.a_question_id == a.a_question_id));
 
+  const shortenTitle = (str, length) => {
+    let result = '';
+    if (str.length > length) {
+      result = str.substr(0, length - 2) + '...';
+    } else {
+      result = str;
+    }
+    return result;
+  };
+
   const items = admission_questions.map((q, i) => (
     {
       no: i + 1,
-      title: titleLink(q.a_question_id, q.a_question_title),
+      title: titleLink(q.a_question_id, shortenTitle(q.a_question_title, 35)),
       writer: q.writer_name,
       regDate: q.a_question_reg_date,
+      replyWriter: findReplyWriter(q.a_question_id),
       replyDate: findReplyDate(q.a_question_id),
       replyState: changeReply(q.a_question_id)
     }
   ))
+
+  function findReplyWriter(id) {
+    let temp;
+    if(answer.find((a) => a.a_question_id == id)){
+      temp = answer.find((a) => a.a_question_id == id);
+      const writer = academics.find((a) => a.academic_id == temp.academic_id);
+      return userList.find((u) => u.uid == writer.uid).user_name;
+    }
+    else return "";
+  }
 
   function findReplyDate(id) {
     let temp;

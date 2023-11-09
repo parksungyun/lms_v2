@@ -293,7 +293,7 @@ export function ManagerCourseStudentAttendance() {
         />
         <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
         <ButtonBox>
-          <SecondaryButton onClick={() => navigate(`/lms/m/info/${course.course_id}`)}><p>목록</p></SecondaryButton>
+          <SecondaryButton onClick={() => navigate(`/lms/m/${course.course_id}/info`)}><p>목록</p></SecondaryButton>
         </ButtonBox>
       </Content>
     </Container>

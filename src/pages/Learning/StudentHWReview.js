@@ -111,7 +111,7 @@ export function StudentHWReview() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const homework = homeworks.find(h => h.homework_id == state);
-  const submit = submits.filter(s => s.homework_id == state);
+  const submit = submits.filter(s => s.homework_id == homework.homework_id);
   const student = submit.find(s => s.student_id == studentid);
   const feedback = feedbacks.find(f => f.submit_id == student.submit_id);
 
@@ -135,7 +135,6 @@ export function StudentHWReview() {
         </Comment>
       </CommentBox>
       <Box>
-        <PrimaryButton onClick={()=>navigate(`/lms/s/homework/${homework.homework_id}/submit`, { state: homework.homework_id })}><p>다시 제출</p></PrimaryButton>
         <SecondaryButton onClick={()=>navigate("/lms/s/homework")}><p>목록</p></SecondaryButton>
       </Box>
       </TableBox>

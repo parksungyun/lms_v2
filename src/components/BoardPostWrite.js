@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const TableBox = styled.div`
@@ -49,7 +49,7 @@ const SecondaryButton = styled.button`
 `;
 
 const Input = styled.input`
-  width: 90%;
+  width: 100%;
   padding: 0.7rem;
   border: 1px solid lightgray;
   border-radius: 0.5rem;
@@ -65,20 +65,21 @@ const ContentInput = styled.textarea`
 `;
 
 export function BoardPostWrite() {
-  const [board_title, setBoard_title] = useState("");
-  const [board_content, setBoard_content] = useState("");
+  const [boardTitle, setBoardTitle] = useState("");
+  const [boardContent, setBoardContent] = useState("");
   const navigate = useNavigate();
+  const { state } = useLocation();
   return<>
     <TableBox>
       <H2>공지 등록</H2>
       <form action="" method="POST">
-        <Input type="text" name="board_title" id="board_title" value={board_title} onChange={(e)=>setBoard_title(e.target.value)} placeholder="제목 입력해주세요"/>
+        <Input type="text" name="board_title" id="board_title" value={boardTitle} onChange={(e)=>setBoardTitle(e.target.value)} placeholder="제목을 입력해주세요"/>
         <Hr />
-        <ContentInput type="text" name="board_content" id="board_content" value={board_content}  onChange={(e)=>setBoard_content(e.target.value)} placeholder="내용 입력해주세요"/>
+        <ContentInput type="text" name="board_content" id="board_content" value={boardContent}  onChange={(e)=>setBoardContent(e.target.value)} placeholder="내용을 입력해주세요"/>
         <Input type="file" name="board_file" id="board_file" accept="" />
         <Box>
-          <PrimaryButton><p>등록</p></PrimaryButton>
-          <SecondaryButton onClick={() => navigate(-1)}><p>목록</p></SecondaryButton>
+          <PrimaryButton type="submit"><p>등록</p></PrimaryButton>
+          <SecondaryButton onClick={() => navigate(`/lms/${state}/board`)}><p>목록</p></SecondaryButton>
         </Box>
       </form>
     </TableBox>
