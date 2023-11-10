@@ -94,17 +94,17 @@ const ContentInput = styled.textarea`
 export function TrainerHWPostMod() {
   const { state } = useLocation();
   const post = homeworks.find((h) => h.homework_id == state);
-  const [hw_title, setHw_title] = useState(post.hw_title);
-  const [hw_content, setHw_content] = useState(post.Content);
-  const [hw_start_date, setHw_start_date] = useState(post.hw_start_date);
-  const [hw_end_date, setHw_end_date] = useState(post.hw_end_date);
+  const [hwTitle, setHwTitle] = useState(post.hw_title);
+  const [hwContent, setHwContent] = useState(post.Content);
+  const [hwStartDate, setHwStartDate] = useState(post.hw_start_date);
+  const [hwEndDate, setHwEndDate] = useState(post.hw_end_date);
   const navigate = useNavigate();
 
   return<>
     <TableBox>
       <H2>과제 수정</H2>
       <form action="" method="POST">
-        <Input type="text" name="hw_title" id="hw_title" value={hw_title} onChange={(e)=>setHw_title(e.target.value)} />
+        <Input type="text" name="hw_title" id="hw_title" value={hwTitle} onChange={(e)=>setHwTitle(e.target.value)} />
         <Hr />
         <Content>
           <Box className="text">
@@ -112,16 +112,16 @@ export function TrainerHWPostMod() {
             <P className="col-6">종료일</P>
           </Box>
           <Box className="date">
-            <Input className="date" type="date" name="hw_start_date" id="hw_start_date" value={hw_start_date} onChange={(e)=>setHw_start_date(e.target.value)}/>
-            <Input className="date" type="date" name="hw_end_date" id="hw_end_date" value={hw_end_date}  onChange={(e)=>setHw_end_date(e.target.value)}/>
+            <Input className="date" type="date" name="hw_start_date" id="hw_start_date" value={hwStartDate} onChange={(e)=>setHwStartDate(e.target.value)}/>
+            <Input className="date" type="date" name="hw_end_date" id="hw_end_date" value={hwEndDate}  onChange={(e)=>setHwEndDate(e.target.value)}/>
           </Box>
-          <ContentInput type="text" name="hw_content" id="hw_content" value={hw_content}  onChange={(e)=>setHw_content(e.target.value)}/>
+          <ContentInput type="text" name="hw_content" id="hw_content" value={hwContent}  onChange={(e)=>setHwContent(e.target.value)}/>
         </Content>
         <Input type="file" name="hw_file" id="hw_file" accept="" />
         <Box className="button">
           <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
           <DangerButton><p>삭제</p></DangerButton>
-          <SecondaryButton onClick={()=>navigate(`/lms/t/homework/${post.homework_id}`)}><p>목록</p></SecondaryButton>
+          <SecondaryButton onClick={()=>navigate(`/lms/t/${post.subject_id}/homework/${post.homework_id}`)}><p>취소</p></SecondaryButton>
         </Box>
       </form>
     </TableBox>

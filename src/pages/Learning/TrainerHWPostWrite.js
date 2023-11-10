@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const TableBox = styled.div`
   padding: 2rem;
@@ -83,16 +83,17 @@ const ContentInput = styled.textarea`
 `;
 
 export function TrainerHWPostWrite() {
-  const [hw_content, setHw_content] = useState("");
-  const [hw_title, setHw_title] = useState("");
-  const [hw_start_date, setHw_start_date] = useState("");
-  const [hw_end_date, setHw_end_date] = useState("");
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const [hwTitle, setHwTitle] = useState("");
+  const [hwContent, setHwContent] = useState("");
+  const [hwStartDate, setHwStartDate] = useState("");
+  const [hwEndDate, setHwEndDate] = useState("");
   return<>
     <TableBox>
       <H2>과제 등록</H2>
       <form action="" method="POST">
-        <Input type="text" name="hw_title" id="hw_title" value={hw_title} onChange={(e)=>setHw_title(e.target.value)} placeholder="제목을 입력해주세요"/>
+        <Input type="text" name="hw_title" id="hw_title" value={hwTitle} onChange={(e)=>setHwTitle(e.target.value)} placeholder="제목을 입력해주세요"/>
         <Hr />
         <Content>
           <Box className="text">
@@ -100,15 +101,15 @@ export function TrainerHWPostWrite() {
             <P className="col-6">종료일</P>
           </Box>
           <Box className="date">
-            <Input className="date" type="date" name="hw_start_date" id="hw_start_date" value={hw_start_date} onChange={(e)=>setHw_start_date(e.target.value)}/>
-            <Input className="date" type="date" name="hw_end_date" id="hw_end_date" value={hw_end_date}  onChange={(e)=>setHw_end_date(e.target.value)}/>
+            <Input className="date" type="date" name="hw_start_date" id="hw_start_date" value={hwStartDate} onChange={(e)=>setHwStartDate(e.target.value)}/>
+            <Input className="date" type="date" name="hw_end_date" id="hw_end_date" value={hwEndDate}  onChange={(e)=>setHwEndDate(e.target.value)}/>
           </Box>
-          <ContentInput type="text" name="hw_content" id="hw_content" value={hw_content}  onChange={(e)=>setHw_content(e.target.value)} placeholder="내용을 입력해주세요"/>
+          <ContentInput type="text" name="hw_content" id="hw_content" value={hwContent}  onChange={(e)=>setHwContent(e.target.value)} placeholder="내용을 입력해주세요"/>
         </Content>
         <Input type="file" name="hw_file" id="hw_file" accept="" />
         <Box className="button">
           <PrimaryButton type="submit"><p>등록</p></PrimaryButton>
-          <SecondaryButton onClick={()=>navigate("/lms/t/homework")}><p>목록</p></SecondaryButton>
+          <SecondaryButton onClick={()=>navigate(`/lms/t/${state}/homework`)}><p>목록</p></SecondaryButton>
         </Box>
       </form>
     </TableBox>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -80,25 +80,27 @@ const P = styled.p`
 
 export function TrainerLectureWrite() {
   const navigate = useNavigate();
-  const [lecture_title, setLecture_title] = useState();
-  const [lecture_content, setLecture_content] = useState();
-  const [lecture_video, setLecture_video] = useState();
-  const [lecture_file, setLecture_file] = useState();
+  const { state } = useLocation();
+  const [lectureTitle, setLectureTitle] = useState();
+  const [lectureContent, setLectureContent] = useState();
+  const [lectureVideo, setLectureVideo] = useState();
+  const [lectureFile, setLectureFile] = useState();
+
   return<>
     <Container>
       <TableBox>
         <H2>강의 등록</H2>
         <form action="" method="POST">
-          <Input type="text" name="lecture_title" id="lecture_title" value={lecture_title} onChange={(e)=>setLecture_title(e.target.value)} placeholder="제목 입력해주세요"/>
+          <Input type="text" name="lecture_title" id="lecture_title" value={lectureTitle} onChange={(e)=>setLectureTitle(e.target.value)} placeholder="제목을 입력해주세요"/>
           <Hr />
-          <ContentInput type="text" name="lecture_content" id="lecture_content" value={lecture_content} onChange={(e)=>setLecture_content(e.target.value)} placeholder="제목 입력해주세요"/>
+          <ContentInput type="text" name="lecture_content" id="lecture_content" value={lectureContent} onChange={(e)=>setLectureContent(e.target.value)} placeholder="내용을 입력해주세요"/>
           <P>영상 강의</P>
-          <Input type="file" name="lecture_video" id="lecture_video" value={lecture_video} onChange={(e)=>setLecture_video(e.target.value)}/>
+          <Input type="file" name="lecture_video" id="lecture_video" value={lectureVideo} onChange={(e)=>setLectureVideo(e.target.value)}/>
           <P>강의 자료</P>
-          <Input type="file" name="lecture_file" id="lecture_file" value={lecture_file} onChange={(e)=>setLecture_file(e.target.value)}/>
+          <Input type="file" name="lecture_file" id="lecture_file" value={lectureFile} onChange={(e)=>setLectureFile(e.target.value)}/>
           <Box>
             <PrimaryButton type="submit"><p>등록</p></PrimaryButton>
-            <SecondaryButton onClick={() => navigate("/lms/t/lecture")}><p>목록</p></SecondaryButton>
+            <SecondaryButton onClick={() => navigate(`/lms/t/${state}/lecture`)}><p>목록</p></SecondaryButton>
           </Box>
         </form>
       </TableBox>

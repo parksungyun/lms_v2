@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_subject_table.css';
 import { courses, homeworks, lectures, students, studies, subject_answers, subject_board, subject_questions, subjects, submits, userList } from "../../assets/TempData";
+import { useParams } from "react-router-dom";
 
 const headers = [
   {
@@ -73,12 +74,17 @@ const Bold = styled.p`
 `;
 
 export function TrainerSubject() {
-  const id = 1; // subjectid 임의로 받아옴
+  const { id } = useParams();
   const subject = subjects.find(s => s.subject_id == id);
   const course = courses.find(c => c.course_id == subject.course_id);
   const student = students.filter(s => s.course_id == course.course_id);
   const homework = homeworks.filter(h => h.subject_id == id);
   const question = subject_questions.filter(s => s.subject_id == subject.subject_id);
+  const lecture = lectures.filter((l) => l.subject_id == subject.subject_id);
+  const subjectStudy = studies.filter((s) => lecture.find((l) => l.lecture_id == s.lecture_id));
+
+  // console.log(lecture);
+  console.log(subjectStudy);
 
   const items = courses.map((d,i)=>(
     {
@@ -86,7 +92,7 @@ export function TrainerSubject() {
       name: userList.find(u => u.uid == student[i].uid).user_name,
       birth: userList.find(u => u.uid == student[i].uid).user_birth,
       phone: userList.find(u => u.uid == student[i].uid).user_phone,
-      lectureCount: studies.filter(s => s.student_id == student[i].student_id).filter(i => i.is_study == 2).length,
+      lectureCount: subjectStudy.filter(s => s.student_id == student[i].student_id).filter(i => i.is_study == 2).length,
       HWCount: homework.filter((h) => (submits.filter(s => s.student_id == student[i].student_id).find((t) => t.homework_id == h.homework_id))).length
     }
   ));
@@ -120,7 +126,7 @@ export function TrainerSubject() {
           </ContentBox>
           <ContentBox className="col-3">
             <Bold>등록한 강의</Bold>
-            <p>{lectures.filter(l => l.subject_id == subject.subject_id).length}</p>
+            <p>{lecture.length}</p>
           </ContentBox>
           <ContentBox className="col-3">
             <Bold>등록한 과제</Bold>
@@ -128,7 +134,7 @@ export function TrainerSubject() {
           </ContentBox>
           <ContentBox className="col-3">
             <Bold>답변 대기 질문</Bold>
-            <p>{subject_questions.filter(s => s.subject_id == subject.subject_id).length - subject_answers.filter(s => question.find(q => q.s_question_id == s.s_question_id)).length}</p>
+            <p>{question.length - subject_answers.filter(s => question.find(q => q.s_question_id == s.s_question_id)).length}</p>
           </ContentBox>
         </Box>
         <Table 

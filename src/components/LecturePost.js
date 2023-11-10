@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { academics, lectures, userList } from "../assets/TempData";
 import { BsFillEyeFill, BsDownload } from "react-icons/bs";
 import { BiPlay } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -130,16 +130,17 @@ const SecondaryButton = styled.button`
 
 export function LecturePost() {
   const navigate = useNavigate();
-  const id = 2;
+  const { id } = useParams();
   const lecture = lectures.find(data => data.lecture_id == id);
   const user = userList.find(d=> d.uid == academics.find(d => d.academic_id == lectures.find(d => d.lecture_id == id).academic_id).uid);
-  console.log(user);
-  console.log(lecture);
 
   const maxItem = 30;
 	let availableItem = 15;
-
+  let type;
   const isStudent = 0;
+  if(isStudent == 0) type = "t";
+  else type = "s";
+  
   return<>
     <Container>
       <TableBox>
@@ -171,8 +172,8 @@ export function LecturePost() {
         <div><A href="">파일.pdf<Icon><BsDownload /></Icon></A></div>
       </AttachedBox>
       <Box className="button">
-        {isStudent == 1 ? null : <PrimaryButton className="button"><p>수정</p></PrimaryButton>}
-        <SecondaryButton onClick={()=>navigate(-1)}><p>목록</p></SecondaryButton>
+        {isStudent == 1 ? null : <PrimaryButton className="button" onClick={()=>navigate("mod", { state: lecture.lecture_id })}><p>수정</p></PrimaryButton>}
+        <SecondaryButton onClick={()=>navigate(`/lms/${type}/${lecture.subject_id}/lecture`)}><p>목록</p></SecondaryButton>
       </Box>
       </TableBox>
     </Container>

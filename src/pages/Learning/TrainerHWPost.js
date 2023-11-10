@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { BsDownload } from "react-icons/bs";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { academics, homeworks, userList } from "../../assets/TempData";
 
 const TableBox = styled.div`
@@ -134,7 +134,7 @@ export function TrainerHWPost() {
       </AttachedBox>
       <Box className="button">
         <PrimaryButton onClick={()=>navigate("mod", { state: post.homework_id })}><p>수정</p></PrimaryButton>
-        <SecondaryButton onClick={()=>navigate("/lms/t/homework")}><p>목록</p></SecondaryButton>
+        <SecondaryButton onClick={()=>navigate(`/lms/t/${post.subject_id}/homework`)}><p>목록</p></SecondaryButton>
       </Box>
     </TableBox>
   </>

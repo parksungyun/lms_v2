@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
@@ -50,6 +50,29 @@ const ButtonBox = styled.div`
   margin-right: 1.4rem;
 `;
 
+const headers = [
+  {
+    text: 'No.',
+    value: 'no'
+  },
+  {
+    text: '제목',
+    value: 'title'
+  },
+  {
+    text: '작성자',
+    value: 'writer'
+  },
+  {
+    text: '등록일',
+    value: 'regDate'
+  },
+  {
+    text: '조회수',
+    value: 'Hits'
+  },
+];
+
 export function StudentLecture() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -57,6 +80,32 @@ export function StudentLecture() {
   const limit = 10;
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
+  const { id } = useParams();
+  const lecture = lectures.filter(l => l.subject_id == id);
+
+  const shortenTitle = (str, length) => {
+    let result = '';
+    if (str.length > length) {
+      result = str.substr(0, length - 2) + '...';
+    } else {
+      result = str;
+    }
+    return result;
+  };
+
+  const items = lecture.map((l,i) => (
+    {
+      no: i + 1,
+      title: titleLink(l.lecture_id, shortenTitle(l.lecture_title, 35)),
+      writer: userList.find(u => u.uid == academics.find(a => a.academic_id == l.academic_id).uid).user_name,
+      regDate: l.lecture_reg_date,
+      Hits: l.lecture_hits
+    }
+  ));
+
+  function titleLink(id, title) {
+    return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
+  }
 
   const postsData = (posts) => {
     if(posts) {
@@ -68,41 +117,6 @@ export function StudentLecture() {
   function onSearch(e) {
     e.preventDefault();
   };
-
-  const headers = [
-    {
-      text: 'No.',
-      value: 'no'
-    },
-    {
-      text: '제목',
-      value: 'title'
-    },
-    {
-      text: '작성자',
-      value: 'writer'
-    },
-    {
-      text: '등록일',
-      value: 'regDate'
-    },
-    {
-      text: '조회수',
-      value: 'Hits'
-    },
-  ];
-  
-  const id = 1; //subjectid 임의로 받아옴
-  const lecture = lectures.filter(l => l.subject_id == id);
-  const items = lecture.map((l,i) => (
-    {
-      no: i + 1,
-      title: l.lecture_title,
-      writer: userList.find(u => u.uid == academics.find(a => a.academic_id == l.academic_id).uid).user_name,
-      regDate: l.lecture_reg_date,
-      Hits: l.lecture_hits
-    }
-  ));
 
   return<>
     <Container>

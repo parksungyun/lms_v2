@@ -95,7 +95,9 @@ export function BoardPost() {
   const { id } = useParams();
   const { state } = useLocation();
   
-  let post, writer, type;
+  let post;
+  let writer;
+  let type;
 
   if(state == "t" || state == "s"){
     type = 0;

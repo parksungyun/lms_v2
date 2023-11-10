@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
@@ -117,13 +117,23 @@ export function TrainerHW() {
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
 
-  const id = 1 // subjectid 임의로 받아옴
+  const { id } = useParams();
   const homework = homeworks.filter(h => h.subject_id == id);
+
+  const shortenTitle = (str, length) => {
+    let result = '';
+    if (str.length > length) {
+      result = str.substr(0, length - 2) + '...';
+    } else {
+      result = str;
+    }
+    return result;
+  };
 
   const items = homework.map((h,i) => (
     {
       no: i+1,
-      title: titleLink(h.homework_id, h.hw_title),
+      title: titleLink(h.homework_id, shortenTitle(h.hw_title, 35)),
       writer: userList.find(u => u.uid == academics.find(a => a.academic_id == h.academic_id).uid).user_name,
       startDate: h.hw_start_date,
       endDate: h.hw_end_date,
@@ -184,7 +194,7 @@ export function TrainerHW() {
           <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
           <button onClick={onSearch}><p>검색</p></button>
         </SearchBox>
-        <PrimaryButton onClick={() => navigate("write")}><p>작성</p></PrimaryButton>
+        <PrimaryButton onClick={() => navigate("write", { state : id })}><p>작성</p></PrimaryButton>
       </ButtonBox>
       <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
     </Container>

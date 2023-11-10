@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { lectures } from "../../assets/TempData";
 
@@ -88,13 +88,13 @@ const P = styled.p`
 `
 
 export function TrainerLectureMod() {
-  const id = 2;
-  const lecture = lectures.find(data => data.lecture_id == id);
+  const { state } = useLocation();
+  const lecture = lectures.find(data => data.lecture_id == state);
   const navigate = useNavigate();
-  const [lecture_title, setLecture_title] = useState(lecture.lecture_title);
-  const [lecture_content, setLecture_content] = useState(lecture.lecture_content);
-  const [lecture_video, setLecture_video] = useState(`${lecture.lecture_videoURL}`.mp4);   // 이게 맞는 문법인지는 잘 모르겠음!!!!
-  const [lecture_file, setLecture_file] = useState(lecture.lecture_fileURL);
+  const [lectureTitle, setLectureTitle] = useState(lecture.lecture_title);
+  const [lectureContent, setLectureContent] = useState(lecture.lecture_content);
+  const [lectureVideo, setLectureVideo] = useState(`${lecture.lecture_videoURL}`.mp4);   // 이게 맞는 문법인지는 잘 모르겠음!!!!
+  const [lectureFile, setLectureFile] = useState(lecture.lecture_fileURL);
 
 
   return<>
@@ -102,17 +102,17 @@ export function TrainerLectureMod() {
       <TableBox>
         <H2>강의 수정</H2>
         <form action="" method="POST">
-          <Input type="text" name="lecture_title" id="lecture_title" value={lecture_title} onChange={(e)=>setLecture_title(e.target.value)} placeholder="제목 입력해주세요"/>
+          <Input type="text" name="lecture_title" id="lecture_title" value={lectureTitle} onChange={(e)=>setLectureTitle(e.target.value)} placeholder="제목 입력해주세요"/>
           <Hr />
-          <ContentInput type="text" name="lecture_content" id="lecture_content" value={lecture_content} onChange={(e)=>setLecture_content(e.target.value)} placeholder="제목 입력해주세요"/>
+          <ContentInput type="text" name="lecture_content" id="lecture_content" value={lectureContent} onChange={(e)=>setLectureContent(e.target.value)} placeholder="제목 입력해주세요"/>
           <P>영상 강의</P>
-          <Input type="file" name="lecture_video" id="lecture_video" value={lecture_video} onChange={(e)=>setLecture_video(e.target.value)}/>
+          <Input type="file" name="lecture_video" id="lecture_video" value={lectureVideo} onChange={(e)=>setLectureVideo(e.target.value)}/>
           <P>강의 자료</P>
-          <Input type="file" name="lecture_file" id="lecture_file" value={lecture_file} onChange={(e)=>setLecture_file(e.target.value)}/>
+          <Input type="file" name="lecture_file" id="lecture_file" value={lectureFile} onChange={(e)=>setLectureFile(e.target.value)}/>
           <Box>
             <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
             <DangerButton><p>삭제</p></DangerButton>
-            <SecondaryButton onClick={() => navigate("/lms/t/lecture")}><p>목록</p></SecondaryButton>
+            <SecondaryButton onClick={() => navigate(`/lms/t/${lecture.subject_id}/lecture/${lecture.lecture_id}`)}><p>취소</p></SecondaryButton>
           </Box>
         </form>
       </TableBox>
