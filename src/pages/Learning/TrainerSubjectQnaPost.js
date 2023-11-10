@@ -143,9 +143,9 @@ export function TrainerSubjectQnaPost() {
         <ReplyPost id={id} type={"s"} />
         <Box className="button">
           <PrimaryButton onClick={()=>setIsReply(0)}><p>수정</p></PrimaryButton>
-          <SecondaryButton onClick={()=>navigate("/lms/t/qna")}><p>목록</p></SecondaryButton>
+          <SecondaryButton onClick={()=>navigate(`/lms/t/${question.subject_id}/qna`)}><p>목록</p></SecondaryButton>
         </Box>
-        </> : <ReplyWrite id={id} type={"t/qna"} />
+        </> : <ReplyWrite id={id} type={`t/${question.subject_id}/qna`} />
       }
       </TableBox>
     </Container>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
@@ -68,6 +68,33 @@ const ButtonBox = styled.div`
   margin-right: 1.4rem;
 `;
 
+const headers = [
+  {
+    text: 'No.',
+    value: 'no'
+  },
+  {
+    text: '제목',
+    value: 'title'
+  },
+  {
+    text: '작성자',
+    value: 'writer'
+  },
+  {
+    text: '등록일',
+    value: 'regDate'
+  },
+  {
+    text: '조회수',
+    value: 'Hits'
+  },
+  {
+    text: '답변상태',
+    value: 'replyState'
+  },
+];
+
 export function TrainerSubjectQna() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -75,6 +102,9 @@ export function TrainerSubjectQna() {
   const limit = 10;
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
+  
+  const { id } = useParams();
+  const question = subject_questions.filter(s => s.subject_id == id);
 
   const postsData = (posts) => {
     if(posts) {
@@ -92,40 +122,21 @@ export function TrainerSubjectQna() {
     e.preventDefault();
   };
 
-  const headers = [
-    {
-      text: 'No.',
-      value: 'no'
-    },
-    {
-      text: '제목',
-      value: 'title'
-    },
-    {
-      text: '작성자',
-      value: 'writer'
-    },
-    {
-      text: '등록일',
-      value: 'regDate'
-    },
-    {
-      text: '조회수',
-      value: 'Hits'
-    },
-    {
-      text: '답변상태',
-      value: 'replyState'
-    },
-  ];
+  const shortenTitle = (str, length) => {
+    let result = '';
+    if (str.length > length) {
+      result = str.substr(0, length - 2) + '...';
+    } else {
+      result = str;
+    }
+    return result;
+  };
 
-  const id  = 1; // subjectid 값 임의로 받아옴
-  const question = subject_questions.filter(s => s.subject_id == id)
   
   const items = question.map((q,i) => (
     {
       no: i+1,
-      title: titleLink(q.s_question_id, q.s_question_title),
+      title: titleLink(q.s_question_id, shortenTitle(q.s_question_title, 35)),
       writer: userList.find(d => d.uid == students.find(d => d.student_id == q.student_id).uid).user_name,
       regDate: q.s_question_reg_date,
       Hits: q.s_question_hits,
