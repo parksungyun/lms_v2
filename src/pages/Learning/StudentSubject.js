@@ -162,21 +162,31 @@ const studentSQNA = [
 ];
 
 export function StudentSubject() {
-  const maxItem = 30;
-	let availableItem = 15;
   const navigate = useNavigate();
   const { id } = useParams();
   const board = subject_board.filter(s => s.subject_id == id);
-  const studentid = 1;
+  const studentid = 1; // 임의로 studentid값 받아옴
   const submit = submits.filter(s => s.student_id == studentid);
-  const homework = homeworks.filter(h => h.subject_id == studentid);  
+  const homework = homeworks.filter(h => h.subject_id == id);  
   const question = subject_questions.filter(s => s.subject_id == id);
   const lecture = lectures.filter(l => l.subject_id == id);
   const study = studies.filter(s => s.student_id == studentid);
+  const isStudy = lecture.filter(l => study.find(s => s.lecture_id == l.lecture_id))
+  let i = 100 - (isStudy.length * 100 / lecture.length);
+  if (i == 0) {
+    i = 100;
+  } else if (i == 100) {
+    i = 0;
+  }
 
   function changeReplyHW(reply) {
-    if(feedbacks.find(f => f.submit_id == submit.find(s => s.homework_id == reply).submit_id)) return(<BadgeSuccess>채점완료</BadgeSuccess>);
-    else if (submit.find(s => s.homework_id == reply)) return (<BadgePrimary>제출완료</BadgePrimary>);
+    if (submit.find(s => s.homework_id == reply)) {
+      if(feedbacks.find(f => f.submit_id == submit.find(s => s.homework_id == reply).submit_id)) {
+        return(<BadgeSuccess>채점완료</BadgeSuccess>);
+      } else {
+        return (<BadgePrimary>제출완료</BadgePrimary>);
+      }
+    }
     else return(<BadgeSecondary>제출대기</BadgeSecondary>);
   };
   
@@ -185,10 +195,6 @@ export function StudentSubject() {
       return(<BadgePrimary>학습중</BadgePrimary>);
     }
     else return(<BadgeSecondary>미학습</BadgeSecondary>);
-  };
-
-  function sliceLecture(){
-   
   };
 
   function changeReplyQNA(reply) {
@@ -210,7 +216,7 @@ export function StudentSubject() {
     return (<p onClick={() => navigate(`${type}/${id}`)}>{title}</p>);
   }
 
-  const SSBItems = board.map((b,i) => (
+  const boardItems = board.map((b,i) => (
     {
       no: i + 1,
       title: titleLink(b.subject_board_id, shortenTitle(b.s_post_title, 20), `/lms/s/${id}/sboard`),
@@ -220,7 +226,7 @@ export function StudentSubject() {
     }
   ));
 
-  const SSHWItems = homework.map((h,i) => (
+  const HWItems = homework.map((h,i) => (
     {
       no: i + 1,
       title: titleLink(h.homework_id, shortenTitle(h.hw_title, 20), `/lms/s/${id}/homework`),
@@ -230,14 +236,14 @@ export function StudentSubject() {
     }
   ));
 
-  const SSLECItems = lecture.map((l,i) => (
+  const lectureItems = lecture.filter(l => !study.find(s => s.lecture_id == l.lecture_id)).map((l,i) => (
     {
       no: i + 1,
       title: l.lecture_title,
       state: changeReplyLecture(study.find(s => s.lecture_id == l.lecture_id))
     }
   ));
-  const SSQNAItems = question.map((q,i) => (
+  const qnaItems = question.map((q,i) => (
     {
       no: i + 1,
       title: titleLink(q.s_question_id, shortenTitle(q.s_question_title, 20), `/lms/s/${id}/sqna`),
@@ -255,7 +261,7 @@ export function StudentSubject() {
             <StyledNavLink to='/lms/s/sboard'>공지 사항</StyledNavLink>
             <Table
               headers={studentSBoard}
-              items={SSBItems.reverse().slice(0, 5)}
+              items={boardItems.reverse().slice(0, 5)}
               selectable={false}
             />
           </TableBox>
@@ -265,7 +271,7 @@ export function StudentSubject() {
             <StyledNavLink to='/lms/s/homework'>과제</StyledNavLink>
             <Table
               headers={studentSHW}
-              items={SSHWItems.reverse().slice(0, 5)}
+              items={HWItems.reverse().slice(0, 5)}
               selectable={false}
             />
           </TableBox>
@@ -276,12 +282,12 @@ export function StudentSubject() {
           <TableBox>
             <StyledNavLink to='/lms/s/lecture'>강의</StyledNavLink>
             <ProgressBar>
-              <ProgressBox width = {100-(availableItem*100/`${lecture.length}`)}/>
+              <ProgressBox width = {i}/>
             </ProgressBar>
-            <p>현재 진행률 15/{lecture.length}강</p>
+            <p>{isStudy.length}/{lecture.length}강</p>
             <Table
               headers={studentSLec}
-              items={SSLECItems.reverse().slice(0, 3)}
+              items={lectureItems.reverse().slice(0, 3)}
               selectable={false}
             />
           </TableBox>
@@ -291,7 +297,7 @@ export function StudentSubject() {
             <StyledNavLink to='/lms/s/sqna'>Q&A</StyledNavLink>
             <Table
               headers={studentSQNA}
-              items={SSQNAItems.reverse().slice(0, 5)}
+              items={qnaItems.reverse().slice(0, 5)}
               selectable={false}
             />
           </TableBox>
