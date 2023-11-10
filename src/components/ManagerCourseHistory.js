@@ -58,12 +58,10 @@ const PrimaryButton = styled.button`
   border: 0;
 `;
 
-export function ManagerCourseHistory() {
+export function ManagerCourseHistory({id}) {
   const navigate = useNavigate();
-  const id = 1;
 
-  const academic = academics.filter(data => data.academic_id == id);
-  const course = academic.map((s) => courses.find(data => data.academic_id == s.academic_id));
+  const course = courses.filter(c => c.academic_id == id);
   console.log(course)
 
   const newDate = new Date();
@@ -76,16 +74,17 @@ export function ManagerCourseHistory() {
     else {return(<BadgeSecondary>진행끝</BadgeSecondary>)};
   };
 
-  const item = [
+  const item = course.map((c,i) => (
     {
-      no: 1,
-      courseName: course[0].course_name,
-      startDate: course[0].start_date,
-      endDate: course[0].end_date,
-      state: changeReply(course[0].end_date),
-      link: <PrimaryButton onClick={()=>navigate('/lms/m/info')}><p>바로가기</p></PrimaryButton>,
-    },
-  ];
+      no: i + 1,
+      courseName: c.course_name,
+      startDate: c.start_date,
+      endDate: c.end_date,
+      state: changeReply(c.end_date),
+      link: <PrimaryButton onClick={()=>navigate(`/lms/m/${c.course_id}/info`)}><p>바로가기</p></PrimaryButton>
+    }
+  ));
+
   return<>
     <Table 
       headers={header}

@@ -62,9 +62,8 @@ const PrimaryButton = styled.button`
   border: 0;
 `;
 
-export function TrainerCourseHistory() {
+export function TrainerCourseHistory({id}) {
   const navigate = useNavigate();
-  const id = 2;
 
   const subject = subjects.filter(data => data.academic_id == id);
   const course = subject.map((s) => courses.find(data => data.course_id == s.course_id));
@@ -81,15 +80,15 @@ export function TrainerCourseHistory() {
     else {return(<BadgeSecondary>진행끝</BadgeSecondary>)};
   };
 
-  const item = subject.map((s,i) => (  
+  const item = course.map((c,i) => (  
     {
       no: i+1,
-      courseName: course[i].course_name,
+      courseName: c.course_name,
       subjectName: subject[i].subject_name,
-      startDate: course[i].start_date,
-      endDate: course[i].end_date,
-      state: changeReply(course[i].end_date),
-      link: <PrimaryButton onClick={()=>navigate('/lms/t/subject')}><p>바로가기</p></PrimaryButton>,
+      startDate: c.start_date,
+      endDate: c.end_date,
+      state: changeReply(c.end_date),
+      link: <PrimaryButton onClick={()=>navigate(`/lms/t/${c.course_id}/subject`)}><p>바로가기</p></PrimaryButton>,
     }
   ));
 
