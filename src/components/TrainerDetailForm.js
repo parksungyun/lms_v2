@@ -62,9 +62,8 @@ const Select = styled.select`
   border-radius: 0.5rem;
 `;
 
-export function TrainerDetailForm() {
+export function TrainerDetailForm({id}) {
   const navigate = useNavigate();
-  const id = 1; // 임시
   const academic = academics.find((a) => a.academic_id == id);
   const user = userList.find((u) => u.uid == academic.uid);
   const dept = department.find((d) => d.dept_id == academic.dept);

@@ -55,9 +55,8 @@ const ButtonBox = styled.div`
   gap: 0.5rem;
 `;
 
-export function StudentDetailForm() {
+export function StudentDetailForm({id}) {
   const navigate = useNavigate();
-  const id = 1; // 임시
   const student = students.find((a) => a.student_id == id);
   const user = userList.find((u) => u.uid == student.uid);
   
