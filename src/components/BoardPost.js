@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import { BsFillEyeFill } from "react-icons/bs";
 import { BsDownload } from "react-icons/bs";
-import { useLocation, useParams } from "react-router-dom";
-import { academics, course_questions, subject_questions, userList } from "../assets/TempData";
-import { useEffect } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { academics, course_board, subject_board, userList } from "../assets/TempData";
 
 const TableBox = styled.div`
   padding: 2rem;
@@ -94,47 +93,49 @@ const SecondaryButton = styled.button`
 export function BoardPost() {
   const { id } = useParams();
   const { state } = useLocation();
+  const navigate = useNavigate();
+
   
   let post;
-  let writer;
   let type;
+  let navlink;
 
-  if(state == "t" || state == "s"){
+  if(state[0] === "t" || state[2] === "sboard"){
     type = 0;
-    post = subject_questions.find((q) => q.s_question_id == id);
-    writer = userList.find((u) => u.uid == (academics.find((a) => a.academic_id == post.academic_id).uid));
+    post = subject_board.find((s) => s.subject_board_id == id);
   }
-  
-  if(state == "m" || state == "c"){
+  if(state[0] === "m" || state[2] === "cboard"){
     type = 1;
-    post = course_questions.find((q) => q.c_question_id = id);
-    writer = academics.find((a) => a.academic_id == post.academic_id);
+    post = course_board.find((c) => c.course_board_id == id);
   }
+
+  if(state[2] === "cboard") navlink = `/lms/${state[0]}/cboard`;
+  else navlink = `/lms/${state[0]}/${state[1]}/${state[2]}`;
 
   return<>
     <TableBox>
-      <H2>{type == 0 ? post.s_question_title : post.c_question_title}</H2>
+      <H2>{type === 0 ? post.s_post_title : post.c_post_title}</H2>
       <Box>
-        <P>{writer.user_name}</P>
+        <P>{userList.find((u) => u.uid == (academics.find((a) => a.academic_id == post.academic_id)).uid).user_name}</P>
         <P>|</P>
-        <P>{type == 0 ? post.s_question_reg_date : post.c_question_reg_date}</P>
+        <P>{type === 0 ? post.s_post_reg_date : post.c_post_reg_date}</P>
         <P>|</P>
         <IconBox>
           <BsFillEyeFill />
-          <P>{type == 0 ? post.s_question_hits : post.c_question_hits}</P>
+          <P>{type === 0 ? post.s_post_hits : post.c_post_hits}</P>
         </IconBox>
       </Box>
       <Hr />
       <Content>
-      {type == 0 ? post.s_question_content : post.c_question_content}
+      {type === 0 ? post.s_post_content : post.c_post_content}
       </Content>
       <AttachedBox>
         <Attached><p className="fw-bold">첨부파일</p></Attached>
-        <div><A href={type == 0 ? post.s_question_fileURL : post.c_question_fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
+        <div><A href={type === 0 ? post.s_post_fileURL : post.c_post_fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
       </AttachedBox>
       <Box className="button">
-        { state == "t" || state == "m" ? null : <PrimaryButton><p>수정</p></PrimaryButton>}
-        <SecondaryButton><p>목록</p></SecondaryButton>
+        { state[0] === "s" ? null : <PrimaryButton onClick={() => navigate("mod", { state : [id, state[0]] })}><p>수정</p></PrimaryButton>}
+        <SecondaryButton onClick={() => navigate(navlink)}><p>목록</p></SecondaryButton>
       </Box>
     </TableBox>
   </>

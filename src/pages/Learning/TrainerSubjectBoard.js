@@ -48,8 +48,8 @@ export function TrainerSubjectBoard() {
     return result;
   };
 
-  function titleLink(id, title) {
-    return (<p onClick={() => navigate(`${id}`, { state : "t" })}>{title}</p>);
+  function titleLink(link, title) {
+    return (<p onClick={() => navigate(`${link}`, { state : ["t", id, "board"]})}>{title}</p>);
   }
 
   const items = posts.map((d, i)=>(
@@ -64,7 +64,7 @@ export function TrainerSubjectBoard() {
 
   return<>
     <Container>
-      <Board board={headers} item={items.reverse()} write={true} type={"t"} />
+      <Board board={headers} item={items.reverse()} write={true} type={["t", id, "board"]} />
     </Container>
   </>
 }

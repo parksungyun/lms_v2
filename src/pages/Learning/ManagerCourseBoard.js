@@ -48,8 +48,8 @@ const shortenTitle = (str, length) => {
   return result;
 };
 
-function titleLink(id, title) {
-  return (<p onClick={() => navigate(`${id}`, { state : ["t", 1] })}>{title}</p>);
+function titleLink(link, title) {
+  return (<p onClick={() => navigate(`${link}`, { state : ["m", id, "board"] })}>{title}</p>);
 }
   
 const items = course.map((c, i) => (
@@ -64,7 +64,7 @@ const items = course.map((c, i) => (
 
   return<>
     <Container>
-      <Board board={headers} item={items.reverse()} write={true} type={"m"} />
+      <Board board={headers} item={items.reverse()} write={true} type={["m", id, "board"]} />
     </Container>
   </>
 }

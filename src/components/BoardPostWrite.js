@@ -79,7 +79,7 @@ export function BoardPostWrite() {
         <Input type="file" name="board_file" id="board_file" accept="" />
         <Box>
           <PrimaryButton type="submit"><p>등록</p></PrimaryButton>
-          <SecondaryButton onClick={() => navigate(`/lms/${state}/board`)}><p>목록</p></SecondaryButton>
+          <SecondaryButton onClick={() => navigate(`/lms/${state[0]}/${state[1]}/board`)}><p>목록</p></SecondaryButton>
         </Box>
       </form>
     </TableBox>
