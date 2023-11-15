@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import WebWrapper from "../../components/WebWrapper"
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { courses } from "../../assets/TempData";
+import { useNavigate, useParams } from "react-router-dom";
+import { admission_questions, courses } from "../../assets/TempData";
 
 const Container = styled.div`
   margin: 2rem 15rem;
@@ -78,19 +78,22 @@ const ContentInput = styled.textarea`
   border: 1px solid lightgray;
 `;
 
-export function AdmissionWrite(){
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
-  const [phone, setPhone] = useState("");
-  const [school, setSchool] = useState("");
-  const [desired, setDesired] = useState("");
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [password, setPassword] = useState("");
+export function AdmissionMod(){
+  const { id } = useParams();
+  const post = admission_questions.find(a => a.a_question_id == id);
+  const [name, setName] = useState(post.writer_name);
+  const [age, setAge] = useState(post.age);
+  const [phone, setPhone] = useState(post.phone);
+  const [school, setSchool] = useState(post.final_school);
+  const [desired, setDesired] = useState(post.desired_course);
+  const [title, setTitle] = useState(post.a_question_title);
+  const [content, setContent] = useState(post.a_question_content);
+  const [password, setPassword] = useState(post.post_pw);
 
   const navigate = useNavigate();
 
   const currentDate = new Date().getTime();
+
   const course = courses.filter(c => new Date(c.recruit_end).getTime() >= currentDate);
 
   function onSubmit(e) {
@@ -138,9 +141,9 @@ export function AdmissionWrite(){
           <Div>
             <label>수강희망과목</label>
             <SelectBox>
-              <select className="desired" value={desired} onChange={(e) => setDesired(e.target.value)}>
+              <select className="desired" value={desired} disabled>
                 {
-                  course.map((data) => (
+                  courses.map((data) => (
                     <option value={data.course_id} key={data.course_id}>
                       {data.course_name}
                     </option>

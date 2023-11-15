@@ -1,7 +1,8 @@
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components"
 import WebWrapper from "../../components/WebWrapper";
+import { admission_questions } from "../../assets/TempData";
 
 const Container = styled.div`
   width: 100%;
@@ -9,7 +10,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  form {
+  div {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -43,30 +44,47 @@ const Button = styled.button`
   border: 1px solid #eee;
   color: white;
   font-weight: 700;
-  margin-top: 2rem;
+  /* margin-top: 2rem; */
   &:hover {
     background-color: #86a8db;
   }
 `;
 
+const P = styled.p`
+  color: red;
+  font-size: 1.3rem;
+  margin: 0;
+`
+
 export function AdmissionPwCheck() {
+  const { id } = useParams();
   const [postPw, setPostPw] = useState("");
+  const [isPost, setIsPost] = useState(0);
   const navigate = useNavigate();
 
-  function onSubmit(e) {
-    e.preventDefault();
+  const pw = admission_questions.find(a => a.a_question_id == id);
+
+  function checkPw() {
+    if (pw.post_pw == postPw) {
+      navigate(`/admission/${id}`);
+    } else {
+      setIsPost(1)
+    }
   }
 
   return <>
     <WebWrapper pageName={"입학 상담"} />
     <Container>
-      <form onSubmit={onSubmit}>
+      <div>
         <Header>비밀번호 확인</Header>
         <Div>
           <input type="password" id="userPw" value={postPw} onChange={(e) => setPostPw(e.target.value)} />
         </Div>
-        <Button type="submit"><p>확인</p></Button>
-      </form>
+        {
+          isPost == 1 && <P>비밀번호를 다시 입력해주세요</P>
+        }
+        <Button onClick={()=>checkPw()}><p>확인</p></Button>
+      </div>
     </Container>
   </>
 }

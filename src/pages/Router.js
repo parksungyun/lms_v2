@@ -80,6 +80,8 @@ import { ManagerAdmissionBoardPost } from "./Learning/ManagerAdmissionBoardPost"
 import { TrainerHWFeedback } from "./Learning/TrainerHWFeedback"
 import { TrainerHWPost } from "./Learning/TrainerHWPost"
 import { StudentHWPost } from "./Learning/StudentHWPost"
+import { AdmissionPwCheck } from "./Web/AdmissionPwCheck"
+import { AdmissionMod } from "./Web/AdmissionMod"
 
 export const SideContext = createContext();
 
@@ -119,7 +121,8 @@ export function Router() {
                 <Route path="write" element={<AdmissionWrite />} />
                 <Route path=":id" element={<ParentsWrapper />}>
                   <Route index element={<AdmissionPost />} />
-                  <Route path="mod" element={<AdmissionWrite />} />
+                  <Route path="check" element={<AdmissionPwCheck />} />
+                  <Route path="mod" element={<AdmissionMod />} />
                 </Route>
               </Route>
               <Route path="contact" element={<Contact />} />

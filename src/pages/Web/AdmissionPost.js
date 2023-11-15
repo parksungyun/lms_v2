@@ -139,7 +139,7 @@ export function AdmissionPost(){
         </>
       }
       <ButtonBox>
-        <PrimaryButton><p>수정</p></PrimaryButton>
+        <PrimaryButton onClick={() => navigate("mod")}><p>수정</p></PrimaryButton>
         <SecondaryButton onClick={() => navigate("/admission")}><p>목록</p></SecondaryButton>
       </ButtonBox>
     </Container>
