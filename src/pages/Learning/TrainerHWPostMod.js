@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { homeworks } from "../../assets/TempData";
+import { DeleteModal } from "../../components/DeleteModal";
 
 const TableBox = styled.div`
   padding: 2rem;
@@ -103,7 +104,7 @@ export function TrainerHWPostMod() {
   return<>
     <TableBox>
       <H2>과제 수정</H2>
-      <form action="" method="POST">
+      {/* <form action="" method="POST"> */}
         <Input type="text" name="hw_title" id="hw_title" value={hwTitle} onChange={(e)=>setHwTitle(e.target.value)} />
         <Hr />
         <Content>
@@ -120,10 +121,10 @@ export function TrainerHWPostMod() {
         <Input type="file" name="hw_file" id="hw_file" accept="" />
         <Box className="button">
           <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
-          <DangerButton><p>삭제</p></DangerButton>
+          <DeleteModal name={"삭제"}></DeleteModal>
           <SecondaryButton onClick={()=>navigate(`/lms/t/${post.subject_id}/homework/${post.homework_id}`)}><p>취소</p></SecondaryButton>
         </Box>
-      </form>
+      {/* </form> */}
     </TableBox>
   </>
 }

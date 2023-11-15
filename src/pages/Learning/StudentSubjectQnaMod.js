@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { subject_questions } from "../../assets/TempData";
+import { DeleteModal } from "../../components/DeleteModal";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -92,17 +93,17 @@ export function StudentSubjectQnaMod() {
     <Container>
       <TableBox>
         <H2>QnA 수정</H2>
-        <form action="" method="POST">
+        {/* <form action="" method="POST"> */}
           <Input type="text" name="qna_title" id="qna_title" value={qna_title} onChange={(e)=>setQna_title(e.target.value)}/>
           <Hr />
           <ContentInput type="text" name="qna_content" id="qna_content" value={qna_content}  onChange={(e)=>setQna_content(e.target.value)}/>
           <Input type="file" name="qna_file" id="qna_file" accept="" />
           <Box>
             <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
-            <DangerButton><p>삭제</p></DangerButton>
-            <SecondaryButton onClick={() => navigate(`/lms/s/sqna/${question.s_question_id}`)}><p>목록</p></SecondaryButton>
+            <DeleteModal name={"삭제"}></DeleteModal>
+            <SecondaryButton onClick={() => navigate(`/lms/s/${question.subject_id}/sqna/${question.s_question_id}`)}><p>취소</p></SecondaryButton>
           </Box>
-        </form>
+        {/* </form> */}
       </TableBox>
     </Container>
   </>

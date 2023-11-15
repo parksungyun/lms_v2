@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { lectures } from "../../assets/TempData";
+import { DeleteModal } from "../../components/DeleteModal";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -101,7 +102,7 @@ export function TrainerLectureMod() {
     <Container>
       <TableBox>
         <H2>강의 수정</H2>
-        <form action="" method="POST">
+        {/* <form action="" method="POST"> */}
           <Input type="text" name="lecture_title" id="lecture_title" value={lectureTitle} onChange={(e)=>setLectureTitle(e.target.value)} placeholder="제목 입력해주세요"/>
           <Hr />
           <ContentInput type="text" name="lecture_content" id="lecture_content" value={lectureContent} onChange={(e)=>setLectureContent(e.target.value)} placeholder="제목 입력해주세요"/>
@@ -111,10 +112,10 @@ export function TrainerLectureMod() {
           <Input type="file" name="lecture_file" id="lecture_file" value={lectureFile} onChange={(e)=>setLectureFile(e.target.value)}/>
           <Box>
             <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
-            <DangerButton><p>삭제</p></DangerButton>
+            <DeleteModal name={"삭제"}></DeleteModal>
             <SecondaryButton onClick={() => navigate(`/lms/t/${lecture.subject_id}/lecture/${lecture.lecture_id}`)}><p>취소</p></SecondaryButton>
           </Box>
-        </form>
+        {/* </form> */}
       </TableBox>
     </Container>
   </>

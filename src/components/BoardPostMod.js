@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { course_board, subject_board } from "../assets/TempData";
+import { DeleteModal } from "./DeleteModal";
 
 const TableBox = styled.div`
   padding: 2rem;
@@ -106,17 +107,17 @@ export function BoardPostMod() {
   return<>
     <TableBox>
       <H2>공지 수정</H2>
-      <form action="" method="POST">
+      {/* <form action="" method="POST"> */}
         <Input type="text" name="board_title" id="board_title" value={boardTitle} onChange={(e)=>setBoardTitle(e.target.value)}/>
         <Hr />
         <ContentInput type="text" name="board_content" id="board_content" value={boardContent}  onChange={(e)=>setBoardContent(e.target.value)}/>
         <Input type="file" name="board_file" id="board_file" accept="" />
         <Box>
           <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
-          <DangerButton><p>삭제</p></DangerButton>
+          <DeleteModal name={"삭제"}></DeleteModal>
           <SecondaryButton onClick={() => navigate(link)}><p>목록</p></SecondaryButton>
         </Box>
-      </form>
+      {/* </form> */}
     </TableBox>
   </>
 }
