@@ -2,6 +2,7 @@ import styled from "styled-components"
 import { Table } from "../../components/Table";
 import { useLocation, useNavigate } from "react-router-dom";
 import { courses, feedbacks, homeworks, students, subjects, submits, userList } from "../../assets/TempData";
+import { FeedbackModal } from "../../components/FeedbackModal";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -16,43 +17,6 @@ const TableBox = styled.div`
   background-color: white;
   border-radius: 1rem;
   margin-bottom: 2rem;
-`;
-
-const PrimaryButton = styled.button`
-  background-color: #5f7dcf;
-  padding: 2px 15px;
-  color: white;
-  font-weight: 500;
-  font-size: 0.8rem;
-  border-radius: 5px;
-  border: 0;
-  cursor: pointer;
-  &.disabled{
-    background-color: gray;
-    cursor: default;
-  }
-`;
-
-const SuccessButton = styled.button`
-  background-color: green;
-  padding: 2px 15px;
-  color: white;
-  font-weight: 500;
-  font-size: 0.8rem;
-  border-radius: 5px;
-  border: 0;
-  cursor: pointer;
-`;
-
-const SecondaryButton = styled.button`
-  background-color: gray;
-  padding: 2px 15px;
-  color: white;
-  font-weight: 500;
-  font-size: 0.8rem;
-  border-radius: 5px;
-  border: 0;
-  cursor: pointer;
 `;
 
 const H2 = styled.p`
@@ -145,10 +109,10 @@ export function TrainerHWFeedback() {
 
   function changeButton(id) {
     if(feedbacks.find((f) => f.submit_id == id)) {
-      return <SuccessButton onClick={()=>navigate()}><p>채점완료</p></SuccessButton>
+      return <FeedbackModal name={"채점완료"} feedbackid={id}></FeedbackModal>
     }
     else {
-      return <SecondaryButton onClick={()=>navigate()}><p>채점대기</p></SecondaryButton>
+      return <FeedbackModal name={"채점대기"} feedbackid={id}></FeedbackModal>
     }
   };
 
