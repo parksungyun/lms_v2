@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components"
 import { admission_answers, admission_questions, course_answers, course_questions, subject_answers, subject_questions } from "../assets/TempData";
 import { useEffect } from "react";
+import { DeleteModal } from "./DeleteModal";
 
 const ContentInput = styled.textarea`
   margin-top: 2rem;
@@ -43,13 +44,6 @@ const SecondaryButton = styled.button`
   color: white;
 `;
 
-const DangerButton = styled.button`
-  border: 0;
-  border-radius: 5px;
-  background-color: red;
-  padding: 0.6rem 1.4rem;
-  color: white;
-`;
 
 export function ReplyWrite({ id, user, type }) {
   const navigate = useNavigate();
@@ -87,17 +81,17 @@ export function ReplyWrite({ id, user, type }) {
   }, [answer]);
   
   return <>
-    <form action="" method="POST" >
+    {/* <form action="" method="POST" > */}
       <ContentInput type="text" name="qna_reply" id="qna_reply" value={reply} onChange={(e)=>setReply(e.target.value)} placeholder="답변 내용을 입력해주세요" />
       <Box className="button">
         {
           isReply == 1 ? <>
             <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
-            <DangerButton><p>삭제</p></DangerButton>
+            <DeleteModal name={"삭제"}></DeleteModal>
           </> : <PrimaryButton type="submit"><p>등록</p></PrimaryButton>
         }
         <SecondaryButton onClick={()=>navigate(`/lms/${type}`)}><p>목록</p></SecondaryButton>
       </Box>
-    </form>
+    {/* </form> */}
   </>
 }
