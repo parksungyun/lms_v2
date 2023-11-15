@@ -65,7 +65,7 @@ const SearchBox = styled.div`
 
 const ButtonBox = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 2rem;
   margin-right: 1.4rem;
 `;
@@ -111,8 +111,6 @@ const headers = [
 
 export function TrainerHW() {
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [searchOption, setSearchOption] = useState("all");
   const limit = 10;
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
@@ -185,15 +183,6 @@ export function TrainerHW() {
         />
       </TableBox>
       <ButtonBox>
-        <SearchBox>
-          <select className="searchSelect" onChange={(e) => setSearchOption(e.target.value)}>
-            <option key="all" value="all">전체</option>
-            <option key="title" value="title">제목</option>
-            <option key="writer" value="writer">작성자</option>
-          </select>
-          <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={onSearch}><p>검색</p></button>
-        </SearchBox>
         <PrimaryButton onClick={() => navigate("write", { state : id })}><p>작성</p></PrimaryButton>
       </ButtonBox>
       <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
