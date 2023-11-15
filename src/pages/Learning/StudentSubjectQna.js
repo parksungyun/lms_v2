@@ -129,7 +129,17 @@ export function StudentSubjectQna() {
 
   const id = 1;
   const question = subject_questions.filter(s => s.subject_id == id);
-  
+
+  const shortenTitle = (str, length) => {
+    let result = '';
+    if (str.length > length) {
+      result = str.substr(0, length - 2) + '...';
+    } else {
+      result = str;
+    }
+    return result;
+  };
+
   const items = question.map((s,i) => (
     {
       no: i + 1,
@@ -144,16 +154,6 @@ export function StudentSubjectQna() {
   function titleLink(id, title) {
     return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
   }
-
-  const shortenTitle = (str, length) => {
-    let result = '';
-    if (str.length > length) {
-      result = str.substr(0, length - 2) + '...';
-    } else {
-      result = str;
-    }
-    return result;
-  };
 
   return<>
     <Container>

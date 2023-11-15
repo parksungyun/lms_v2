@@ -116,7 +116,18 @@ export function StudentHW() {
   const studentid = 1; // studentid 값 받아오기
   const homework = homeworks.filter(h => h.subject_id == id);
   const submit = submits.filter(s => s.student_id == studentid);
+
   
+  const shortenTitle = (str, length) => {
+    let result = '';
+    if (str.length > length) {
+      result = str.substr(0, length - 2) + '...';
+    } else {
+      result = str;
+    }
+    return result;
+  };
+
   const items = homework.map((h, i) => (
     {
       no: i + 1,
@@ -133,16 +144,6 @@ export function StudentHW() {
   function titleLink(id, title) {
     return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
   }
-
-  const shortenTitle = (str, length) => {
-    let result = '';
-    if (str.length > length) {
-      result = str.substr(0, length - 2) + '...';
-    } else {
-      result = str;
-    }
-    return result;
-  };
 
   const postsData = (posts) => {
     if(posts) {

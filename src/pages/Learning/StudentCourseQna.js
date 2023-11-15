@@ -90,6 +90,16 @@ export function StudentCourseQna() {
   const student = students.find((s) => s.student_id == id);
   const question = course_questions.filter((c) => (c.course_id == student.course_id) && (c.student_id == student.student_id));
   
+  const shortenTitle = (str, length) => {
+    let result = '';
+    if (str.length > length) {
+      result = str.substr(0, length - 2) + '...';
+    } else {
+      result = str;
+    }
+    return result;
+  };
+
   const items = question.map((q, i) => (
     {
       no: i + 1,
@@ -114,16 +124,6 @@ export function StudentCourseQna() {
   function titleLink(id, title) {
     return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
   }
-
-  const shortenTitle = (str, length) => {
-    let result = '';
-    if (str.length > length) {
-      result = str.substr(0, length - 2) + '...';
-    } else {
-      result = str;
-    }
-    return result;
-  };
 
   return<>
     <Container>
