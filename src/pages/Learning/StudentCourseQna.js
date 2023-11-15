@@ -93,7 +93,7 @@ export function StudentCourseQna() {
   const items = question.map((q, i) => (
     {
       no: i + 1,
-      title: titleLink(q.c_question_id, q.c_question_title),
+      title: titleLink(q.c_question_id, shortenTitle(q.c_question_title, 35)),
       regDate: q.c_question_reg_date,
       replyState: changeReply(q.c_question_id)
     }
@@ -114,6 +114,16 @@ export function StudentCourseQna() {
   function titleLink(id, title) {
     return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
   }
+
+  const shortenTitle = (str, length) => {
+    let result = '';
+    if (str.length > length) {
+      result = str.substr(0, length - 2) + '...';
+    } else {
+      result = str;
+    }
+    return result;
+  };
 
   return<>
     <Container>

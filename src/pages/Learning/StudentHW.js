@@ -120,7 +120,7 @@ export function StudentHW() {
   const items = homework.map((h, i) => (
     {
       no: i + 1,
-      title: titleLink(h.homework_id, h.hw_title),
+      title: titleLink(h.homework_id, shortenTitle(h.hw_title, 35)),
       writer: userList.find(u => u.uid == academics.find(a => a.academic_id == h.academic_id).uid).user_name,
       startDate: h.hw_start_date,
       endDate: h.hw_end_date,
@@ -133,6 +133,16 @@ export function StudentHW() {
   function titleLink(id, title) {
     return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
   }
+
+  const shortenTitle = (str, length) => {
+    let result = '';
+    if (str.length > length) {
+      result = str.substr(0, length - 2) + '...';
+    } else {
+      result = str;
+    }
+    return result;
+  };
 
   const postsData = (posts) => {
     if(posts) {

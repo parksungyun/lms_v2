@@ -133,7 +133,7 @@ export function StudentSubjectQna() {
   const items = question.map((s,i) => (
     {
       no: i + 1,
-      title: titleLink(s.s_question_id, s.s_question_title),
+      title: titleLink(s.s_question_id, shortenTitle(s.s_question_title, 35)),
       writer: userList.find(u => u.uid == students.find(student => student.student_id == s.student_id).uid).user_name,
       regDate: s.s_question_reg_date,
       Hits: s.s_question_hits,
@@ -144,6 +144,16 @@ export function StudentSubjectQna() {
   function titleLink(id, title) {
     return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
   }
+
+  const shortenTitle = (str, length) => {
+    let result = '';
+    if (str.length > length) {
+      result = str.substr(0, length - 2) + '...';
+    } else {
+      result = str;
+    }
+    return result;
+  };
 
   return<>
     <Container>
