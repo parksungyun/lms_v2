@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components"
@@ -66,15 +67,50 @@ const Divider = styled.div`
   cursor: default;
 `;
 
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 0;
+`;
+
 export function Login() {
   const [userId, setUserId] = useState("");
   const [userPw, setUserPw] = useState("");
+  const [errorCheck, setErrorCheck] = useState(0);
   const navigate = useNavigate();
 
   function onSubmit(e) {
     e.preventDefault();
-    if (userId && userPw) {
-      navigate("/");
+    if(userId.trim().length < 1) {
+      setErrorCheck(1);
+    }
+    else if(userPw.trim().length < 1) {
+      setErrorCheck(2);
+    }
+    else {
+      const data = {
+        userId: userId,
+        userPw: userPw
+      };
+      axios
+      .post("http://localhost:9090/api/auth/login", data)
+      .then((res) => {
+        console.log(res);
+        if(res.data.result === false) {
+          setErrorCheck(3);
+          console.log("로그인 실패");
+        }
+        else {
+          console.log(res.data);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${res.data}`;
+          navigate("/");
+        }
+      })
+      .catch((err) => {
+        setErrorCheck(3);
+        console.log(`${err} : 로그인 실패`);
+      });
     }
   }
 
@@ -86,10 +122,13 @@ export function Login() {
           <label>아이디</label>
           <input id="userId" value={userId} onChange={(e) => setUserId(e.target.value)} />
         </Div>
+        {errorCheck === 1 && <ErrorMsg>아이디를 입력하세요.</ErrorMsg>}
         <Div>
           <label>비밀번호</label>
           <input type="password" id="userPw" value={userPw} onChange={(e) => setUserPw(e.target.value)} />
         </Div>
+        {errorCheck === 2 && <ErrorMsg>비밀번호를 입력하세요.</ErrorMsg>}
+        {errorCheck === 3 && <ErrorMsg>아이디 또는 비밀번호를 잘못 입력하셨습니다. 입력하신 내용을 다시 확인해주세요.</ErrorMsg>}
         <Button type="submit"><p>로그인</p></Button>
         <FindWrapper>
           <Find onClick={() => navigate("/register")}><p>회원가입</p></Find>

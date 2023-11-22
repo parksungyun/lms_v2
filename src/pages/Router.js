@@ -82,6 +82,7 @@ import { TrainerHWPost } from "./Learning/TrainerHWPost"
 import { StudentHWPost } from "./Learning/StudentHWPost"
 import { AdmissionPwCheck } from "./Web/AdmissionPwCheck"
 import { AdmissionMod } from "./Web/AdmissionMod"
+import axios from "axios"
 
 export const SideContext = createContext();
 
@@ -90,16 +91,6 @@ export function Router() {
   const [selectedMenu, setSelectedMenu] = useState("Home");
   const [userType, setUserType] = useState("");
   const [location, setLocation] = useState({...window.location});
-
-  // const navigate = (path) => {
-  //   window.history.pushState({}, "", path);
-  //   setLocation({...window.location});
-  //   console.log(location);
-  // }
-
-  useEffect(() => {
-    setUserType("s");
-  }, []);
 
   return <>
     {/* <QueryClientProvider> */}

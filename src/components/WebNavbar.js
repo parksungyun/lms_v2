@@ -41,7 +41,7 @@ const LoginWrapper = styled.div`
 `;
 
 export function WebNavbar() {
-  const sessionTest = true;
+  const session = false;
 
   return <>
     <Navbar className="">
@@ -63,7 +63,7 @@ export function WebNavbar() {
             <Nav.Link><StyledNavLink to="contact">오시는 길</StyledNavLink></Nav.Link>
             <LoginWrapper>
               {
-                sessionTest
+                !session
                 ? <Nav.Link><StyledLogin to="login">로그인</StyledLogin></Nav.Link>
                 : <>
                   <Nav.Link><StyledNavLink to="/">로그아웃</StyledNavLink></Nav.Link>
