@@ -114,13 +114,13 @@ export function Register() {
     else {
       setErrorCheck(0);
       const data = {
-        userId,
-        userPw,
-        userName,
-        userBirth,
-        userPhone,
-        userAddress,
-        userEmail
+        userId: userId,
+        userPw: userPw,
+        userName: userName,
+        userBirth: userBirth,
+        userPhone: userPhone,
+        userAddress: userAddress,
+        userEmail: userEmail
       };
       axios
       .post("http://localhost:9090/api/auth/register", data)
