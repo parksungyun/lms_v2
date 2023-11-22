@@ -23,6 +23,7 @@ export function Pagination ({page, totalPosts, limit, setPage}){
   const [currPage, setCurrPage] = useState(page);
   let firstNum = currPage - (currPage % 5) + 1;
   let lastNum = currPage - (currPage % 5) + 5;
+  console.log(numPages);
 
   return <>
     <PageSection>
@@ -44,7 +45,8 @@ export function Pagination ({page, totalPosts, limit, setPage}){
                             border="true" 
                             key={i+1} 
                             onClick={() => {setPage(firstNum+1+i)}}
-                            aria-current={page === firstNum+1+i ? "page" : null}><p>
+                            aria-current={page === firstNum+1+i ? "page" : null}
+                            disabled={firstNum+1+i >= numPages}><p>
                             {firstNum+1+i}</p>
                         </Button>
                     )
@@ -55,7 +57,8 @@ export function Pagination ({page, totalPosts, limit, setPage}){
                             border="true" 
                             key ={i+1}
                             onClick={() => setPage(lastNum)}
-                            aria-current={page === lastNum ? "page" : null}><p>
+                            aria-current={page === lastNum ? "page" : null}
+                            disabled={lastNum >= numPages}><p>
                             {lastNum}</p>
                         </Button>
                     )  
@@ -63,7 +66,7 @@ export function Pagination ({page, totalPosts, limit, setPage}){
             })}
             <Button 
                 onClick={() => {setPage(page+1); setCurrPage(page);}} 
-                disabled={page===numPages}>
+                disabled={lastNum >= numPages}>
                 <BsCaretRightFill />
             </Button>
         </ButtonWrap>

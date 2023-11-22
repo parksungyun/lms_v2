@@ -117,6 +117,18 @@ export function AdminTrainerDetail() {
   const [userPhone, setUserPhone] = useState(user.user_phone);
   const [userAddr, setUserAddr] = useState(user.user_addr);
   const [userEmail, setUserEmail] = useState(user.user_email);
+  const [imageSrc, setImageSrc] = useState('');
+
+  const encodeFileToBase64 = (fileBlob) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(fileBlob);
+    return new Promise((resolve) => {
+      reader.onload = () => {
+        setImageSrc(reader.result);
+        resolve();
+      };
+    });
+  };
 
   function onSubmit() {
 
@@ -126,7 +138,7 @@ export function AdminTrainerDetail() {
     <Container>
       <H2>강사 상세 정보</H2>
       <Content>
-        <Img src={academic.user_photo} alt={user.user_name} />
+        { imageSrc ? <Img src={imageSrc} alt="preview-img" /> :<Img src={userPhoto} alt={user.user_name} /> }
         <Details action="" method="POST">
           <Detail>
             <Label>이름</Label>
@@ -160,7 +172,7 @@ export function AdminTrainerDetail() {
           </Detail>
           <Detail>
             <Label>사진</Label>
-            <Input type="file" name="user_photo" id="user_photo" accept="image/png, image/jpeg" onChange={(e) => {setUserPhoto(e.target.files[0])}} />
+            <Input type="file" name="user_photo" id="user_photo" accept="image/png, image/jpeg" onChange={(e) => {setUserPhoto(e.target.files[0]); encodeFileToBase64(e.target.files[0])}} />
           </Detail>
           <Detail>
             <Label>포지션</Label>

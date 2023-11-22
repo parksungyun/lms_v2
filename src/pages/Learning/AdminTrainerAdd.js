@@ -172,6 +172,19 @@ export function AdminTrainerAdd() {
     }
   }
 
+  const [imageSrc, setImageSrc] = useState('');
+
+  const encodeFileToBase64 = (fileBlob) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(fileBlob);
+    return new Promise((resolve) => {
+      reader.onload = () => {
+        setImageSrc(reader.result);
+        resolve();
+      };
+    });
+  };
+
   function onSubmit() {
 
   }
@@ -190,7 +203,7 @@ export function AdminTrainerAdd() {
           </LoadUser>
         </LoadBox>
         <ContentDivide>
-          <Img src={userPhoto} alt="default" />
+          { imageSrc ? <Img src={imageSrc} alt="preview-img" /> : <Img src={userPhoto} alt="default" />}
           <Details action="" method="POST">
             <Detail>
               <Label>이름</Label>
@@ -246,7 +259,7 @@ export function AdminTrainerAdd() {
             </Detail>
             <Detail>
               <Label>사진</Label>
-              <Input type="file" name="user_photo" id="user_photo" accept="image/png, image/jpeg" onChange={(e) => {setUserPhoto(e.target.files[0])}} />
+              <Input type="file" name="user_photo" id="user_photo" accept="image/png, image/jpeg" onChange={(e) => {setUserPhoto(e.target.files[0]); encodeFileToBase64(e.target.files[0])}} />
             </Detail>
             <Detail>
               <Label>나의 한마디</Label>

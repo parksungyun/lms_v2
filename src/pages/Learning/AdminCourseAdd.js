@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { userList, academics } from "../../assets/TempData";
 import defaultImg from "../../assets/img/default2.png";
 import { BsPatchPlusFill, BsPatchMinusFill } from "react-icons/bs";
+import { useEffect } from "react";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -187,8 +188,34 @@ export function AdminCourseAdd() {
   const [coursePhoto, setCoursePhoto] = useState(defaultImg);
   const [courseInfo, setCourseInfo] = useState();
   const [courseAvailable, setCourseAvailable] = useState();
+  
+  const temp = [
+    {
+      subject_id: 0,
+      subject_name: '',
+      academic_id: 0,
+    }
+  ];
+  
+  const [subject, setSubject] = useState(temp);
 
-  let countSubject = 0;
+  const [subjectNo, setSubjectNo] = useState(1);
+
+  useEffect(() => {
+    const temp2 = subject.map((s,i) => s.subject_name.value);
+    setSubjectName(temp2);
+
+    const temp = subject.map((s) => s.academic_id.value);
+    setSubjectSelected(temp);
+  }, [subjectNo]);
+
+  useEffect(() => {
+    const temp = subject.map((s) => s.academic_id);
+    setSubjectSelected(temp);
+
+    const temp2 = subject.map((s) => s.subject_name);
+    setSubjectName(temp2);
+  }, []);
 
   function onChangeSubject(e, i) {
     let temp = [...subjectSelected];
@@ -203,34 +230,32 @@ export function AdminCourseAdd() {
   }
 
   function onDeleteSubject(i) {
-
-  }
-
-  function SubjectComponent() {
-    return <>
-        <Subject key={countSubject}>
-          <Input type="text" name={`subject${countSubject}`} id={`subject${countSubject}`} value={subjectName[countSubject]} onChange={(e) => onChangeSubjectName(e, countSubject)} placeholder="과목 이름" />
-          <SubjectSelect name={`subjectT${countSubject}`} id={`subjectT${countSubject}`} onChange={(e) => onChangeSubject(e, countSubject)} value={subjectSelected[countSubject]}>
-                {
-                  academics.filter(a => a.dept == 1).map((trainer) => (
-                    <option value={trainer.academic_id} key={trainer.academic_id}>
-                      {
-                        userList.find((u) => u.uid == trainer.uid).user_name
-                      }
-                    </option>
-                  ))
-                }
-          </SubjectSelect>
-          <DeleteBox>
-            {countSubject > 0 ? <BsPatchMinusFill className="deleteIcon" onClick={() => onDeleteSubject(countSubject)} /> : <BsPatchMinusFill className="notAvail" />}
-          </DeleteBox>
-        </Subject>
-      </>
+    setSubject(subject.filter(s => s.subject_id !== subject[i].subject_id));
+    setSubjectNo(subjectNo - 1);
   }
 
   function addSubject() {
-    countSubject++;
+    const tempsubject = {
+      subject_id: subject[subject.length - 1].subject_id + 1,
+      subject_name: '',
+      academic_id: 0,
+    };
+    setSubject((add) => [...add, tempsubject]);
+    setSubjectNo(subjectNo + 1);
   }
+
+  const [imageSrc, setImageSrc] = useState('');
+
+  const encodeFileToBase64 = (fileBlob) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(fileBlob);
+    return new Promise((resolve) => {
+      reader.onload = () => {
+        setImageSrc(reader.result);
+        resolve();
+      };
+    });
+  };
 
   function onSubmit() {
 
@@ -238,10 +263,10 @@ export function AdminCourseAdd() {
 
   return <>
     <Container>
-      <H2>강사 등록</H2>
+      <H2>과정 등록</H2>
       <Content>
         <ContentDivide>
-          <Img src={defaultImg} alt="default" />
+          {imageSrc ? <Img src={imageSrc} alt="preview-img" /> : <Img src={defaultImg} alt="default" />}
           <Details action="" method="POST">
             <Detail>
               <Label>과정명</Label>
@@ -265,7 +290,7 @@ export function AdminCourseAdd() {
             </Detail>
             <Detail>
               <Label>사진</Label>
-              <Input type="file" name="course_photo" id="course_photo" accept="image/*" onChange={(e) => {setCoursePhoto(e.target.files[0])}} />
+              <Input type="file" name="course_photo" id="course_photo" accept="image/*" onChange={(e) => {setCoursePhoto(e.target.files[0]); encodeFileToBase64(e.target.files[0])}} />
             </Detail>
             <Detail>
               <Label>과정 소개</Label>
@@ -288,9 +313,11 @@ export function AdminCourseAdd() {
             <Detail>
               <Label>과목</Label>
               <SubjectBox>
-                <Subject key={0}>
-                  <Input type="text" name="subject0" id="subject0" value={subjectName[0]} onChange={(e) => onChangeSubjectName(e, 0)} placeholder="과목 이름" />
-                  <SubjectSelect name="subjectT0" id="subjectT0" onChange={(e) => onChangeSubject(e, 0)} value={subjectSelected[0]}>
+              {
+                  subject.map((data, i) => (
+                    <Subject key={i}>
+                      <Input type="text" name={`subject${i}`} id={`subject${i}`} value={subjectName[i]} onChange={(e) => onChangeSubjectName(e, i)} />
+                      <SubjectSelect name={`subjectT${i}`} id={`subjectT${i}`} onChange={(e) => onChangeSubject(e, i)} value={subjectSelected[i]}>
                         {
                           academics.filter(a => a.dept == 1).map((trainer) => (
                             <option value={trainer.academic_id} key={trainer.academic_id}>
@@ -300,9 +327,14 @@ export function AdminCourseAdd() {
                             </option>
                           ))
                         }
-                  </SubjectSelect>
-                </Subject>
-                <AddBox><BsPatchPlusFill className="addIcon" onClick={() => addSubject} /></AddBox>
+                      </SubjectSelect>
+                      <DeleteBox>
+                        {i + 1 == subject.length && i != 0 ? <BsPatchMinusFill className="deleteIcon" onClick={() => onDeleteSubject(i)} /> : <BsPatchMinusFill className="notAvail" />}
+                      </DeleteBox>
+                    </Subject>
+                  ))
+                }
+                <AddBox><BsPatchPlusFill className="addIcon" onClick={() => addSubject()} /></AddBox>
               </SubjectBox>
             </Detail>
             <Detail>
@@ -310,7 +342,7 @@ export function AdminCourseAdd() {
               <Check type="checkbox" name="user_available" id="user_available" value={courseAvailable} onChange={(e) => {setCourseAvailable(e.target.value)}} /> 비활성화
             </Detail>
             <ButtonBox>
-              <PrimaryButton type="submit" onClick={onSubmit}><p>수정</p></PrimaryButton>
+              <PrimaryButton type="submit" onClick={onSubmit}><p>등록</p></PrimaryButton>
               <SecondaryButton onClick={() => navigate("/lms/a/courseSetting")}><p>목록</p></SecondaryButton>
             </ButtonBox>
         </Details>

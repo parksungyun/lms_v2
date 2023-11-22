@@ -189,12 +189,22 @@ export function AdminCourseDetail() {
   const [capacity, setCapacity] = useState(course.capacity);
   const [coursePhoto, setCoursePhoto] = useState(course.course_photo);
   const [courseInfo, setCourseInfo] = useState(course.course_info);
+  const [subjectNo, setSubjectNo] = useState(course.subject_no);
+  const [subject, setSubject] = useState(subjects.filter(s => s.course_id == id));
+  
+  useEffect(() => {
+    const temp2 = subject.map((s,i) => s.subject_name.value);
+    setSubjectName(temp2);
+
+    const temp = subject.map((s) => s.academic_id.value);
+    setSubjectSelected(temp);
+  }, [subjectNo]);
 
   useEffect(() => {
-    const temp = subjects.map((s) => s.academic_id);
+    const temp = subject.map((s) => s.academic_id);
     setSubjectSelected(temp);
 
-    const temp2 = subjects.map((s) => s.subject_name);
+    const temp2 = subject.map((s) => s.subject_name);
     setSubjectName(temp2);
   }, []);
 
@@ -203,11 +213,18 @@ export function AdminCourseDetail() {
   }
 
   function onDeleteSubject(i) {
-
+    setSubject(subject.filter(s => s.subject_id !== subject[i].subject_id));
+    setSubjectNo(subjectNo - 1);
   }
-
+  
   function addSubject() {
-
+    const tempsubject = {
+      subject_id: subject[subject.length - 1].subject_id + 1,
+      subject_name: '',
+      academic_id: 0,
+    };
+    setSubject((add) => [...add, tempsubject]);
+    setSubjectNo(subjectNo + 1);
   }
 
   function onChangeSubject(e, i) {
@@ -220,6 +237,7 @@ export function AdminCourseDetail() {
     let temp = [...subjectName];
     temp[i] = e.target.value;
     setSubjectName(temp);
+    console.log(subjectName)
   }
 
   return <>
@@ -274,7 +292,7 @@ export function AdminCourseDetail() {
               <Label>과목</Label>
               <SubjectBox>
                 {
-                  subjects.filter(data => data.course_id == course.course_id).map((data, i) => (
+                  subject.map((data, i) => (
                     <Subject key={i}>
                       <Input type="text" name={`subject${i}`} id={`subject${i}`} value={subjectName[i]} onChange={(e) => onChangeSubjectName(e, i)} />
                       <SubjectSelect name={`subjectT${i}`} id={`subjectT${i}`} onChange={(e) => onChangeSubject(e, i)} value={subjectSelected[i]}>
@@ -289,12 +307,12 @@ export function AdminCourseDetail() {
                         }
                       </SubjectSelect>
                       <DeleteBox>
-                        {i > 0 ? <BsPatchMinusFill className="deleteIcon" onClick={() => onDeleteSubject(i)} /> : <BsPatchMinusFill className="notAvail" />}
+                        {i + 1 == subject.length && i != 0 ? <BsPatchMinusFill className="deleteIcon" onClick={() => onDeleteSubject(i)} /> : <BsPatchMinusFill className="notAvail" />}
                       </DeleteBox>
                     </Subject>
                   ))
                 }
-                <AddBox><BsPatchPlusFill className="addIcon" onClick={() => addSubject} /></AddBox>
+                <AddBox><BsPatchPlusFill className="addIcon" onClick={() => addSubject()} /></AddBox>
               </SubjectBox>
             </Detail>
             <Detail>
