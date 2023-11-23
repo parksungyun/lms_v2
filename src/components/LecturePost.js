@@ -3,6 +3,8 @@ import { academics, lectures, userList } from "../assets/TempData";
 import { BsFillEyeFill, BsDownload } from "react-icons/bs";
 import { BiPlay } from "react-icons/bi";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import getBlobDuration from "get-blob-duration";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -133,9 +135,52 @@ export function LecturePost() {
   const { id } = useParams();
   const lecture = lectures.find(data => data.lecture_id == id);
   const user = userList.find(d=> d.uid == academics.find(d => d.academic_id == lectures.find(d => d.lecture_id == id).academic_id).uid);
+  const video = lecture.lecture_videoURL;
 
-  const maxItem = 30;
-	let availableItem = 15;
+  let vduration = '';
+  let vtime = '';
+  
+  async function setTotalTime() {
+    const duration = await getBlobDuration(video);
+    vduration = Math.floor(duration / 60).toString().padStart(2, '0') + ":" + Math.floor(duration % 60).toString().padStart(2, '0');
+    vtime = '0'.padStart(2, '0') + ":" + '0'.padStart(2, '0');
+  }
+
+
+  let playIcon = document.getElementById("playIcon");
+
+  
+  function videocontroll() {
+    let min = 0;
+    let sec = 0;
+
+    if(video.paused){
+      video.play();
+      const interval = setInterval(function() { 
+
+        vtime = Math.floor(video.currentTime / 60).toString().padStart(2, '0') + ":" + Math.floor(video.currentTime % 60).toString().padStart(2, '0');
+
+        if(video.currentTime >= video.duration){
+          clearInter(interval);
+        }
+      }, 100)
+      playIcon.classList.remove("bi-play-fill");
+      playIcon.classList.add("bi-stop-fill");
+    }else{
+      video.pause();
+      playIcon.classList.remove("bi-stop-fill");
+      playIcon.classList.add("bi-play-fill");
+    }
+  }
+
+  function clearInter(interval){
+    alert('동영상을 모두 감상하셨습니다!');
+    playIcon.classList.remove("bi-stop-fill");
+    playIcon.classList.add("bi-play-fill");
+    clearInterval(interval);
+  }
+  const maxItem = vduration;
+	let availableItem = vtime;
   let type;
   const isStudent = 0;
   if(isStudent == 0) type = "t";
@@ -157,14 +202,14 @@ export function LecturePost() {
         </Box>
         <Hr />
         <Box>
-          <PrimaryButton><BiPlay className="icon"/></PrimaryButton>
-          <P>00:00 / 10:45</P>
+          <PrimaryButton onClick={()=>videocontroll()}><i className="bi bi-play-fill icon" id="playIcon"/></PrimaryButton>
+          <P>{availableItem} / {maxItem}</P>
         </Box>
         <ProgressBar>
           <ProgressBox width = {100-(availableItem*100/maxItem)}/>
         </ProgressBar>
-        <Video autoPlay loop>
-         <source src={lecture.lecture_videoURL} type="video/mp4" />
+        <Video autoplay loop controls onClick={() => setTotalTime()}>
+         <source src={video} type="video/mp4"/>
         </Video>
         <P>{lecture.lecture_content}</P>
         <AttachedBox>
