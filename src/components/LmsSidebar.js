@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Menu, MenuItem, Sidebar, SubMenu } from "react-pro-sidebar";
 import { BsFillPersonFill, BsDash } from "react-icons/bs";
 import { RiMacbookLine, RiLogoutBoxRLine, RiMailLine, RiBookletFill } from "react-icons/ri";
@@ -38,7 +38,8 @@ const SubjectName = styled.p`
 `;
 
 export function LmsSidebar({ userType, uid }) {
-  const { toggled, selectedMenu, setSelectedMenu } = useContext(SideContext);
+  // const { toggled, selectedMenu, setSelectedMenu } = useContext(SideContext);
+  const [isToggled, setIsToggled] = useState(sessionStorage.getItem("toggled"));
   const navigate = useNavigate();
   let firstLabel;
 
@@ -59,7 +60,7 @@ export function LmsSidebar({ userType, uid }) {
 
   return <>
     <Container>
-      <Sidebar toggled={toggled}>
+      <Sidebar toggled={isToggled}>
         <Menu transitionDuration={1000} menuItemStyles={{
           button: ({ active }) => {
               return {
@@ -70,13 +71,13 @@ export function LmsSidebar({ userType, uid }) {
           },
         }}>
           <MenuItem
-            active={selectedMenu === "Home"}
+            active={sessionStorage.getItem("selected") === "Home"}
             icon={<RiMacbookLine />}
-            onClick={() => setSelectedMenu("Home")}
-            component={<NavLink to={`/lms/${userType}`} />}>
+            onClick={() => sessionStorage.setItem("selected", "Home")}
+            component={<NavLink to={`/lms`} />}>
             {firstLabel}
           </MenuItem>
-          <SubMenu label={<Text>{subjectName}</Text>} icon={<RiBookletFill />}>
+          {/* <SubMenu label={<Text>{subjectName}</Text>} icon={<RiBookletFill />}>
             <Menu transitionDuration={1000} menuItemStyles={{
                 button: ({ active }) => {
                     return {
@@ -122,8 +123,8 @@ export function LmsSidebar({ userType, uid }) {
                 {"Q&A"}
               </MenuItem>
             </Menu>
-          </SubMenu>
-          <SubMenu label={<Text>{courseName}</Text>} icon={<RiBookletFill />}>
+          </SubMenu> */}
+          {/* <SubMenu label={<Text>{courseName}</Text>} icon={<RiBookletFill />}>
             <Menu transitionDuration={1000} menuItemStyles={{
                 button: ({ active }) => {
                     return {
@@ -162,8 +163,8 @@ export function LmsSidebar({ userType, uid }) {
                 {"강의 평가"}
               </MenuItem>
             </Menu>
-          </SubMenu>
-          <SubMenu label={<TrainerText><CourseName>{courseName}</CourseName><SubjectName>{subjectName}</SubjectName></TrainerText>} icon={<RiBookletFill />}>
+          </SubMenu> */}
+          {/* <SubMenu label={<TrainerText><CourseName>{courseName}</CourseName><SubjectName>{subjectName}</SubjectName></TrainerText>} icon={<RiBookletFill />}>
             <Menu transitionDuration={1000} menuItemStyles={{
                 button: ({ active }) => {
                     return {
@@ -209,9 +210,9 @@ export function LmsSidebar({ userType, uid }) {
                 {"Q&A"}
               </MenuItem>
             </Menu>
-          </SubMenu>
+          </SubMenu> */}
           <Divider />
-          <MenuItem
+          {/* <MenuItem
             active={selectedMenu === "myPage"}
             icon={<BsFillPersonFill />}
             onClick={() => setSelectedMenu("myPage")}
@@ -224,11 +225,11 @@ export function LmsSidebar({ userType, uid }) {
             onClick={() => setSelectedMenu("classQna")}
             component={<NavLink to={"/lms/s/cqna"} />}>
             {"1:1 문의"}
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem
             active={false}
             icon={<RiLogoutBoxRLine />}
-            onClick={() => navigate("/")}>
+            onClick={() => {sessionStorage.clear(); navigate("/");}}>
             {"로그아웃"}
           </MenuItem>
         </Menu>

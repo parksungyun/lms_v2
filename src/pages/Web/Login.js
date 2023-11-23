@@ -94,7 +94,7 @@ export function Login() {
         userPw: userPw
       };
       axios
-      .post("http://localhost:9090/api/auth/login", data)
+      .post("/api/auth/login", data)
       .then((res) => {
         console.log(res);
         if(res.data.result === false) {
@@ -102,9 +102,10 @@ export function Login() {
           console.log("로그인 실패");
         }
         else {
-          console.log(res.data);
-          axios.defaults.headers.common['Authorization'] = `Bearer ${res.data}`;
-          navigate("/");
+          // const { accessToken } = res.data;
+          // axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+          sessionStorage.setItem("uid", res.data.data.user.uid);
+          window.location.replace("/");
         }
       })
       .catch((err) => {

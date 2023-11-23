@@ -3,6 +3,7 @@ import { Container, NavDropdown, Nav, Navbar } from "react-bootstrap";
 import { NavLink, Outlet } from "react-router-dom";
 import logo from "../assets/img/logo.png";
 import { BsPencil } from "react-icons/bs";
+import { useEffect, useState } from "react";
 
 const Img = styled.img`
   width: 200px;
@@ -41,10 +42,18 @@ const LoginWrapper = styled.div`
 `;
 
 export function WebNavbar() {
-  const session = false;
+  const [isLogin, setIsLogin] = useState(false);
+
+  useEffect(() => {
+    if(sessionStorage.getItem("uid") === null) {
+    }
+    else {
+      setIsLogin(true);
+    }
+  })
 
   return <>
-    <Navbar className="">
+    <Navbar>
       <Container>
         <Navbar.Brand><NavLink to="/"><Img src={logo} alt="logo" /></NavLink></Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -63,10 +72,10 @@ export function WebNavbar() {
             <Nav.Link><StyledNavLink to="contact">오시는 길</StyledNavLink></Nav.Link>
             <LoginWrapper>
               {
-                !session
+                !isLogin
                 ? <Nav.Link><StyledLogin to="login">로그인</StyledLogin></Nav.Link>
                 : <>
-                  <Nav.Link><StyledNavLink to="/">로그아웃</StyledNavLink></Nav.Link>
+                  <Nav.Link><StyledNavLink onClick={() => {sessionStorage.clear(); setIsLogin(false);}}>로그아웃</StyledNavLink></Nav.Link>
                   <Nav.Link><StyledLogin to="lms">LMS 바로가기 <BsPencil /></StyledLogin></Nav.Link>
                 </>
               }

@@ -7,6 +7,8 @@ import { useContext, useEffect, useState } from "react";
 import { SideContext } from "../pages/Router";
 import { LmsFooter } from "./LmsFooter";
 import { userList } from "../assets/TempData";
+import axios from "axios";
+import { getUser } from "../pages/Api";
 
 const Container = styled.div`
   width: 100%;
@@ -70,23 +72,35 @@ const Footer = styled.div`
 `;
 
 export function LmsHeader(){
-  const { toggled, setToggled, setSelectedMenu, userType } = useContext(SideContext);
+  // const { toggled, setToggled, setSelectedMenu, userType } = useContext(SideContext);
+  sessionStorage.setItem("selected", "Home");
   const navigate = useNavigate();
-  const id = 1; //임시 uid
-  const user = userList.find(u => u.uid == id);
+  const id = sessionStorage.getItem("uid");
+  const [isToggled, setIsToggled] = useState(true);
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    sessionStorage.setItem("toggled", isToggled);
+  }, [isToggled])
+
+  useEffect(() => {
+    console.log(getUser(id));
+    setUser(getUser(id));
+  }, []);
+
   
   return<>
     <Container>  
       <Header>
-        <Img src={logo} alt="logo" onClick={() => {setSelectedMenu("Home"); navigate(`/lms/${userType}`);}}/>
+        <Img src={logo} alt="logo" onClick={() => {sessionStorage.setItem("selected", "Home"); navigate(`/lms`);}}/>
         <Content>
-          <UserName>{user.user_name}</UserName>
-          <BsList className="icon" onClick={() => setToggled(!toggled)} />
+          <UserName>{user.userName}</UserName>
+          <BsList className="icon" onClick={() => setIsToggled(!isToggled)} />
         </Content>
       </Header>
       <ContentContainer>
         {
-          toggled && <Aside><LmsSidebar userType={userType} /></Aside>
+          isToggled && <Aside><LmsSidebar /></Aside>
         }
         <Page>
           <Outlet />

@@ -123,9 +123,10 @@ export function Register() {
         userEmail: userEmail
       };
       axios
-      .post("http://localhost:9090/api/auth/register", data)
+      .post("/api/auth/register", data)
       .then((res) => {
         console.log(res);
+        navigate("/");
       })
       .catch((err) => {
         console.log(`${err} : 회원가입 실패`);

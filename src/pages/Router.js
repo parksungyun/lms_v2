@@ -84,18 +84,18 @@ import { AdmissionPwCheck } from "./Web/AdmissionPwCheck"
 import { AdmissionMod } from "./Web/AdmissionMod"
 import axios from "axios"
 
-export const SideContext = createContext();
+// export const SideContext = createContext();
 
 export function Router() {
-  const [toggled, setToggled] = useState(false);
-  const [selectedMenu, setSelectedMenu] = useState("Home");
-  const [userType, setUserType] = useState("");
-  const [location, setLocation] = useState({...window.location});
+  // const [toggled, setToggled] = useState(false);
+  // const [selectedMenu, setSelectedMenu] = useState("Home");
+  // const [userType, setUserType] = useState("");
+  // const [location, setLocation] = useState({...window.location});
 
   return <>
     {/* <QueryClientProvider> */}
       <BrowserRouter>
-        <SideContext.Provider value={{toggled, setToggled, selectedMenu, setSelectedMenu, userType}}>
+        {/* <SideContext.Provider value={{toggled, setToggled, selectedMenu, setSelectedMenu, userType}}> */}
           <Routes>
             <Route path="/" element={<WebNavbar />}>
               <Route index element={<Home />} />
@@ -271,7 +271,7 @@ export function Router() {
               <Route path="*" element={<Error />} />
             </Route>
           </Routes>
-        </SideContext.Provider>
+        {/* </SideContext.Provider> */}
       </BrowserRouter>
     {/* </QueryClientProvider> */}
   </> 
