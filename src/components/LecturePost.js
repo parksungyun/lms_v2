@@ -4,7 +4,6 @@ import { BsFillEyeFill, BsDownload } from "react-icons/bs";
 import { BiPlay } from "react-icons/bi";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import getBlobDuration from "get-blob-duration";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
