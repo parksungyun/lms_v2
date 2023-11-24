@@ -8,7 +8,7 @@ import { SideContext } from "../pages/Router";
 import { LmsFooter } from "./LmsFooter";
 import { userList } from "../assets/TempData";
 import axios from "axios";
-import { getUser } from "../pages/Api";
+import { getUser, getUserById, getUserByUid } from "../pages/Api";
 
 const Container = styled.div`
   width: 100%;
@@ -77,24 +77,30 @@ export function LmsHeader(){
   const navigate = useNavigate();
   const id = sessionStorage.getItem("uid");
   const [isToggled, setIsToggled] = useState(true);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     sessionStorage.setItem("toggled", isToggled);
-  }, [isToggled])
+  }, [isToggled]);
 
   useEffect(() => {
-    console.log(getUser(id));
-    setUser(getUser(id));
-  }, []);
-
+    if(!user) {
+      const promise = getUserByUid(id);
+      const getData = () => {
+        promise.then((data) => {
+          setUser(data);
+        });
+      };
+      getData();
+    }
+  });
   
   return<>
     <Container>  
       <Header>
-        <Img src={logo} alt="logo" onClick={() => {sessionStorage.setItem("selected", "Home"); navigate(`/lms`);}}/>
+        <Img src={logo} alt="logo" onClick={() => {sessionStorage.setItem("selected", "Home"); navigate(`/lms/${sessionStorage.getItem("userType")}`);}}/>
         <Content>
-          <UserName>{user.userName}</UserName>
+          <UserName>{user && user.user.userName}</UserName>
           <BsList className="icon" onClick={() => setIsToggled(!isToggled)} />
         </Content>
       </Header>

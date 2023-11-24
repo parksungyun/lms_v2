@@ -1,9 +1,10 @@
 import styled from "styled-components"
 import { Container, NavDropdown, Nav, Navbar } from "react-bootstrap";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import logo from "../assets/img/logo.png";
 import { BsPencil } from "react-icons/bs";
 import { useEffect, useState } from "react";
+import { getUserByUid } from "../pages/Api";
 
 const Img = styled.img`
   width: 200px;
@@ -42,15 +43,42 @@ const LoginWrapper = styled.div`
 `;
 
 export function WebNavbar() {
-  const [isLogin, setIsLogin] = useState(false);
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [userType, setUserType] = useState();
 
   useEffect(() => {
     if(sessionStorage.getItem("uid") === null) {
     }
     else {
-      setIsLogin(true);
+      if(!user) {
+        const promise = getUserByUid(sessionStorage.getItem("uid"));
+        const getData = () => {
+          promise.then((data) => {
+            setUser(data);
+          });
+        };
+        getData();
+      }
+      else {
+        if(user.student) {
+          sessionStorage.setItem("userType", "s");
+          sessionStorage.setItem("id", user.student.studentId);
+        }
+        if(user.academic) {
+          sessionStorage.setItem("id", user.academic.academicId);
+          if(user.academic.dept === 0)
+            sessionStorage.setItem("userType", "m");
+          else sessionStorage.setItem("userType", "t");
+          sessionStorage.setItem("auth", user.academic.auth);
+        }
+        if(!user.student && !user.academic) {
+          sessionStorage.setItem("userType", "g");
+        }
+        setUserType(sessionStorage.getItem("userType"));
+      }
     }
-  })
+  });
 
   return <>
     <Navbar>
@@ -72,12 +100,13 @@ export function WebNavbar() {
             <Nav.Link><StyledNavLink to="contact">오시는 길</StyledNavLink></Nav.Link>
             <LoginWrapper>
               {
-                !isLogin
+                !user
                 ? <Nav.Link><StyledLogin to="login">로그인</StyledLogin></Nav.Link>
-                : <>
-                  <Nav.Link><StyledNavLink onClick={() => {sessionStorage.clear(); setIsLogin(false);}}>로그아웃</StyledNavLink></Nav.Link>
-                  <Nav.Link><StyledLogin to="lms">LMS 바로가기 <BsPencil /></StyledLogin></Nav.Link>
-                </>
+                : <Nav.Link><StyledNavLink onClick={() => {sessionStorage.clear(); setUser(null)}}>로그아웃</StyledNavLink></Nav.Link>
+              }
+              {
+                (user && userType !== "g") 
+                && <Nav.Link onClick={() => {navigate(`/lms/${userType}`)}}><StyledLogin>LMS 바로가기 <BsPencil /></StyledLogin></Nav.Link>
               }
             </LoginWrapper>
           </Nav>
