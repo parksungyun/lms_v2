@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import { academics, lectures, userList } from "../assets/TempData";
 import { BsFillEyeFill, BsDownload } from "react-icons/bs";
-import { BiPlay } from "react-icons/bi";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { Lecture } from "./Lecture";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -71,32 +70,6 @@ const PrimaryButton = styled.button`
   }
 `;
 
-const ProgressBar = styled.div`
-  width: 100%;
-  height: 30px;
-  background-color: #dedede;
-  border-radius:12px;
-  font-weight: 600;
-  font-size: .8rem;
-  overflow: hidden;
-  margin-bottom: 1rem;
-`;
-
-const ProgressBox = styled.div`
-  width: ${(props) => props.width}%; 
-  height: 30px;
-  padding: 0;
-  text-align: center;
-  background-color: #5f7dcf;
-  color: #111;
-`;
-
-const Video = styled.video`
-  width: 100%;
-  /* pointer-events: none; */
-  margin-bottom: 1rem;
-`;
-
 const AttachedBox = styled.div`
   border: 1px solid #ddd;
   display: flex;
@@ -134,10 +107,15 @@ export function LecturePost() {
   const { id } = useParams();
   const lecture = lectures.find(data => data.lecture_id == id);
   const user = userList.find(d=> d.uid == academics.find(d => d.academic_id == lectures.find(d => d.lecture_id == id).academic_id).uid);
-  const video = lecture.lecture_videoURL;
+  const videos = lectures.filter(l => l.subject_id == lecture.subject_id).map((v) => (    
+    {
+      subject: v.subject_id,
+      id: v.lecture_id,
+      videoRrl: v.lecture_videoURL
+    }
+  ));
+  console.log(videos);
 
-  const maxItem = 30;
-	let availableItem = 10;
   let type;
   const isStudent = 0;
   if(isStudent == 0) type = "t";
@@ -158,16 +136,7 @@ export function LecturePost() {
           </IconBox>
         </Box>
         <Hr />
-        <Box>
-          <PrimaryButton ><BiPlay className="icon" /></PrimaryButton>
-          <P>00:00 / 10:54</P>
-        </Box>
-        <ProgressBar>
-          <ProgressBox width = {100-(availableItem*100/maxItem)}/>
-        </ProgressBar>
-        <Video autoplay loop controls>
-         <source src={video} type="video/mp4"/>
-        </Video>
+        <Lecture src={lecture.lecture_videoURL} videos={videos} id={id}/>
         <P>{lecture.lecture_content}</P>
         <AttachedBox>
         <Attached><p className="fw-bold">첨부파일</p></Attached>
