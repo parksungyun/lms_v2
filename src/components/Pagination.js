@@ -23,7 +23,6 @@ export function Pagination ({page, totalPosts, limit, setPage}){
   const [currPage, setCurrPage] = useState(page);
   let firstNum = currPage - (currPage % 5) + 1;
   let lastNum = currPage - (currPage % 5) + 5;
-  console.log(numPages);
 
   return <>
     <PageSection>
