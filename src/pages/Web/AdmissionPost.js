@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import WebWrapper from "../../components/WebWrapper"
 import { useNavigate, useParams } from "react-router-dom";
-import { academics, admission_answers, admission_questions, courses, userList } from "../../assets/TempData";
+import { useEffect } from "react";
+import { useState } from "react";
+import { getAcademicByAcademicId, getAdmissionPostById, getCourseById } from "../Api";
 
 const Container = styled.div`
   margin: 2rem 15rem;
@@ -79,61 +81,92 @@ const ButtonBox = styled.div`
 export function AdmissionPost(){
   const navigate = useNavigate();
   const { id } = useParams();
-  const post = admission_questions.find((a) => a.a_question_id == id);
-  const course = courses.find((c) => post.desired_course == c.course_id);
-  let reply;
-  let manager;
-  
-  if(admission_answers.find((a) => a.a_question_id == post.a_question_id)) {
-    reply = admission_answers.find((a) => a.a_question_id == post.a_question_id);
-    manager = userList.find((u) => u.uid == academics.find((a) => a.academic_id == reply.academic_id).uid);
-  }
+  const [post, setPost] = useState(null);
+  const [course, setCourse] = useState(null);
+  const [manager, setManager] = useState(null);
+
+  useEffect(() => {
+    if(!post) {
+      const promise = getAdmissionPostById(id);
+      const getData = () => {
+        promise.then((data) => {
+          setPost(data);
+        });
+      };
+      getData();
+    }
+  })
+
+  useEffect(() => {
+    if(post) {
+      if(!course) {
+        const promise = getCourseById(post.question.desiredCourse);
+          const getData = () => {
+            promise.then((data) => {
+              setCourse(data);
+            });
+          };
+          getData();
+      }
+      if(!manager && post.answer) {
+        const promise = getAcademicByAcademicId(post.answer.academicId);
+          const getData = () => {
+            promise.then((data) => {
+              setManager(data);
+            });
+          };
+          getData();
+      }
+    }
+  }, [post]);
 
   return<>
   <WebWrapper pageName={"입학 상담"} />
+  {
+    course &&
     <Container>
       <Table>
         <tr>
           <th>작성일</th>
-          <td>{post.a_question_reg_date}</td>
+          <td>{new Date(post.question.reg_date).toLocaleDateString()}</td>
         </tr>
         <tr>
           <th>이름</th>
-          <td>{post.writer_name}</td>
+          <td>{post.question.writerName}</td>
         </tr>
         <tr>
           <th>나이</th>
-          <td>{post.age}</td>
+          <td>{post.question.age}</td>
         </tr>
         <tr>
           <th>연락처</th>
-          <td>{post.phone}</td>
+          <td>{post.question.phone}</td>
         </tr>
         <tr>
           <th>최종학력</th>
-          <td>{post.final_school}</td>
+          <td>{post.question.finalSchool}</td>
         </tr>
         <tr>
           <th>수강희망과목</th>
-          <td>{course.course_name}</td>
+          <td>{course.courseName}</td>
         </tr>
         <tr>
           <th>제목</th>
-          <td>{post.a_question_title}</td>
+          <td>{post.question.title}</td>
         </tr>
         <ContentRow>
           <th>내용</th>
-          <td className="overflow-y-scroll">{post.a_question_content}</td>
+          <td className="overflow-y-scroll">{post.question.content}</td>
         </ContentRow>
       </Table>
       {
-        reply && <>
+        post.answer && <>
         <CommentBox>
           <CommentWriter>
-            <Text>{manager.user_name} | {reply.a_answer_reg_date}</Text>
+            <Text>{manager && manager.user.userName} | {new Date(post.answer.answer_reg_date).toLocaleDateString()}</Text>
           </CommentWriter>
           <Comment>
-            <Text>{reply.a_answer_content}</Text>
+            <Text>{post.answer.answerContent}</Text>
           </Comment>
         </CommentBox>
         </>
@@ -143,5 +176,6 @@ export function AdmissionPost(){
         <SecondaryButton onClick={() => navigate("/admission")}><p>목록</p></SecondaryButton>
       </ButtonBox>
     </Container>
+  }
   </>
 }

@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components"
 import WebWrapper from "../../components/WebWrapper";
 import { admission_questions } from "../../assets/TempData";
+import { useEffect } from "react";
+import { getAdmissionPostById } from "../Api";
 
 const Container = styled.div`
   width: 100%;
@@ -60,31 +62,45 @@ export function AdmissionPwCheck() {
   const { id } = useParams();
   const [postPw, setPostPw] = useState("");
   const [isPost, setIsPost] = useState(0);
+  const [post, setPost] = useState(null);
   const navigate = useNavigate();
-
-  const pw = admission_questions.find(a => a.a_question_id == id);
+  
+  useEffect(() => {
+    if(!post) {
+      const promise = getAdmissionPostById(id);
+      const getData = () => {
+        promise.then((data) => {
+          setPost(data);
+        });
+      };
+      getData();
+    }
+  })
 
   function checkPw() {
-    if (pw.post_pw == postPw) {
+    if (post.question.postPw == postPw) {
       navigate(`/admission/${id}`);
     } else {
-      setIsPost(1)
+      setIsPost(1);
     }
   }
 
   return <>
     <WebWrapper pageName={"입학 상담"} />
     <Container>
-      <div>
-        <Header>비밀번호 확인</Header>
-        <Div>
-          <input type="password" id="userPw" value={postPw} onChange={(e) => setPostPw(e.target.value)} />
-        </Div>
-        {
-          isPost == 1 && <P>비밀번호를 다시 입력해주세요</P>
-        }
-        <Button onClick={()=>checkPw()}><p>확인</p></Button>
-      </div>
+      {
+        post &&
+        <div>
+          <Header>비밀번호 확인</Header>
+          <Div>
+            <input type="password" id="userPw" value={postPw} onChange={(e) => setPostPw(e.target.value)} />
+          </Div>
+          {
+            isPost == 1 && <P>비밀번호를 다시 입력해주세요</P>
+          }
+          <Button onClick={()=>checkPw()}><p>확인</p></Button>
+        </div>
+      }
     </Container>
   </>
 }
