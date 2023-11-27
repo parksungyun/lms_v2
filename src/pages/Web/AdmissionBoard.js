@@ -113,7 +113,7 @@ export function AdmissionBoard() {
         no: i + 1,
         title: titleLink(a.question.admissionQuestionId, shortenTitle(a.question.title, 35)),
         writer: a.question.writerName,
-        writeDate: a.question.reg_date,
+        writeDate: new Date(a.question.reg_date).toLocaleDateString(),
         reply: changeReply(checkReply(a)),
       }
     ))
