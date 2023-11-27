@@ -2,6 +2,9 @@ import styled from "styled-components"
 import WebWrapper from "../../components/WebWrapper"
 import { useParams } from "react-router-dom";
 import { courses, subjects } from "../../assets/TempData";
+import { useState } from "react";
+import { useEffect } from "react";
+import { getCourseById, getSubjectByCourseId } from "../Api";
 
 const Container = styled.div`
   margin: 2rem 10rem;
@@ -61,36 +64,60 @@ const DividerBox = styled.div`
 
 export function CourseDetail() {
   const { id } = useParams();
-  const course = courses.find((c) => c.course_id == id);
-  const subject = subjects.filter((s) => s.course_id == course.course_id);
+  const [course, setCourse] = useState(null);
+  const [subjects, setSubjects] = useState(null);
+
+  useEffect(() => {
+    if(!course) {
+      const promise = getCourseById(id);
+      const getData = () => {
+        promise.then((data) => {
+          setCourse(data);
+        });
+      };
+      getData();
+    }
+    if(course && !subjects) {
+      const promise = getSubjectByCourseId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setSubjects(data);
+        });
+      };
+      getData();
+    }
+  });
 
   return <>
     <WebWrapper pageName={"과정 소개"} />
-    <Container>
-      <Card>
-        <H2>{course.course_name}</H2>
-        <p className="mb-4 fs-5">{
-          subject.map((s, i) => {
-            if(i >= subject.length - 1) {
-              return s.subject_name;
-            }
-            return s.subject_name + ", ";
-          })
-        }</p>
-        <hr />
-        <Box>
-          <P>훈련 기간: {course.start_date} ~ {course.end_date}</P>
-          <Divider>|</Divider>
-          <P>모집 종료: {course.recruit_end}</P>
-          <Divider>|</Divider>
-          <P>모집 인원: {course.capacity}</P>
-        </Box>
-      </Card>
-      <TextBox>
-        <DividerBox />
-        <H3>과정소개</H3>
-        <P>{course.course_info}</P>
-      </TextBox>
-    </Container>
+    {
+      (course && subjects) && 
+      <Container>
+        <Card>
+          <H2>{course.courseName}</H2>
+          <p className="mb-4 fs-5">{
+            subjects.map((s, i) => {
+              if(i >= subjects.length - 1) {
+                return s.subject.subjectName;
+              }
+              return s.subject.subjectName + ", ";
+            })
+          }</p>
+          <hr />
+          <Box>
+            <P>훈련 기간: {course.startDate} ~ {course.endDate}</P>
+            <Divider>|</Divider>
+            <P>모집 종료: {course.recruitEnd}</P>
+            <Divider>|</Divider>
+            <P>모집 인원: {course.capacity}</P>
+          </Box>
+        </Card>
+        <TextBox>
+          <DividerBox />
+          <H3>과정소개</H3>
+          <P>{course.courseInfo}</P>
+        </TextBox>
+      </Container>
+    }
   </>
 }

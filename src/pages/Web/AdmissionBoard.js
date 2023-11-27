@@ -6,6 +6,8 @@ import '../../styles/table.css';
 import { Pagination } from "../../components/Pagination";
 import { useNavigate } from "react-router-dom";
 import { admission_answers, admission_questions } from "../../assets/TempData";
+import { useEffect } from "react";
+import { getAllAdmissionPosts } from "../Api";
 
 const Container = styled.div`
   margin: 2rem 15rem;
@@ -84,30 +86,48 @@ const headers = [
 ];
 
 export function AdmissionBoard() {
+  const [questions, setQuestions] = useState(null);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [searchOption, setSearchOption] = useState("all");
   const limit = 10;
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
+  let items;
 
-  const items = admission_questions.map((a, i) => (
-    {
-      no: i + 1,
-      title: titleLink(a.a_question_id, a.a_question_title),
-      writer: a.writer_name,
-      writeDate: a.a_question_reg_date,
-      reply: changeReply(checkReply(a.a_question_id)),
+  useEffect(() => {
+    if(!questions) {
+      const promise = getAllAdmissionPosts();
+      const getData = () => {
+        promise.then((data) => {
+          setQuestions(data);
+        });
+      };
+      getData();
     }
-  ))
+  });
+
+  if(questions){
+    console.log(questions);
+    items = questions.map((a, i) => (
+      {
+        no: i + 1,
+        title: titleLink(a.question.admissionQuestionId, a.question.title),
+        writer: a.question.writerName,
+        writeDate: a.question.reg_date,
+        reply: changeReply(checkReply(a)),
+      }
+    ));
+  }
+
 
   function titleLink(id, title) {
     return (<p onClick={() => navigate(`${id}/check`)}>{title}</p>);
   }
 
-  function checkReply(id) {
-    if(admission_answers.find((a) => a.a_question_id == id)) return 1;
-    else return 0;
+  function checkReply(a) {
+    if(a.answer === null) return 0;
+    else return 1;
   }
 
   function changeReply(reply) {
@@ -128,25 +148,28 @@ export function AdmissionBoard() {
 
   return <>
     <WebWrapper pageName={"입학 상담"} />
-    <Container>
-      <Table 
-        headers={headers} 
-        items={postsData(items)}
-        selectable={false}
-      />
-      <ButtonBox>
-        <SearchBox>
-          <select className="searchSelect" onChange={(e) => setSearchOption(e.target.value)}>
-            <option key="all" value="all">전체</option>
-            <option key="title" value="title">제목</option>
-            <option key="writer" value="writer">작성자</option>
-          </select>
-          <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={onSearch}><p>검색</p></button>
-        </SearchBox>
-        <PrimaryButton onClick={() => navigate("write")}><p>작성</p></PrimaryButton>
-      </ButtonBox>
-      <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
-    </Container>
+    {
+      items && 
+      <Container>
+        <Table 
+          headers={headers} 
+          items={postsData(items)}
+          selectable={false}
+        />
+        <ButtonBox>
+          <SearchBox>
+            <select className="searchSelect" onChange={(e) => setSearchOption(e.target.value)}>
+              <option key="all" value="all">전체</option>
+              <option key="title" value="title">제목</option>
+              <option key="writer" value="writer">작성자</option>
+            </select>
+            <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
+            <button onClick={onSearch}><p>검색</p></button>
+          </SearchBox>
+          <PrimaryButton onClick={() => navigate("write")}><p>작성</p></PrimaryButton>
+        </ButtonBox>
+        <Pagination limit={limit} page={page} totalPosts={questions.length} setPage={setPage} />
+      </Container>
+    }
   </>
 }

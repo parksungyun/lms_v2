@@ -1,7 +1,8 @@
 import styled from "styled-components"
 import WebWrapper from "../../components/WebWrapper"
 import { Course } from '../../components/Course'
-import { courses } from "../../assets/TempData";
+import { useEffect, useState } from "react";
+import { getRecruitingCourses } from "../Api";
 
 const Container = styled.div`
   margin: 2rem 13rem;
@@ -16,13 +17,26 @@ const CardWrapper = styled.div`
 `;
 
 export function Courses() {
+  const [courses, setCourses] = useState(null);
+
+  useEffect(() => {
+    if(!courses) {
+      const promise = getRecruitingCourses();
+      const getData = () => {
+        promise.then((data) => {
+          setCourses(data);
+        });
+      };
+      getData();
+    }
+  });
   return <>
     <WebWrapper pageName={"과정 안내"} />
     <Container>
       <CardWrapper>
         {
-          courses.map((c) => (
-            <Course id={c.course_id} />
+          courses && courses.map((c) => (
+            <Course id={c.courseId} />
           ))
         }
       </CardWrapper>

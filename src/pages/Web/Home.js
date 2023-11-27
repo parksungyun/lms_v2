@@ -5,6 +5,9 @@ import { BsFillMortarboardFill, BsChevronRight } from "react-icons/bs";
 import { Course } from "../../components/Course";
 import { courses } from "../../assets/TempData";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
+import { getRecruitingCourses } from "../Api";
 
 const Content = styled.div`
   height: 100%;
@@ -89,6 +92,19 @@ const Icon = styled.div`
 
 export function Home() {
   const navigate = useNavigate();
+  const [courses, setCourses] = useState(null);
+
+  useEffect(() => {
+    if(!courses) {
+      const promise = getRecruitingCourses();
+      const getData = () => {
+        promise.then((data) => {
+          setCourses(data);
+        });
+      };
+      getData();
+    }
+  });
 
   return <>
     <Section id="hero">
@@ -137,9 +153,9 @@ export function Home() {
       <H1 className="mt-5">모집중인 과정</H1>
       <Row>
         {
-          courses.map((c, i) => (
+          courses && courses.map((c, i) => (
             <Col>
-              <Course id={c.course_id} />
+              <Course id={c.courseId} />
             </Col>
           ))
         }

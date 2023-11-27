@@ -2,6 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { BiUser } from "react-icons/bi";
 import styled from "styled-components";
 import { courses } from '../assets/TempData';
+import { useState } from "react";
+import { useEffect } from "react";
+import { getCourseById } from "../pages/Api";
 
 const Container = styled.div`
   display: flex;
@@ -44,8 +47,20 @@ const Capacity = styled.div`
 `
 
 export function Course({id}) {
-  const course = courses.find((c) => c.course_id == id);
+  const [course, setCourse] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if(!course) {
+      const promise = getCourseById(id);
+      const getData = () => {
+        promise.then((data) => {
+          setCourse(data);
+        });
+      };
+      getData();
+    }
+  });
 
   function onDetail(id) {
     navigate(`/course/${id}`);
@@ -53,15 +68,17 @@ export function Course({id}) {
 
   return <>
     <Container>
-      <Box>
-        <Img src={course.course_photo} alt={course.course_name} onClick={() => onDetail(course.course_id)}/>
-        <Content>
-          <Title onClick={() => onDetail(course.course_id)}>{course.course_name}</Title>
-          <Capacity>
-            <BiUser />&nbsp;{course.capacity}
-          </Capacity>
-        </Content>
-      </Box>
+      {
+        course && <Box>
+          <Img src={course.coursePhoto} alt={course.courseName} onClick={() => onDetail(course.courseId)}/>
+          <Content>
+            <Title onClick={() => onDetail(course.courseId)}>{course.courseName}</Title>
+            <Capacity>
+              <BiUser />&nbsp;{course.capacity}
+            </Capacity>
+          </Content>
+        </Box>
+      }
     </Container>
   </>
 }

@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import { BsTelephoneFill } from "react-icons/bs";
-import { academics, userList, trainerPosition, managerPosition } from "../assets/TempData";
+import { trainerPosition, managerPosition } from "../assets/TempData";
+import { useEffect } from "react";
+import { useState } from "react";
+import { getUserByUid } from "../pages/Api";
 
 const Card = styled.div`
   display: flex;
@@ -56,21 +59,34 @@ const Call = styled.p`
 `;
 
 export function MemberCard({id}) {
-  const member = academics.find((a) => a.academic_id == id);
-  const user = userList.find((u) => u.uid == member.uid);
+  const [member, setMember] = useState(null);
+
+  useEffect(() => {
+    if(!member) {
+      const promise = getUserByUid(id);
+      const getData = () => {
+        promise.then((data) => {
+          setMember(data);
+        });
+      };
+      getData();
+    }
+  });
+
+  console.log(member);
 
   return <>
-    <Card>
-      <Img src={member.user_photo} alt={user.user_name} />
-      <Content>
-        <Name>{user.user_name}</Name>
-        <Position>{
-          member.dept == 0 ? (managerPosition.find(m => m.position_id == member.position)).position_name
-          : (trainerPosition.find(t => t.position_id == member.position)).position_name
-        }</Position>
-        <Remark>{member.remark}</Remark>
-        <Call><BsTelephoneFill className="callIcon" />{user.user_phone}</Call>
-      </Content>
-    </Card>
+    {
+      member &&  
+      <Card>
+        <Img src={member.academic.userPhoto} alt={member.user.userName} />
+        <Content>
+          <Name>{member.user.userName}</Name>
+          <Position>{member.position}</Position>
+          <Remark>{member.remark}</Remark>
+          <Call><BsTelephoneFill className="callIcon" />{member.user.userPhone}</Call>
+        </Content>
+      </Card>
+    }
   </>
 }
