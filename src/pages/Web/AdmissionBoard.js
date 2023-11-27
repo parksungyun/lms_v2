@@ -93,16 +93,42 @@ export function AdmissionBoard() {
   const limit = 10;
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
+  let items;
 
-  const items = admission_questions.map((a, i) => (
-    {
-      no: i + 1,
-      title: titleLink(a.a_question_id, a.a_question_title),
-      writer: a.writer_name,
-      writeDate: a.a_question_reg_date,
-      reply: changeReply(checkReply(a.a_question_id)),
+  useEffect(() => {
+    if(!questions) {
+      const promise = getAllAdmissionPosts();
+      const getData = () => {
+        promise.then((data) => {
+          setQuestions(data);
+        });
+      };
+      getData();
     }
-  ))
+  });
+
+  if(questions) {
+    items = questions.map((a, i) => (
+      {
+        no: i + 1,
+        title: titleLink(a.question.admissionQuestionId, shortenTitle(a.question.title, 35)),
+        writer: a.question.writerName,
+        writeDate: a.question.reg_date,
+        reply: changeReply(checkReply(a)),
+      }
+    ))
+  }
+
+  function shortenTitle(str, length){
+    let result = '';
+    if (str.length > length) {
+      result = str.substr(0, length - 2) + '...';
+    } else {
+      result = str;
+    }
+    return result;
+  };
+
 
   function titleLink(id, title) {
     return (<p onClick={() => navigate(`${id}/check`)}>{title}</p>);
@@ -131,25 +157,28 @@ export function AdmissionBoard() {
 
   return <>
     <WebWrapper pageName={"입학 상담"} />
-    <Container>
-      <Table 
-        headers={headers} 
-        items={postsData(items)}
-        selectable={false}
-      />
-      <ButtonBox>
-        <SearchBox>
-          <select className="searchSelect" onChange={(e) => setSearchOption(e.target.value)}>
-            <option key="all" value="all">전체</option>
-            <option key="title" value="title">제목</option>
-            <option key="writer" value="writer">작성자</option>
-          </select>
-          <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={onSearch}><p>검색</p></button>
-        </SearchBox>
-        <PrimaryButton onClick={() => navigate("write")}><p>작성</p></PrimaryButton>
-      </ButtonBox>
-      <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
-    </Container>
+    {
+      items && 
+      <Container>
+        <Table 
+          headers={headers} 
+          items={postsData(items).reverse()}
+          selectable={false}
+        />
+        <ButtonBox>
+          <SearchBox>
+            <select className="searchSelect" onChange={(e) => setSearchOption(e.target.value)}>
+              <option key="all" value="all">전체</option>
+              <option key="title" value="title">제목</option>
+              <option key="writer" value="writer">작성자</option>
+            </select>
+            <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
+            <button onClick={onSearch}><p>검색</p></button>
+          </SearchBox>
+          <PrimaryButton onClick={() => navigate("write")}><p>작성</p></PrimaryButton>
+        </ButtonBox>
+        <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+      </Container>
+    }
   </>
 }
