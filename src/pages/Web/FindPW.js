@@ -1,6 +1,8 @@
+import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components"
+import { ChangePWModal } from "../../components/ChangePWModal";
 
 const Container = styled.div`
   width: 100%;
@@ -66,15 +68,43 @@ const Divider = styled.div`
   cursor: default;
 `;
 
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 0;
+`;
+
 export function FindPW() {
   const [userId, setUserId] = useState("");
   const [userPhone, setUserPhone] = useState("");
+  const [errorCheck, setErrorCheck] = useState(0);
   const navigate = useNavigate();
 
   function onSubmit(e) {
     e.preventDefault();
-
-  }
+    if (!userId) {
+      setErrorCheck(1);
+    } else if (!/^\d{3}-\d{3,4}-\d{4}$/.test(userPhone)) {
+      setErrorCheck(2);
+    } else if (!(userId&& userPhone)) {
+      setErrorCheck(3);
+    } else {
+      const data = {
+        userId: userId,
+        userPhone: userPhone
+      };
+      axios
+      .post("/api/auth/findPW", data)      
+      .then((res) => {
+        console.log(res);
+        setErrorCheck(4);
+      })
+      .catch((err) => {
+        console.log(`${err} : PW찾기 실패`);
+      });
+    }
+  };
 
   return <>
     <Container>
@@ -88,6 +118,10 @@ export function FindPW() {
           <label>연락처</label>
           <input id="userPhone" value={userPhone} onChange={(e) => setUserPhone(e.target.value)} />
         </Div>
+        {errorCheck === 1 && <ErrorMsg>이름을 입력해주세요.</ErrorMsg>}
+        {errorCheck === 2 && <ErrorMsg>연락처 형식이 올바르지 않습니다.</ErrorMsg>}
+        {errorCheck === 3 && <ErrorMsg>정보를 모두 입력해주세요.</ErrorMsg>}
+        {errorCheck === 4 && <ChangePWModal />}
         <Button type="submit"><p>비밀번호 찾기</p></Button>
         <FindWrapper>
           <Find onClick={() => navigate("/register")}><p>회원가입</p></Find>
