@@ -162,7 +162,7 @@ export function AdmissionBoard() {
       <Container>
         <Table 
           headers={headers} 
-          items={postsData(items).reverse()}
+          items={postsData(items.reverse())}
           selectable={false}
         />
         <ButtonBox>
