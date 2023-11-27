@@ -144,3 +144,43 @@ export const getAllAdmissionPosts = async () => {
   });
   return posts;
 }
+
+export const getAdmissionPostById = async (id) => {
+  let post;
+  await axios
+  .get(`/api/admission/${id}`)
+  .then((res) => {
+    console.log(res.data);
+    post = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 입학상담 게시글 불러오기 실패`);
+  });
+  return post;
+}
+
+export const getAcademicByAcademicId = async (id) => {
+  let academic;
+  await axios
+  .get(`/api/user/academic/${id}`)
+  .then((res) => {
+    academic = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 사원 불러오기 실패`);
+  });
+  return academic;
+}
+
+export const getStudentByStudentId = async (id) => {
+  let student;
+  await axios
+  .get(`/api/user/student/${id}`)
+  .then((res) => {
+    student = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생 불러오기 실패`);
+  });
+  return student;
+}
