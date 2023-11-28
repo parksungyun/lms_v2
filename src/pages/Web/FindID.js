@@ -97,6 +97,7 @@ export function FindID() {
     } else if (!(userName && userPhone)) {
       setErrorCheck(3);
     } else {
+      setErrorCheck(0);
       const data = {
         userName: userName,
         userPhone: userPhone
