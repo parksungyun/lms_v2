@@ -2,7 +2,9 @@ import styled from "styled-components";
 import WebWrapper from "../../components/WebWrapper"
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { admission_questions, courses } from "../../assets/TempData";
+import { useEffect } from "react";
+import { getAdmissionPostById, getAllCourses, getCourseById } from "../Api";
+import axios from "axios";
 
 const Container = styled.div`
   margin: 2rem 15rem;
@@ -78,50 +80,115 @@ const ContentInput = styled.textarea`
   border: 1px solid lightgray;
 `;
 
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 1rem 0 0 0;
+`;
+
 export function AdmissionMod(){
   const { id } = useParams();
-  const post = admission_questions.find(a => a.a_question_id == id);
-  const [name, setName] = useState(post.writer_name);
-  const [age, setAge] = useState(post.age);
-  const [phone, setPhone] = useState(post.phone);
-  const [school, setSchool] = useState(post.final_school);
-  const [desired, setDesired] = useState(post.desired_course);
-  const [title, setTitle] = useState(post.a_question_title);
-  const [content, setContent] = useState(post.a_question_content);
-  const [password, setPassword] = useState(post.post_pw);
-
+  const [post, setPost] = useState();
+  const [name, setName] = useState();
+  const [age, setAge] = useState();
+  const [phone, setPhone] = useState();
+  const [school, setSchool] = useState();
+  const [desired, setDesired] = useState();
+  const [title, setTitle] = useState();
+  const [content, setContent] = useState();
+  const [password, setPassword] = useState();
+  const [course, setCourse] = useState(null);
+  const [errorCheck, setErrorCheck] = useState(null);
   const navigate = useNavigate();
 
-  const currentDate = new Date().getTime();
+  useEffect(() => {
+    if(!post) {
+      const promise = getAdmissionPostById(id);
+      const getData = () => {
+        promise.then((data) => {
+          setPost(data);
+        });
+      };
+      getData();
+    }
+  });
 
-  const course = courses.filter(c => new Date(c.recruit_end).getTime() >= currentDate);
+  useEffect(() => {
+    if(post) {
+      setName(post.question.writerName);
+      setPassword(post.question.postPw);
+      setAge(post.question.age);
+      setPhone(post.question.phone);
+      setSchool(post.question.finalSchool);
+      setDesired(post.question.DesiredCourse);
+      setTitle(post.question.title);
+      setContent(post.question.content);
+      setErrorCheck(0);
 
-  function onSubmit(e) {
-    e.preventDefault();
+      if(!course) {
+        const promise = getCourseById(post.question.desiredCourse);
+        const getData = () => {
+          promise.then((data) => {
+            setCourse(data);
+          });
+        };
+        getData();
+      }
+    }
+  }, [post]);
+
+  function onSubmit() {
+    if(!(name && password && age && phone && title && content && school)) {
+      setErrorCheck(1);
+    }
+    else {
+      const data = {
+        postPw: password,
+        writerName: name,
+        age: age,
+        phone: phone,
+        finalSchool: school,
+        desiredCourse: post.question.desiredCourse,
+        title: title,
+        content: content
+      };
+      console.log(data);
+      axios
+      .post(`/api/admission/${post.question.admissionQuestionId}/mod`, data)
+      .then((res) => {
+        console.log(res);
+        navigate("/admission");
+      })
+      .catch((err) => {
+        console.log(`${err} : 입학 상담 게시글 수정 실패`);
+      });
+    }
   }
 
   return<>
   <WebWrapper pageName={"입학 상담"} />
-    <Container>
-      <form onSubmit={onSubmit}>
+  {
+    (post && course) && <Container>
+      <form>
         <Divider>
           <Div>
             <label>이름</label>
-            <TextInput id="name" value={name} onChange={(e) => setName(e.target.value)} />
+            <TextInput id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="이름을 입력해주세요" />
           </Div>
           <Div>
             <label>비밀번호</label>
-            <TextInput type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <TextInput type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="게시글 확인/수정을 위한 비밀번호를 입력해주세요" />
           </Div>
         </Divider>
         <Divider>
           <Div>
             <label>나이</label>
-            <TextInput id="age" value={age} onChange={(e) => setAge(e.target.value)} />
+            <TextInput id="age" value={age} onChange={(e) => setAge(e.target.value)} placeholder="나이를 입력해주세요" />
           </Div>
           <Div>
             <label>연락처</label>
-            <TextInput id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <TextInput id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="연락처를 입력해주세요" />
           </Div>
         </Divider>
         <Divider>
@@ -139,33 +206,29 @@ export function AdmissionMod(){
             </SelectBox>
           </Div>
           <Div>
-            <label>수강희망과목</label>
+            <label>수강희망과정</label>
             <SelectBox>
               <select className="desired" value={desired} disabled>
-                {
-                  courses.map((data) => (
-                    <option value={data.course_id} key={data.course_id}>
-                      {data.course_name}
-                    </option>
-                  ))
-                }
+                <option value={course.courseId}>{course.courseName}</option>
               </select>
             </SelectBox>
           </Div>
         </Divider>
         <Div>
           <label>제목</label>
-          <TextInput id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+          <TextInput id="title" value={title} onChange={(e) => setTitle(e.target.value)}  placeholder="제목을 입력해주세요" />
         </Div>
         <Div>
           <label>내용</label>
-          <ContentInput id="content" value={content} onChange={(e) => setContent(e.target.value)} />
+          <ContentInput id="content" value={content} onChange={(e) => setContent(e.target.value)} placeholder="내용을 입력해주세요" />
         </Div>
-        <ButtonBox>
-          <PrimaryButton><p>등록</p></PrimaryButton>
-          <SecondaryButton onClick={()=>navigate("/admission")}><p>목록</p></SecondaryButton>
-        </ButtonBox>
       </form>
+      {errorCheck === 1 && <ErrorMsg>입학 상담을 위한 정보를 모두 입력해주세요.</ErrorMsg>}
+      <ButtonBox>
+        <PrimaryButton onClick={() => onSubmit()}><p>등록</p></PrimaryButton>
+        <SecondaryButton onClick={() => navigate("/admission")}><p>목록</p></SecondaryButton>
+      </ButtonBox>
     </Container>
+  }
   </>
 }
