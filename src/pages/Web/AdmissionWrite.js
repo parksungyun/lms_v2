@@ -114,7 +114,7 @@ export function AdmissionWrite(){
   })
 
   function onSubmit() {
-    if(!(name && password && name && age && phone && title && content && school, desired)) {
+    if(!(name && password && age && phone && title && content && school && desired)) {
       setErrorCheck(1);
     }
     else {
