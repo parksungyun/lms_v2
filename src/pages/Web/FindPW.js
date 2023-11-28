@@ -10,7 +10,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  form {
+  .form {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -81,15 +81,15 @@ export function FindPW() {
   const [errorCheck, setErrorCheck] = useState(0);
   const navigate = useNavigate();
 
-  function onSubmit(e) {
-    e.preventDefault();
+  function onSubmit() {
     if (!userId) {
       setErrorCheck(1);
     } else if (!/^\d{3}-\d{3,4}-\d{4}$/.test(userPhone)) {
       setErrorCheck(2);
-    } else if (!(userId&& userPhone)) {
+    } else if (!(userId && userPhone)) {
       setErrorCheck(3);
     } else {
+      setErrorCheck(0);
       const data = {
         userId: userId,
         userPhone: userPhone
@@ -108,7 +108,7 @@ export function FindPW() {
 
   return <>
     <Container>
-      <form onSubmit={onSubmit}>
+      <div className="form">
         <Header>비밀번호 찾기</Header>
         <Div>
           <label>아이디</label>
@@ -121,8 +121,8 @@ export function FindPW() {
         {errorCheck === 1 && <ErrorMsg>이름을 입력해주세요.</ErrorMsg>}
         {errorCheck === 2 && <ErrorMsg>연락처 형식이 올바르지 않습니다.</ErrorMsg>}
         {errorCheck === 3 && <ErrorMsg>정보를 모두 입력해주세요.</ErrorMsg>}
-        {errorCheck === 4 && <ChangePWModal />}
-        <Button type="submit"><p>비밀번호 찾기</p></Button>
+        {errorCheck === 4 && <ChangePWModal userId={userId}/>}
+        <Button onClick={()=>onSubmit()}><p>비밀번호 찾기</p></Button>
         <FindWrapper>
           <Find onClick={() => navigate("/register")}><p>회원가입</p></Find>
           <Divider>|</Divider>
@@ -130,7 +130,7 @@ export function FindPW() {
           <Divider>|</Divider>
           <Find onClick={() => navigate("/findID")}><p>아이디 찾기</p></Find>
         </FindWrapper>
-      </form>
+      </div>
     </Container>
   </>
 }
