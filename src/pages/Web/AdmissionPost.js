@@ -128,7 +128,7 @@ export function AdmissionPost(){
       <Table>
         <tr>
           <th>작성일</th>
-          <td>{new Date(post.question.reg_date).toLocaleDateString()}</td>
+          <td>{new Date(post.question.regDate).toLocaleDateString()}</td>
         </tr>
         <tr>
           <th>이름</th>
@@ -163,7 +163,7 @@ export function AdmissionPost(){
         post.answer && <>
         <CommentBox>
           <CommentWriter>
-            <Text>{manager && manager.user.userName} | {new Date(post.answer.answer_reg_date).toLocaleDateString()}</Text>
+            <Text>{manager && manager.user.userName} | {new Date(post.answer.answerRegDate).toLocaleDateString()}</Text>
           </CommentWriter>
           <Comment>
             <Text>{post.answer.answerContent}</Text>

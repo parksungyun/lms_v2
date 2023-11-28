@@ -3,6 +3,9 @@ import WebWrapper from "../../components/WebWrapper"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { courses } from "../../assets/TempData";
+import axios from "axios";
+import { useEffect } from "react";
+import { getRecruitingCourses } from "../Api";
 
 const Container = styled.div`
   margin: 2rem 15rem;
@@ -78,47 +81,88 @@ const ContentInput = styled.textarea`
   border: 1px solid lightgray;
 `;
 
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 1rem 0 0 0;
+`;
+
 export function AdmissionWrite(){
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [phone, setPhone] = useState("");
   const [school, setSchool] = useState("");
-  const [desired, setDesired] = useState("");
+  const [desired, setDesired] = useState();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [password, setPassword] = useState("");
-
+  const [courses, setCourses] = useState(null);
+  const [errorCheck, setErrorCheck] = useState();
   const navigate = useNavigate();
 
-  const currentDate = new Date().getTime();
-  const course = courses.filter(c => new Date(c.recruit_end).getTime() >= currentDate);
+  useEffect(() => {
+    if(!courses) {
+      const promise = getRecruitingCourses();
+      const getData = () => {
+        promise.then((data) => {
+          setCourses(data);
+        });
+      };
+      getData();
+    }
+  })
 
-  function onSubmit(e) {
-    e.preventDefault();
+  function onSubmit() {
+    if(!(name && password && name && age && phone && title && content && school, desired)) {
+      setErrorCheck(1);
+    }
+    else {
+      const data = {
+        postPw: password,
+        writerName: name,
+        age: age,
+        phone: phone,
+        finalSchool: school,
+        desiredCourse: desired,
+        title: title,
+        content: content
+      };
+      console.log(data);
+      axios
+      .post("/api/admission/write", data)
+      .then((res) => {
+        console.log(res);
+        navigate("/admission");
+      })
+      .catch((err) => {
+        console.log(`${err} : 입학 상담 게시글 작성 실패`);
+      });
+    }
   }
 
   return<>
   <WebWrapper pageName={"입학 상담"} />
     <Container>
-      <form onSubmit={onSubmit}>
+      <form>
         <Divider>
           <Div>
             <label>이름</label>
-            <TextInput id="name" value={name} onChange={(e) => setName(e.target.value)} />
+            <TextInput id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="이름을 입력해주세요" />
           </Div>
           <Div>
             <label>비밀번호</label>
-            <TextInput type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <TextInput type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="게시글 확인/수정을 위한 비밀번호를 입력해주세요" />
           </Div>
         </Divider>
         <Divider>
           <Div>
             <label>나이</label>
-            <TextInput id="age" value={age} onChange={(e) => setAge(e.target.value)} />
+            <TextInput id="age" value={age} onChange={(e) => setAge(e.target.value)} placeholder="나이를 입력해주세요" />
           </Div>
           <Div>
             <label>연락처</label>
-            <TextInput id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <TextInput id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="연락처를 입력해주세요" />
           </Div>
         </Divider>
         <Divider>
@@ -126,7 +170,7 @@ export function AdmissionWrite(){
             <label>최종학력</label>
             <SelectBox>
               <select className="school" value={school} onChange={(e) => setSchool(e.target.value)}>
-                <option>최종학력 선택</option>
+                <option value="" selected>최종학력 선택</option>
                 <option key="1" value="중졸">중졸</option>
                 <option key="2" value="고졸">고졸</option>
                 <option key="3" value="초대졸">초대졸</option>
@@ -136,13 +180,14 @@ export function AdmissionWrite(){
             </SelectBox>
           </Div>
           <Div>
-            <label>수강희망과목</label>
+            <label>수강희망과정</label>
             <SelectBox>
               <select className="desired" value={desired} onChange={(e) => setDesired(e.target.value)}>
+                <option value="" selected>수강희망과정 선택</option>
                 {
-                  course.map((data) => (
-                    <option value={data.course_id} key={data.course_id}>
-                      {data.course_name}
+                  courses && courses.map((data) => (
+                    <option value={data.courseId} key={data.courseId}>
+                      {data.courseName}
                     </option>
                   ))
                 }
@@ -152,17 +197,18 @@ export function AdmissionWrite(){
         </Divider>
         <Div>
           <label>제목</label>
-          <TextInput id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+          <TextInput id="title" value={title} onChange={(e) => setTitle(e.target.value)}  placeholder="제목을 입력해주세요" />
         </Div>
         <Div>
           <label>내용</label>
-          <ContentInput id="content" value={content} onChange={(e) => setContent(e.target.value)} />
+          <ContentInput id="content" value={content} onChange={(e) => setContent(e.target.value)} placeholder="내용을 입력해주세요" />
         </Div>
-        <ButtonBox>
-          <PrimaryButton><p>등록</p></PrimaryButton>
-          <SecondaryButton onClick={()=>navigate("/admission")}><p>목록</p></SecondaryButton>
-        </ButtonBox>
       </form>
+      {errorCheck === 1 && <ErrorMsg>입학 상담을 위한 정보를 모두 입력해주세요.</ErrorMsg>}
+      <ButtonBox>
+        <PrimaryButton onClick={() => onSubmit()}><p>등록</p></PrimaryButton>
+        <SecondaryButton onClick={() => navigate("/admission")}><p>목록</p></SecondaryButton>
+      </ButtonBox>
     </Container>
   </>
 }

@@ -7,7 +7,7 @@ import { Pagination } from "../../components/Pagination";
 import { useNavigate } from "react-router-dom";
 import { admission_answers, admission_questions } from "../../assets/TempData";
 import { useEffect } from "react";
-import { getAllAdmissionPosts } from "../Api";
+import { getAdmissionPostsByContaining, getAllAdmissionPosts } from "../Api";
 
 const Container = styled.div`
   margin: 2rem 15rem;
@@ -113,7 +113,7 @@ export function AdmissionBoard() {
         no: i + 1,
         title: titleLink(a.question.admissionQuestionId, shortenTitle(a.question.title, 35)),
         writer: a.question.writerName,
-        writeDate: new Date(a.question.reg_date).toLocaleDateString(),
+        writeDate: new Date(a.question.regDate).toLocaleDateString(),
         reply: changeReply(checkReply(a)),
       }
     ))
@@ -151,8 +151,27 @@ export function AdmissionBoard() {
     }
   }
 
-  function onSearch(e) {
-    e.preventDefault();
+  function onSearch() {
+    console.log(search);
+    console.log(searchOption);
+    if(search.trim().length > 0) {
+      const promise = getAdmissionPostsByContaining(search, searchOption);
+      const getData = () => {
+        promise.then((data) => {
+          setQuestions(data);
+        });
+      };
+      getData();
+    }
+    else {
+      const promise = getAllAdmissionPosts();
+      const getData = () => {
+        promise.then((data) => {
+          setQuestions(data);
+        });
+      };
+      getData();
+    }
   }
 
   return <>
@@ -162,7 +181,7 @@ export function AdmissionBoard() {
       <Container>
         <Table 
           headers={headers} 
-          items={postsData(items.reverse())}
+          items={postsData(items)}
           selectable={false}
         />
         <ButtonBox>
@@ -173,7 +192,7 @@ export function AdmissionBoard() {
               <option key="writer" value="writer">작성자</option>
             </select>
             <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
-            <button onClick={onSearch}><p>검색</p></button>
+            <button onClick={() => onSearch()}><p>검색</p></button>
           </SearchBox>
           <PrimaryButton onClick={() => navigate("write")}><p>작성</p></PrimaryButton>
         </ButtonBox>
