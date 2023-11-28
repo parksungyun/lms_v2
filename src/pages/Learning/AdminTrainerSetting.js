@@ -4,6 +4,9 @@ import { academics, subjects, trainerPosition } from "../../assets/TempData";
 import { userList } from "../../assets/TempData";
 import '../../styles/admin_table.css';
 import { useNavigate } from "react-router-dom";
+import { getAllCourses, getAllTrainers } from "../Api";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -88,19 +91,43 @@ const trainerSetting = [
 ];
 
 export function AdminTrainerSetting() {
-  const trainers = academics.filter((a) => a.dept == 1);
-  const items = trainers.map((a, i) => (
-    {
-      no: i + 1,
-      name: userList[a.uid - 1].user_name,
-      birth: userList[a.uid - 1].user_birth,
-      phone: userList[a.uid - 1].user_phone,
-      email: userList[a.uid - 1].user_email,
-      position: trainerPosition.find((p) => p.position_id == a.position).position_name,
-      subject: subjects.filter((s) => s.academic_id == a.academic_id).length,
-      info: <SecondaryButton onClick={() => onDetail(a.academic_id)}><p>상세정보</p></SecondaryButton>
+  const [trainers, setTrainers] = useState(null);
+  const [subjects, setSubjects] = useState(null);
+  let items;
+  useEffect(() => {
+    if(!trainers) {
+      const promise = getAllTrainers();
+      const getData = () => {
+        promise.then((data) => {
+          setTrainers(data);
+        });
+      };
+      getData();
     }
-  ))
+    if(!subjects) {
+      const promise = getAllCourses();
+      const getData = () => {
+        promise.then((data) => {
+          setSubjects(data);
+        });
+      };
+      getData();
+    }
+  });
+  if(trainers) {
+    items = trainers.map((a, i) => (
+      {
+        no: i + 1,
+        name: a.user.userName,
+        birth: a.user.userBirth,
+        phone: a.user.userPhone,
+        email: a.user.userEmail,
+        position: a.position,
+        subject: a.num,
+        info: <SecondaryButton onClick={() => onDetail(a.academic.academicId)}><p>상세정보</p></SecondaryButton>
+      }
+    ))
+  }
 
   const navigate = useNavigate();
 

@@ -1,7 +1,6 @@
 import styled from "styled-components"
 import WebWrapper from "../../components/WebWrapper"
 import { useParams } from "react-router-dom";
-import { courses, subjects } from "../../assets/TempData";
 import { useState } from "react";
 import { useEffect } from "react";
 import { getCourseById, getSubjectByCourseId } from "../Api";

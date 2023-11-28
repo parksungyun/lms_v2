@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { department, trainerPosition, userList } from "../../assets/TempData";
 import defaultImg from "../../assets/img/default.png";
+import { getUserByUserId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -132,7 +133,7 @@ export function AdminTrainerAdd() {
   const navigate = useNavigate();
   
   const [search, setSearch] = useState("");
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(null);
   const [loadText, setLoadText] = useState("");
 
   const [userName, setUserName] = useState("");
@@ -152,20 +153,38 @@ export function AdminTrainerAdd() {
 
   useEffect(()=> {
     if(user) {
-      setUserName(user.user_name);
-      setUserId(user.user_id);
-      setUserBirth(user.user_birth);
-      setUserPhone(user.user_phone);
-      setUserEmail(user.user_email);
-      setUserAddr(user.user_addr);
+      setUserName(user.userName);
+      setUserId(user.userId);
+      setUserBirth(user.userBirth);
+      setUserPhone(user.userPhone);
+      setUserEmail(user.userEmail);
+      setUserAddr(user.userAddr);
+      setLoadText(`${user.userName} 님의 정보를 불러왔습니다.`);
+    }
+    else {
+      setUserName("");
+      setUserId("");
+      setUserBirth("");
+      setUserPhone("");
+      setUserEmail("");
+      setUserAddr("");
     }
   }, [user]);
 
   function onSearch(item) {
-    const temp = userList.find((u) => u.user_id == item);
-    if(temp) {
-      setLoadText(`${temp.user_name} 님의 정보를 불러왔습니다.`);
-      setUser(temp);
+    if(item) {
+      const promise = getUserByUserId(item);
+      const getData = () => {
+        promise.then((data) => {
+          if (data) {
+            setUser(data);
+          } else {
+            setUser(null);
+            setLoadText("이미 등록된 사용자 입니다.")
+          }
+        });
+      };
+      getData();
     }
     else {
       setLoadText("사용자 검색 결과가 없습니다.");
@@ -276,7 +295,7 @@ export function AdminTrainerAdd() {
               <Check type="checkbox" name="user_available" id="user_available" value={userAvailable} onChange={(e) => {setUserAvailable(e.target.value)}} /> 비활성화
             </Detail>
             <ButtonBox>
-              <PrimaryButton type="submit" onClick={onSubmit}><p>등록</p></PrimaryButton>
+              <PrimaryButton onClick={onSubmit()}><p>등록</p></PrimaryButton>
               <SecondaryButton onClick={() => navigate("/lms/a/trainerSetting")}><p>목록</p></SecondaryButton>
             </ButtonBox>
           </Details>

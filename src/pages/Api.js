@@ -201,11 +201,23 @@ export const getAllCourses = async () => {
   await axios
   .get("/api/course/all")
   .then((res) => {
-    console.log(res.data);
     courses = res.data.data;
   })
   .catch((err) => {
     console.log(`${err} : 모든 과정 불러오기 실패`);
   });
   return courses;
+}
+
+export const getUserByUserId = async (id) => {
+  let user;
+  await axios
+  .get(`/api/user/search/${id}`)
+  .then((res) => {
+    user = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 유저 불러오기 실패`);
+  });
+  return user;
 }
