@@ -83,7 +83,6 @@ export const getRecruitingCourses = async () => {
   await axios
   .get("/api/course/recruit")
   .then((res) => {
-    console.log(res.data);
     courses = res.data.data;
   })
   .catch((err) => {
@@ -136,7 +135,6 @@ export const getAllAdmissionPosts = async () => {
   await axios
   .get("/api/admission/all")
   .then((res) => {
-    console.log(res.data);
     posts = res.data.data;
   })
   .catch((err) => {
@@ -150,7 +148,6 @@ export const getAdmissionPostById = async (id) => {
   await axios
   .get(`/api/admission/${id}`)
   .then((res) => {
-    console.log(res.data);
     post = res.data.data;
   })
   .catch((err) => {
@@ -183,4 +180,32 @@ export const getStudentByStudentId = async (id) => {
     console.log(`${err} : 학생 불러오기 실패`);
   });
   return student;
+}
+
+export const getAdmissionPostsByContaining = async (keyword, type) => {
+  let posts;
+  await axios
+  .get(`/api/admission/search/${type}/${keyword}`)
+  .then((res) => {
+    console.log(res.data);
+    posts = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 검색된 입학상담 게시글 불러오기 실패`);
+  });
+  return posts;
+}
+
+export const getAllCourses = async () => {
+  let courses;
+  await axios
+  .get("/api/course/all")
+  .then((res) => {
+    console.log(res.data);
+    courses = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 모든 과정 불러오기 실패`);
+  });
+  return courses;
 }
