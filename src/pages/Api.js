@@ -221,3 +221,328 @@ export const getUserByUserId = async (id) => {
   });
   return user;
 }
+
+export const getCourseBoardByCourseId = async (id) => {
+  let board;
+  await axios
+  .get(`/api/course/${id}/board`)
+  .then((res) => {
+    board = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과정 공지사항 불러오기 실패`);
+  });
+  return board;
+}
+
+export const getCourseBoardByAcademicId = async (id) => {
+  let board;
+  await axios
+  .get(`/api/course/board/academic/${id}`)
+  .then((res) => {
+    board = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 작성자로 과정 공지사항 불러오기 실패`);
+  });
+  return board;
+}
+
+export const getCourseBoardByCourseBoardId = async (id) => {
+  let post;
+  await axios
+  .get(`/api/course/board/${id}`)
+  .then((res) => {
+    post = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} 과정 공지사항 게시글 불러오기 실패`);
+  });
+  return post;
+}
+
+export const getCourseQnaByCourseId = async (id) => {
+  let qna;
+  await axios
+  .get(`/api/course/${id}/qna`)
+  .then((res) => {
+    qna = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} 과정 QnA 불러오기 실패`);
+  });
+  return qna;
+}
+
+export const getCourseQnaByCourseQuestionId = async (id) => {
+  let post;
+  await axios
+  .get(`/api/course/qna/${id}`)
+  .then((res) => {
+    post = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} 과정 QnA 게시글 불러오기 실패`);
+  });
+  return post;
+}
+
+export const getCourseQnaByStudentId = async (id) => {
+  let qna;
+  await axios
+  .get(`/api/course/qna/student/${id}`)
+  .then((res) => {
+    qna = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} 학생이 작성한 과정 QnA 불러오기 실패`);
+  });
+  return qna;
+}
+
+export const getCourseQnaByAcademicId = async (id) => {
+  let qna;
+  await axios
+  .get(`/api/course/qna/academic/${id}`)
+  .then((res) => {
+    qna = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} 매니저가 답글을 작성한 과정 QnA 불러오기 실패`);
+  });
+  return qna;
+}
+
+export const getSubjectBoardBySubjectId = async (id) => {
+  let board;
+  await axios
+  .get(`/api/subject/${id}/board`)
+  .then((res) => {
+    board = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과목 공지사항 불러오기 실패`);
+  });
+  return board;
+}
+
+export const getSubjectBoardByAcademicId = async (id) => {
+  let board;
+  await axios
+  .get(`/api/subject/board/academic/${id}`)
+  .then((res) => {
+    board = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 작성자로 과목 공지사항 불러오기 실패`);
+  });
+  return board;
+}
+
+export const getSubjectBoardBySubjectBoardId = async (id) => {
+  let board;
+  await axios
+  .get(`/api/subject/board/${id}`)
+  .then((res) => {
+    board = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과목 공지사항 게시글 불러오기 실패`);
+  });
+  return board;
+}
+
+export const getHomeworksBySubjectId = async (id) => {
+  let homeworks;
+  await axios
+  .get(`/api/subject/${id}/homework`)
+  .then((res) => {
+    homeworks = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과목 과제 불러오기 실패`);
+  });
+  return homeworks;
+}
+
+export const getHomeworksByCourseId = async (id) => {
+  let homeworks;
+  await axios
+  .get(`/api/subject/course/${id}/homework`)
+  .then((res) => {
+    homeworks = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과정의 모든 과목의 과제 불러오기 실패`);
+  });
+  return homeworks;
+}
+
+export const getHomeworksByAcademicId = async (id) => {
+  let homeworks;
+  await axios
+  .get(`/api/subject/homework/academic/${id}`)
+  .then((res) => {
+    homeworks = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 작성자로 과목 과제 불러오기 실패`);
+  });
+  return homeworks;
+}
+
+export const getHomeworkByHomeworkId = async (id) => {
+  let post;
+  await axios
+  .get(`/api/subject/homework/${id}`)
+  .then((res) => {
+    post = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과목 과제 게시글 불러오기 실패`);
+  });
+  return post;
+}
+
+export const getLecturesBySubjectId = async (id) => {
+  let lectures;
+  await axios
+  .get(`/api/subject/${id}/lecture`)
+  .then((res) => {
+    lectures = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과목 강의 불러오기 실패`);
+  });
+  return lectures;
+}
+
+export const getLecturesByAcademicId = async (id) => {
+  let lectures;
+  await axios
+  .get(`/api/subject/lecture/academic/${id}`)
+  .then((res) => {
+    lectures = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 작성자로 과목 강의 불러오기 실패`);
+  });
+  return lectures;
+}
+
+export const getLectureByLectureId = async (id) => {
+  let post;
+  await axios
+  .get(`/api/subject/lecture/${id}`)
+  .then((res) => {
+    post = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과목 강의 게시글 불러오기 실패`);
+  });
+  return post;
+}
+
+export const getSubjectQnaBySubjectId = async (id) => {
+  let qna;
+  await axios
+  .get(`/api/subject/${id}/qna`)
+  .then((res) => {
+    qna = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과목 QnA 불러오기 실패`);
+  });
+  return qna;
+}
+
+export const getSubjectQnaBySubjectQuestionId = async (id) => {
+  let post;
+  await axios
+  .get(`/api/subject/qna/${id}`)
+  .then((res) => {
+    post = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과목 QnA 게시글 불러오기 실패`);
+  });
+  return post;
+}
+
+export const getSubjectQnaByStudentId = async (id) => {
+  let qna;
+  await axios
+  .get(`/api/subject/qna/student/${id}`)
+  .then((res) => {
+    qna = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생이 작성한 과목 QnA 불러오기 실패`);
+  });
+  return qna;
+}
+
+export const getSubjectQnaByAcademicId = async (id) => {
+  let qna;
+  await axios
+  .get(`/api/subject/qna/academic/${id}`)
+  .then((res) => {
+    qna = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 강사가 답글을 작성한 과목 QnA 불러오기 실패`);
+  });
+  return qna;
+}
+
+export const getSubmitBySubmitId = async (id) => {
+  let post;
+  await axios
+  .get(`/api/subject/submit/${id}`)
+  .then((res) => {
+    post = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 제출한 과제 게시글 불러오기 실패`);
+  });
+  return post;
+}
+
+export const getSubmitsByHomeworkId = async (id) => {
+  let homeworks;
+  await axios
+  .get(`/api/subject/homework/${id}/submit`)
+  .then((res) => {
+    homeworks = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과제의 모든 제출 불러오기 실패`);
+  });
+  return homeworks;
+}
+
+export const getProgressByStudentIdAndSubjectId = async (studentId, subjectId) => {
+  let progress;
+  await axios
+  .get(`/api/subject/${subjectId}/progress/${studentId}`)
+  .then((res) => {
+    progress = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생의 과목별 강의 진행도 불러오기 실패`);
+  });
+  return progress;
+}
+
+export const getProgressByStudentId = async (studentId) => {
+  let progress;
+  await axios
+  .get(`/api/subject/progress/${studentId}`)
+  .then((res) => {
+    progress = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생의 모든 과목 강의 진행도 불러오기 실패`);
+  });
+  return progress;
+}

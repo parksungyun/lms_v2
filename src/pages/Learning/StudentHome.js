@@ -4,6 +4,8 @@ import { Table } from "../../components/Table";
 import { Progress } from "../../components/Progress";
 import { academics, course_board, courses, homeworks, lectures, students, studies, subjects, userList } from "../../assets/TempData";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getCourseBoardByCourseId, getHomeworksByCourseId, getProgressByStudentId, getSubjectByCourseId, getUserByUid } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -99,14 +101,74 @@ const hw = [
 ];
 
 export function StudentHome() {
-  const id = 1;  //studentid 값 임의로 받아옴
-  const student = students.find(s => s.student_id == id);
-  const courseBoard = course_board.filter(c => c.cousre_id == student.course_id);  
-  const subject = subjects.filter(s => s.course_id == student.course_id);
-  const homework = homeworks.filter(h => (subject.map((s) => s.subject_id == h.subject_id)));
-  const study = studies.filter(s => s.student_id == id);
-
+  const id = sessionStorage.getItem("uid");
+  const [user, setUser] = useState(null);
+  const [subject, setSubject] = useState(null);
+  const [homework, setHomework] = useState(null);
+  const [study, setStudy] = useState(null);
+  const [board, setBoard] = useState(null);
   const navigate = useNavigate();
+  let cBoardItems;
+  let hwItems;
+
+  
+  useEffect(() => {
+    if(!user) {
+      const promise = getUserByUid(id);
+      const getData = () => {
+        promise.then((data) => {
+          setUser(data);
+        });
+      };
+      getData();
+    }
+  });
+
+  useEffect(() => {
+    if(user) {
+      if(!subject) {
+        const promise = getSubjectByCourseId(user.student.courseId);
+        const getData = () => {
+          promise.then((data) => {
+            setSubject(data);
+          });
+        };
+        getData();
+      }
+      if(!board) {
+        const promise = getCourseBoardByCourseId(user.student.courseId);
+        const getData = () => {
+          promise.then((data) => {
+            setBoard(data);
+          });
+        };
+        getData();
+      }
+      if(!homework) {
+        const promise = getHomeworksByCourseId(user.student.courseId);
+        const getData = () => {
+          promise.then((data) => {
+            setHomework(data);
+          });
+        };
+        getData();
+      }
+      if(!study) {
+        const promise = getProgressByStudentId(user.student.studentId);
+        const getData = () => {
+          promise.then((data) => {
+            setStudy(data);
+          });
+        };
+        getData();
+      }
+    }
+  }, [user]);
+  console.log(user);
+  console.log(subject);
+  console.log(board);
+  console.log(homework);
+  console.log(study);
 
   const shortenTitle = (str, length) => {
     let result = '';
@@ -126,31 +188,37 @@ export function StudentHome() {
 
   }
 
-  const cBoardItems = courseBoard.map((c,i) => (
-    {
-      no: i + 1,
-      title: titleLink(c.course_board_id, shortenTitle(c.c_post_title, 20, "cboard")),
-      writer: userList.find(u => u.uid == academics.find(a => a.academic_id == c.academic_id).uid).user_name,
-      regDate: c.c_post_reg_date,
-      hits: c.c_post_hits
-    }
-  ));
+  if(board) {
+    cBoardItems = board.map((c, i) => (
+      {
+        no: i + 1,
+        title: titleLink(c.courseBoardId, shortenTitle(c.title, 20, "cboard")),
+        writer: c.academicId,
+        regDate: c.regDate,
+        hits: c.hits
+      }
+    ));
+  }
 
-  const hwItems = homework.map((h,i) => (
-    {
-      subject: shortenTitle(subject.find(s => s.subject_id == h.subject_id).subject_name, 11),
-      title: titleLink(h.homework_id ,shortenTitle(h.hw_title), 20, "homework"),
-      startDate: h.hw_start_date,
-      endDate: h.hw_end_date,
-    }
-  ));
+  if(homework && subject) {
+    hwItems = homework.map((h, i) => (
+      {
+        subject: shortenTitle(subject.find((s) => s.subject.subjectId === h.subjectId).subject.subjectName, 11),
+        title: titleLink(h.homeworkId, shortenTitle(h.title), 20, "homework"),
+        startDate: h.startDate,
+        endDate: h.endDate,
+      }
+    ));
+  }
 
   return <>
+  {
+    (subject && board && homework) &&
     <Container>
       <Content>
         <div>
           <H2 className='title'>내 클래스</H2>
-          <p>{courses.find(c => c.course_id == id).course_name}</p>
+          <p>{subject[0].course.courseName}</p>
         </div>
         <PrimaryButton onClick={attendCheck()}>출석 체크</PrimaryButton>
       </Content>
@@ -160,7 +228,7 @@ export function StudentHome() {
           <H2 onClick={()=> navigate("cboard")} className="pointer">공지 사항</H2>
           <Table 
             headers={cBoard}
-            items={cBoardItems.reverse().slice(0,5)}
+            items={cBoardItems.slice(0,5)}
             selectable={false}
           />
         </TableBox>
@@ -170,7 +238,7 @@ export function StudentHome() {
           <H2>과제</H2>
           <Table 
             headers={hw}
-            items={hwItems.reverse().slice(0,5)}
+            items={hwItems.slice(0,5)}
             selectable={false}
           />
         </TableBox>
@@ -179,18 +247,17 @@ export function StudentHome() {
       <Box>
         <H2>내 진도관리</H2>
         {
-          subject.map((s) => (
-            <>
+          study.map((s) => (
               <Progress
-                subjectName={s.subject_name}
-                max={lectures.filter(l => l.subject_id == s.subject_id).length}
-                item={study.filter((data) => lectures.filter(l => l.lecture_id == data.lecture_id).find(lecture => lecture.subject_id == s.subject_id)).length}
-                link={`${s.subject_id}/subject`}
-                />
-            </>
+                subjectName={s.subjectName}
+                max={s.numOfLecture}
+                item={s.numOfStudy}
+                link={`${s.subjectId}/subject`}
+              />
           ))
         }
       </Box>
     </Container>
+  }
   </>
 }
