@@ -546,3 +546,16 @@ export const getProgressByStudentId = async (studentId) => {
   });
   return progress;
 }
+
+export const getSubmitsByStudentId = async (id) => {
+  let submit;
+  await axios
+  .get(`/api/subject/submit/student/${id}`)
+  .then((res) => {
+    submit = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생이 제출한 모든 과제 불러오기 실패`);
+  });
+  return submit;
+}

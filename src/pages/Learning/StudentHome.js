@@ -124,7 +124,7 @@ export function StudentHome() {
       getData();
     }
     if(!academic) {
-      const promise = getAllManagers(id);
+      const promise = getAllManagers();
       const getData = () => {
         promise.then((data) => {
           setAcademic(data);

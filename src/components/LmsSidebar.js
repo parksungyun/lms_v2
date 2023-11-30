@@ -43,9 +43,7 @@ export function LmsSidebar() {
   const id = sessionStorage.getItem("id");
   const userType = sessionStorage.getItem("userType");
   const [datas, setDatas] = useState(null);
-
   const pathName = useLocation().pathname;
-  console.log(pathName);
 
   useEffect(() => {
     if(userType === "t") {

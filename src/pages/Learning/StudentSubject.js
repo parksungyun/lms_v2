@@ -2,8 +2,9 @@ import styled from "styled-components";
 import { Table } from "../../components/Table";
 import { Col, Row } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import { academics, feedbacks, homeworks, students, subject_answers, subject_board, subject_questions, submits, userList, lectures, studies } from "../../assets/TempData";
 import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getAllTrainers, getHomeworksBySubjectId, getLecturesBySubjectId, getProgressByStudentIdAndSubjectId, getStudentByStudentId, getStudentsByCourseId, getSubjectBoardBySubjectId, getSubjectQnaBySubjectId,  getSubmitsByStudentId } from "../Api";
 
 const BadgePrimary = styled.span`
   background-color: #5f7dcf;
@@ -164,30 +165,130 @@ const studentSQNA = [
 export function StudentSubject() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const board = subject_board.filter(s => s.subject_id == id);
-  const studentid = 1; // 임의로 studentid값 받아옴
-  const submit = submits.filter(s => s.student_id == studentid);
-  const homework = homeworks.filter(h => h.subject_id == id);  
-  const question = subject_questions.filter(s => s.subject_id == id);
-  const lecture = lectures.filter(l => l.subject_id == id);
-  const study = studies.filter(s => s.student_id == studentid);
-  const isStudy = lecture.filter(l => study.find(s => s.lecture_id == l.lecture_id))
-  let i = 100 - (isStudy.length * 100 / lecture.length);
-  if (i == 0) {
-    i = 100;
-  } else if (i == 100) {
-    i = 0;
-  }
+  const studentId = sessionStorage.getItem("id");
+  const [user, setUser] = useState(null);
+  const [academic, setAcademic] = useState(null);
+  const [students, setStudents] = useState(null);
+  const [board, setBoard] = useState(null);
+  const [homework, setHomework] = useState(null);
+  const [submit, setSubmit] = useState(null);
+  const [question, setQuestion] = useState(null);
+  const [lecture, setLecture] = useState(null);
+  const [study, setStudy] = useState(null);
+  let boardItems;
+  let hwItems;
+  let lectureItems;
+  let qnaItems;
+
+  useEffect(() => {
+    if(!user) {
+      const promise = getStudentByStudentId(studentId);
+      const getData = () => {
+        promise.then((data) => {
+          setUser(data);
+        });
+      };
+      getData();
+    }
+    if(!academic) {
+      const promise = getAllTrainers();
+      const getData = () => {
+        promise.then((data) => {
+          setAcademic(data);
+        });
+      };
+      getData();
+    }
+    if(!board) {
+      const promise = getSubjectBoardBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setBoard(data);
+        });
+      };
+      getData();
+    }
+    if(!homework) {
+      const promise = getHomeworksBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setHomework(data);
+        });
+      };
+      getData();
+    }
+    if(!submit) {
+      const promise = getSubmitsByStudentId(studentId);
+      const getData = () => {
+        promise.then((data) => {
+          setSubmit(data);
+        });
+      };
+      getData();
+    }
+    // if(!study) {
+    //   const promise = getProgressByStudentIdAndSubjectId(studentId, id);
+    //   const getData = () => {
+    //     promise.then((data) => {
+    //       setStudy(data);
+    //     });
+    //   };
+    //   getData();
+    // }
+    if(!question) {
+      const promise = getSubjectQnaBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setQuestion(data);
+        });
+      };
+      getData();
+    }
+    if(!lecture) {
+      const promise = getLecturesBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setLecture(data);
+        });
+      };
+      getData();
+    }
+  });
+
+  useEffect(() => {
+    if(user) {
+      if(!students) {
+        const promise = getStudentsByCourseId(user.student.courseId);
+        const getData = () => {
+          promise.then((data) => {
+            setStudents(data);
+          });
+        };
+        getData();
+      }
+    }
+  }, [user]);
+
+  // let i = 100 - (isStudy.length * 100 / lecture.length);
+  // if (i == 0) {
+  //   i = 100;
+  // } else if (i == 100) {
+  //   i = 0;
+  // }
 
   function changeReplyHW(reply) {
-    if (submit.find(s => s.homework_id == reply)) {
-      if(feedbacks.find(f => f.submit_id == submit.find(s => s.homework_id == reply).submit_id)) {
+    if(submit.find((s) => s.submit.homeworkId === reply)) {
+      const post = submit.find((s) => s.submit.homeworkId === reply);
+      if(post.feedback) {
         return(<BadgeSuccess>채점완료</BadgeSuccess>);
-      } else {
+      }
+      else {
         return (<BadgePrimary>제출완료</BadgePrimary>);
       }
     }
-    else return(<BadgeSecondary>제출대기</BadgeSecondary>);
+    else {
+      return(<BadgeSecondary>제출대기</BadgeSecondary>);
+    }
   };
   
   function changeReplyLecture(reply) {
@@ -198,8 +299,12 @@ export function StudentSubject() {
   };
 
   function changeReplyQNA(reply) {
-    if(subject_answers.find(s => s.s_question_id == reply)) return(<BadgeSuccess>답변완료</BadgeSuccess>);
-    else return(<BadgeSecondary>답변대기</BadgeSecondary>);
+    if(question.find((q) => q.answer.subjectQuestionId === reply)) {
+      return(<BadgeSuccess>답변완료</BadgeSuccess>);
+    }
+    else {
+      return(<BadgeSecondary>답변대기</BadgeSecondary>);
+    }
   };
 
   const shortenTitle = (str, length) => {
@@ -216,91 +321,114 @@ export function StudentSubject() {
     return (<p onClick={() => navigate(`${type}/${id}`)}>{title}</p>);
   }
 
-  const boardItems = board.map((b,i) => (
-    {
-      no: i + 1,
-      title: titleLink(b.subject_board_id, shortenTitle(b.s_post_title, 20), `/lms/s/${id}/sboard`),
-      writer: userList.find(u => u.uid == academics.find(a => a.academic_id == b.academic_id).uid).user_name,
-      regDate: b.s_post_reg_date,
-      hits: b.s_post_hits
-    }
-  ));
+  if(board && academic) {
+    boardItems = board.map((b, i) => (
+      {
+        no: i + 1,
+        title: titleLink(b.subjectBoardId, shortenTitle(b.title, 20), `/lms/s/${id}/sboard`),
+        writer: academic.find((a) => a.academic.academicId === b.academicId).user.userName,
+        regDate: new Date(b.regDate).toLocaleDateString(),
+        hits: b.hits
+      }
+    ));
+  }
 
-  const HWItems = homework.map((h,i) => (
-    {
-      no: i + 1,
-      title: titleLink(h.homework_id, shortenTitle(h.hw_title, 20), `/lms/s/${id}/homework`),
-      startDate: h.hw_start_date,
-      endDate: h.hw_end_date,
-      submit: changeReplyHW(h.homework_id)
-    }
-  ));
+  if(homework && submit) {
+    hwItems = homework.map((h, i) => (
+      {
+        no: i + 1,
+        title: titleLink(h.homeworkId, shortenTitle(h.title, 20), `/lms/s/${id}/homework`),
+        startDate: h.startDate,
+        endDate: h.endDate,
+        submit: changeReplyHW(h.homeworkId)
+      }
+    ));
+  }
 
-  const lectureItems = lecture.filter(l => !study.find(s => s.lecture_id == l.lecture_id)).map((l,i) => (
-    {
-      no: i + 1,
-      title: l.lecture_title,
-      state: changeReplyLecture(study.find(s => s.lecture_id == l.lecture_id))
-    }
-  ));
-  const qnaItems = question.map((q,i) => (
-    {
-      no: i + 1,
-      title: titleLink(q.s_question_id, shortenTitle(q.s_question_title, 20), `/lms/s/${id}/sqna`),
-      writer: userList.find(u => u.uid == students.find(s => s.student_id == q.student_id).uid).user_name,
-      regDate: q.s_question_reg_date,
-      state: changeReplyQNA(q.s_question_id)
-    }
-  ));
+  if(lecture && study) {
+    console.log(study);
+    console.log(lecture);
+    lectureItems = lecture.map((l, i) => (
+      {
+        no: i + 1,
+        title: l.title,
+        state: changeReplyLecture(study.find(s => s.lectureId === l.lectureId))
+      }
+    ));
+  }
+
+  if(question && students) {
+    qnaItems = question.map((q, i) => (
+      {
+        no: i + 1,
+        title: titleLink(q.question.subjectQuestionId, shortenTitle(q.question.title, 20), `/lms/s/${id}/sqna`),
+        writer: (students.find((a) => a.student.studentId === q.question.studentId)).user.userName,
+        regDate: new Date(q.question.regDate).toLocaleDateString(),
+        state: changeReplyQNA(q.question.subjectQuestionId)
+      }
+    ));
+  }
 
   return<>
     <Container>
       <Row>
         <Col>
+        {
+          boardItems &&
           <TableBox>
             <StyledNavLink to='/lms/s/sboard'>공지 사항</StyledNavLink>
             <Table
               headers={studentSBoard}
-              items={boardItems.reverse().slice(0, 5)}
+              items={boardItems.length > 5 ? boardItems.slice(0, 5) : boardItems}
               selectable={false}
             />
           </TableBox>
+        }
         </Col>
         <Col>
+        {
+          hwItems &&
           <TableBox>
             <StyledNavLink to='/lms/s/homework'>과제</StyledNavLink>
             <Table
               headers={studentSHW}
-              items={HWItems.reverse().slice(0, 5)}
+              items={hwItems.length > 5 ? hwItems.slice(0, 5) : hwItems}
               selectable={false}
             />
           </TableBox>
+        }
         </Col>
       </Row>
       <Row>
         <Col>
+        {
+          (study && lectureItems) &&
           <TableBox>
             <StyledNavLink to='/lms/s/lecture'>강의</StyledNavLink>
             <ProgressBar>
-              <ProgressBox width = {i}/>
+              <ProgressBox width = {study.numOfStudy}/>
             </ProgressBar>
-            <p>{isStudy.length}/{lecture.length}강</p>
+            <p>{study.numOfStudy}/{study.numOfLecture}강</p>
             <Table
               headers={studentSLec}
-              items={lectureItems.reverse().slice(0, 3)}
+              items={lectureItems.length > 3 ? lectureItems.slice(0, 3) : lectureItems}
               selectable={false}
             />
           </TableBox>
+        }
         </Col>
         <Col>
+        {
+          qnaItems &&
           <TableBox>
             <StyledNavLink to='/lms/s/sqna'>Q&A</StyledNavLink>
             <Table
               headers={studentSQNA}
-              items={qnaItems.reverse().slice(0, 5)}
+              items={qnaItems.length > 5 ? qnaItems.slice(0, 5) : qnaItems}
               selectable={false}
             />
           </TableBox>
+        }
         </Col>
       </Row>
     </Container>
