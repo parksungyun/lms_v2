@@ -3,6 +3,9 @@ import { RiUserSettingsLine } from "react-icons/ri";
 import { LmsHomeButtonWrapper } from "../../components/LmsHomeButtonWrapper";
 import { courses } from "../../assets/TempData";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
+import { getCourseByAcademicId, getUserByUid } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -47,36 +50,66 @@ const ButtonBox = styled.div`
 
 export function ManagerHome() {
   const navigate = useNavigate();
-  const id = 3; // academicid 임의로 받아옴
-  const course = courses.filter(c => c.academic_id == id);
+  const id = sessionStorage.getItem("uid");
+  const [user, setUser] = useState(null);
+  const [course, setCourse] = useState(null);
+  let courseNumber;
+  let items;
 
-  const courseNumber = course.map((c) => (
-    {
-      name: c.course_name,
-      id: c.course_id,
+  useEffect(() => {
+    if(!user) {
+      const promise = getUserByUid(id);
+      const getData = () => {
+        promise.then((data) => {
+          setUser(data);
+        });
+      };
+      getData();
     }
-  ));
-  
-  const items = courseNumber.map((c)=>(
-    [
+  });
+
+  useEffect(() => {
+    if(user) {
+      const promise = getCourseByAcademicId(user.academic.academicId);
+      const getData = () => {
+        promise.then((data) => {
+          setCourse(data);
+        });
+      };
+      getData();
+    }
+  }, [user]);
+
+  if(course) {
+    courseNumber = course.map((c) => (
       {
-        text: c.name,
-        link: `/lms/m/${c.id}/info`
-      },
-      {
-        text: "공지",
-        link: `/lms/m/${c.id}/board`
-      },
-      {
-        text: "1:1 문의",
-        link: `/lms/m/${c.id}/qna`
-      },
-      {
-        text: "강의평가",
-        link: `/lms/m/${c.id}/review`
+        name: c.courseName,
+        id: c.courseId,
       }
-    ]
-  ));
+    ));
+    
+    items = courseNumber.map((c)=>(
+      [
+        {
+          text: c.name,
+          link: `/lms/m/${c.id}/info`
+        },
+        {
+          text: "공지",
+          link: `/lms/m/${c.id}/board`
+        },
+        {
+          text: "1:1 문의",
+          link: `/lms/m/${c.id}/qna`
+        },
+        {
+          text: "강의평가",
+          link: `/lms/m/${c.id}/review`
+        }
+      ]
+    ));
+  }
+
 
   return <>
     <Container>
@@ -86,14 +119,17 @@ export function ManagerHome() {
         </div>
         <PrimaryButton onClick={()=>navigate("/lms/a")}><p>관리자 페이지<RiUserSettingsLine /></p></PrimaryButton>
       </Content>
-      <Box>
-        <H2>진행중인 과목: {courseNumber.length}</H2>
-        {
-          courseNumber.map((c, i) => (
-            <ButtonBox><LmsHomeButtonWrapper items={items[i]} /></ButtonBox>
-          ))
-        }
-      </Box>
+      {
+        courseNumber &&
+        <Box>
+          <H2>진행중인 과목: {courseNumber.length}</H2>
+          {
+            courseNumber.map((c, i) => (
+              <ButtonBox><LmsHomeButtonWrapper items={items[i]} /></ButtonBox>
+            ))
+          }
+        </Box>
+      }
     </Container>
   </>
 }

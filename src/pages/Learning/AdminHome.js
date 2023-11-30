@@ -2,6 +2,9 @@ import styled from "styled-components"
 import { RiUserReceivedLine } from "react-icons/ri";
 import { LmsHomeButtonWrapper } from "../../components/LmsHomeButtonWrapper";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
+import { getAcademicByAcademicId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -67,7 +70,25 @@ const BadgePrimary = styled.span`
 
 export function AdminHome() {
   const navigate = useNavigate();
-  const auth = 3;
+  const id = sessionStorage.getItem("id");
+  const userType = sessionStorage.getItem("userType");
+  const [user, setUser] = useState(null);
+  let items;
+
+  useEffect(() => {
+    if(!user) {
+      const promise = getAcademicByAcademicId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setUser(data);
+        });
+      };
+      getData();
+    }
+  });
+
+  console.log(user);
+
   function authBadge(auth) {
     if(auth === 3) {
       return (<>
@@ -90,20 +111,53 @@ export function AdminHome() {
     }
   }
 
-  const items = [
-    {
-      text: "강사 관리",
-      link: 'trainerSetting'
-    },
-    {
-      text: "매니저 관리",
-      link: 'managerSetting'
-    },
-    {
-      text: "과정 관리",
-      link: 'courseSetting'
-    },
-  ];
+  if(user) {
+    if(user.academic.auth === 3) {
+      items = [
+        {
+          text: "강사 관리",
+          link: 'trainerSetting'
+        },
+        {
+          text: "매니저 관리",
+          link: 'managerSetting'
+        },
+        {
+          text: "과정 관리",
+          link: 'courseSetting'
+        },
+      ];
+    }
+    else if(user.academic.auth === 2) {
+      items = [
+        {
+          text: "매니저 관리",
+          link: 'managerSetting'
+        },
+        {
+          text: "과정 관리",
+          link: 'courseSetting'
+        },
+      ];
+    }
+    else if(user.academic.auth === 1) {
+      items = [
+        {
+          text: "강사 관리",
+          link: 'trainerSetting'
+        },
+      ];
+    }
+    else {
+      items = [
+        {
+          text: "과정 관리",
+          link: 'courseSetting'
+        },
+      ];
+    }
+  }
+
 
   return <>
     <Container>
@@ -111,17 +165,19 @@ export function AdminHome() {
         <div>
           <H2 className='title'>관리자 페이지</H2>
         </div>
-        <PrimaryButton onClick={()=>navigate(`/lms/m`)}><p>사용자 페이지<RiUserReceivedLine /></p></PrimaryButton>
+        <PrimaryButton onClick={()=>navigate(`/lms/${userType}`)}><p>사용자 페이지<RiUserReceivedLine /></p></PrimaryButton>
       </Content>
-      <Box>
-      <HeaderBox><H2>보유 권한: </H2><AuthBox> {authBadge(auth)} </AuthBox></HeaderBox>
-        {/* 하위 부분은 수정이 필요합니다. 주의하세요 */}
-        {
-          items.map((item, i) => (
-            <ButtonBox><LmsHomeButtonWrapper items={item} /></ButtonBox>
-          ))
-        } 
-      </Box>
+      {
+        user &&
+        <Box>
+        <HeaderBox><H2>보유 권한: </H2><AuthBox> {authBadge(user.academic.auth)} </AuthBox></HeaderBox>
+          {
+            items.map((item, i) => (
+              <ButtonBox><LmsHomeButtonWrapper items={item} /></ButtonBox>
+            ))
+          } 
+        </Box>
+      }
     </Container>
   </>
 }

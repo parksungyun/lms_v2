@@ -218,7 +218,7 @@ export function StudentHome() {
 
   return <>
   {
-    (subject && board && homework) &&
+    (subject && cBoardItems && hwItems) &&
     <Container>
       <Content>
         <div>
@@ -233,7 +233,7 @@ export function StudentHome() {
           <H2 onClick={()=> navigate("cboard")} className="pointer">공지 사항</H2>
           <Table 
             headers={cBoard}
-            items={cBoardItems.slice(0,5)}
+            items={cBoardItems.length > 5 ? cBoardItems.slice(0,5) : cBoardItems}
             selectable={false}
           />
         </TableBox>
@@ -243,7 +243,7 @@ export function StudentHome() {
           <H2>과제</H2>
           <Table 
             headers={hw}
-            items={hwItems.slice(0,5)}
+            items={hwItems.length > 5 ? hwItems.slice(0,5) : hwItems}
             selectable={false}
           />
         </TableBox>
