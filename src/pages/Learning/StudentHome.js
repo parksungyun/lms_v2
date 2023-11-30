@@ -193,7 +193,7 @@ export function StudentHome() {
 
   }
 
-  if(board) {
+  if(board && academic) {
     cBoardItems = board.map((c, i) => (
       {
         no: i + 1,
