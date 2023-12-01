@@ -128,6 +128,7 @@ export function AdminTrainerDetail() {
   const [userTAuth, setUserTAuth] = useState(false);
   const [userMAuth, setUserMAuth] = useState(false);
   const [userCAuth, setUserCAuth] = useState(false);
+  const [image, setImage] = useState("");
 
   useEffect(()=>{
     if(!user) {
@@ -147,7 +148,7 @@ export function AdminTrainerDetail() {
       setUserId(user.user.userId);
       setUserBirth(user.user.userBirth);
       setUserDept(user.academic.dept);
-      setUserPhoto(user.user.userPhoto);
+      setUserPhoto(user.academic.userPhoto);
       setUserPosition(user.position);
       setUserPhone(user.user.userPhone);
       setUserAddr(user.user.userAddr);
@@ -216,12 +217,21 @@ export function AdminTrainerDetail() {
       userDept: userDept,
       userPhoto: userPhoto,
       userPosition: userPosition,
-      userPhone: userPhone,
       userAddr: userAddr,
       userEmail: userEmail,
       userRemark: userRemark,
       userAuth: userAuth,
       userAvailable: userAvailable
+    }
+    const fd = new FormData();
+    if (userPhoto) {
+      fd.append("file", userPhoto);
+      console.log(fd);
+      for (const pair of fd.entries()) {
+        console.log(pair[0] + ', ' + pair[1]);
+    }
+    } else {
+        console.error("No file selected.");
     }
     axios
     .post("/api/user/mod", data)
@@ -231,15 +241,36 @@ export function AdminTrainerDetail() {
     .catch((err) => {
       console.log(`${err} : Mod 실패`);
     });
+    // axios
+    // .post("/api/file/upload", fd)
+    // .then((res) => {
+    //   console.log(res.data.data);
+    // })
+    // .catch((err) => {
+    //   console.log(`${err} : Upload 실패`)
+    // })
+    fetch(`/api/file/upload/${user.user.uid}`, {
+        method: 'POST',
+        body: fd,
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('File upload success:', data);
+    })
+    .catch(error => {
+        console.error('File upload failed:', error);
+    });
+
   };
   console.log(userPhoto);
+  console.log(process.env.PUBLIC_URL);
   return <>
     {
       user &&
       <Container>
         <H2>강사 상세 정보</H2>
         <Content>
-          { imageSrc ? <Img src={imageSrc} alt="preview-img" /> : <Img src={userPhoto} alt={user.userName} /> }
+          { imageSrc ? <Img src={imageSrc} alt="preview-img" /> : <Img src={process.env.PUBLIC_URL + userPhoto} alt={user.user.userName} /> }
           <Details>
             <Detail>
               <Label>이름</Label>
@@ -304,7 +335,7 @@ export function AdminTrainerDetail() {
               }
             </Detail>
             <ButtonBox>
-              <PrimaryButton type="submit" onClick={onSubmit()}><p>수정</p></PrimaryButton>
+              <PrimaryButton type="submit" onClick={() => onSubmit()}><p>수정</p></PrimaryButton>
               <SecondaryButton onClick={() => navigate("/lms/a/trainerSetting")}><p>목록</p></SecondaryButton>
             </ButtonBox>
           </Details>
