@@ -98,7 +98,7 @@ export function LmsHeader(){
   return<>
     <Container>  
       <Header>
-        <Img src={logo} alt="logo" onClick={() => {sessionStorage.setItem("selected", "Home"); navigate(`/lms/${sessionStorage.getItem("userType")}`);}}/>
+        <Img src={logo} alt="logo" onClick={() => navigate(`/lms/${sessionStorage.getItem("userType")}`)} />
         <Content>
           <UserName>{user && user.user.userName}</UserName>
           <BsList className="icon" onClick={() => setIsToggled(!isToggled)} />

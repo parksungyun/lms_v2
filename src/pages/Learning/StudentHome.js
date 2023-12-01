@@ -5,7 +5,7 @@ import { Progress } from "../../components/Progress";
 import { academics, course_board, courses, homeworks, lectures, students, studies, subjects, userList } from "../../assets/TempData";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getCourseBoardByCourseId, getHomeworksByCourseId, getProgressByStudentId, getSubjectByCourseId, getUserByUid } from "../Api";
+import { getAcademicByAcademicId, getAllManagers, getCourseBoardByCourseId, getHomeworksByCourseId, getProgressByStudentId, getSubjectByCourseId, getUserByUid } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -107,6 +107,7 @@ export function StudentHome() {
   const [homework, setHomework] = useState(null);
   const [study, setStudy] = useState(null);
   const [board, setBoard] = useState(null);
+  const [academic, setAcademic] = useState(null);
   const navigate = useNavigate();
   let cBoardItems;
   let hwItems;
@@ -118,6 +119,15 @@ export function StudentHome() {
       const getData = () => {
         promise.then((data) => {
           setUser(data);
+        });
+      };
+      getData();
+    }
+    if(!academic) {
+      const promise = getAllManagers();
+      const getData = () => {
+        promise.then((data) => {
+          setAcademic(data);
         });
       };
       getData();
@@ -164,11 +174,6 @@ export function StudentHome() {
       }
     }
   }, [user]);
-  console.log(user);
-  console.log(subject);
-  console.log(board);
-  console.log(homework);
-  console.log(study);
 
   const shortenTitle = (str, length) => {
     let result = '';
@@ -188,13 +193,13 @@ export function StudentHome() {
 
   }
 
-  if(board) {
+  if(board && academic) {
     cBoardItems = board.map((c, i) => (
       {
         no: i + 1,
         title: titleLink(c.courseBoardId, shortenTitle(c.title, 20, "cboard")),
-        writer: c.academicId,
-        regDate: c.regDate,
+        writer: academic.find((a) => a.academic.academicId == c.academicId).user.userName,
+        regDate: new Date(c.regDate).toLocaleDateString(),
         hits: c.hits
       }
     ));
@@ -213,14 +218,14 @@ export function StudentHome() {
 
   return <>
   {
-    (subject && board && homework) &&
+    (subject && cBoardItems && hwItems) &&
     <Container>
       <Content>
         <div>
           <H2 className='title'>내 클래스</H2>
           <p>{subject[0].course.courseName}</p>
         </div>
-        <PrimaryButton onClick={attendCheck()}>출석 체크</PrimaryButton>
+        <PrimaryButton onClick={() => attendCheck()}><p>출석 체크</p></PrimaryButton>
       </Content>
       <Row>
         <Col>
@@ -228,7 +233,7 @@ export function StudentHome() {
           <H2 onClick={()=> navigate("cboard")} className="pointer">공지 사항</H2>
           <Table 
             headers={cBoard}
-            items={cBoardItems.slice(0,5)}
+            items={cBoardItems.length > 5 ? cBoardItems.slice(0,5) : cBoardItems}
             selectable={false}
           />
         </TableBox>
@@ -238,7 +243,7 @@ export function StudentHome() {
           <H2>과제</H2>
           <Table 
             headers={hw}
-            items={hwItems.slice(0,5)}
+            items={hwItems.length > 5 ? hwItems.slice(0,5) : hwItems}
             selectable={false}
           />
         </TableBox>
@@ -247,7 +252,7 @@ export function StudentHome() {
       <Box>
         <H2>내 진도관리</H2>
         {
-          study.map((s) => (
+          study && study.map((s) => (
               <Progress
                 subjectName={s.subjectName}
                 max={s.numOfLecture}

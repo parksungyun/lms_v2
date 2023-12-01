@@ -1,8 +1,10 @@
 import styled from "styled-components"
 import { RiUserSettingsLine } from "react-icons/ri";
 import { LmsHomeButtonWrapper } from "../../components/LmsHomeButtonWrapper";
-import { courses, subjects } from "../../assets/TempData";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
+import { getSubjectByAcademicId, getUserByUid } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -61,44 +63,70 @@ const SubjectName = styled.p`
 
 export function TrainerHome() {
   const navigate = useNavigate()
+  const id = sessionStorage.getItem("uid");
+  const [user, setUser] = useState(null);
+  const [subject, setSubject] = useState(null);
+  let subjectNumber;
+  let items;
 
-  const id = 2; // academicid 임의로 받아옴
-  const subject = subjects.filter((s) => s.academic_id == id);
-
-  const subjectNumber = subject.map((s) => (
-    {
-      name: s.subject_name,
-      id: s.subject_id,
-      c_name: courses.find((c) => s.course_id == c.course_id).course_name
+  useEffect(() => {
+    if(!user) {
+      const promise = getUserByUid(id);
+      const getData = () => {
+        promise.then((data) => {
+          setUser(data);
+        });
+      };
+      getData();
     }
-  ));
-  
-  
+  });
 
-  const items = subjectNumber.map((s)=>(
-    [
+  useEffect(() => {
+    if(user) {
+      const promise = getSubjectByAcademicId(user.academic.academicId);
+      const getData = () => {
+        promise.then((data) => {
+          setSubject(data);
+        });
+      };
+      getData();
+    }
+  }, [user]);
+
+  if(subject) {
+    subjectNumber = subject.map((s) => (
       {
-        text: <NameText><CourseName>{s.c_name}</CourseName><SubjectName>{s.name}</SubjectName></NameText>,
-        link: `/lms/t/${s.id}/subject`
-      },
-      {
-        text: "강의",
-        link: `/lms/t/${s.id}/lecture`
-      },
-      {
-        text: "공지",
-        link: `/lms/t/${s.id}/board`
-      },
-      {
-        text: "과제",
-        link: `/lms/t/${s.id}/homework`
-      },
-      {
-        text: "Q&A",
-        link: `/lms/t/${s.id}/qna`
+        name: s.subject.subjectName,
+        id: s.subject.subjectId,
+        courseName: s.course.courseName
       }
-    ]
-  ));
+    ));
+    items = subjectNumber.map((s, i)=>(
+      [
+        {
+          text: <NameText><CourseName>{s.courseName}</CourseName><SubjectName>{s.name}</SubjectName></NameText>,
+          link: `/lms/t/${s.id}/subject`,
+        },
+        {
+          text: "강의",
+          link: `/lms/t/${s.id}/lecture`,
+        },
+        {
+          text: "공지",
+          link: `/lms/t/${s.id}/board`,
+        },
+        {
+          text: "과제",
+          link: `/lms/t/${s.id}/homework`,
+        },
+        {
+          text: "Q&A",
+          link: `/lms/t/${s.id}/qna`,
+        }
+      ]
+    ));
+  }
+  
   return <>
     <Container>
       <Content>
@@ -108,10 +136,9 @@ export function TrainerHome() {
         <PrimaryButton onClick={()=>navigate("/lms/a")}><p>관리자 페이지<RiUserSettingsLine /></p></PrimaryButton>
       </Content>
       <Box>
-        <H2>진행중인 과목: {subjectNumber.length}</H2>
-        {/* 하위 부분은 수정이 필요합니다. 주의하세요 */}
+        <H2>진행중인 과목: {subjectNumber && subjectNumber.length}</H2>
         {
-          subjectNumber.map((c, i) => (
+          subjectNumber && subjectNumber.map((c, i) => (
             <ButtonBox><LmsHomeButtonWrapper items={items[i]} /></ButtonBox>
           ))
         }

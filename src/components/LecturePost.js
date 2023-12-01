@@ -105,6 +105,7 @@ const SecondaryButton = styled.button`
 export function LecturePost() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const userType = sessionStorage.getItem("userType");
   const lecture = lectures.find(data => data.lecture_id == id);
   const user = userList.find(d=> d.uid == academics.find(d => d.academic_id == lectures.find(d => d.lecture_id == id).academic_id).uid);
   const videos = lectures.filter(l => l.subject_id == lecture.subject_id).map((v) => (    
@@ -115,11 +116,6 @@ export function LecturePost() {
     }
   ));
   console.log(videos);
-
-  let type;
-  const isStudent = 0;
-  if(isStudent == 0) type = "t";
-  else type = "s";
   
   return<>
     <Container>
@@ -143,8 +139,8 @@ export function LecturePost() {
         <div><A href="">파일.pdf<Icon><BsDownload /></Icon></A></div>
       </AttachedBox>
       <Box className="button">
-        {isStudent == 1 ? null : <PrimaryButton className="button" onClick={()=>navigate("mod", { state: lecture.lecture_id })}><p>수정</p></PrimaryButton>}
-        <SecondaryButton onClick={()=>navigate(`/lms/${type}/${lecture.subject_id}/lecture`)}><p>목록</p></SecondaryButton>
+        {userType == "s" ? null : <PrimaryButton className="button" onClick={()=>navigate("mod", { state: lecture.lecture_id })}><p>수정</p></PrimaryButton>}
+        <SecondaryButton onClick={()=>navigate(`/lms/${userType}/${lecture.subject_id}/lecture`)}><p>목록</p></SecondaryButton>
       </Box>
       </TableBox>
     </Container>
