@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
 import { Pagination } from "../../components/Pagination";
-import { students, subject_answers, subject_questions, userList } from "../../assets/TempData";
+import { useEffect } from "react";
+import { getStudentsBySubjectId, getSubjectQnaBySubjectId } from "../Api";
 
 const BadgeSuccess = styled.span`
   background-color: green;
@@ -76,13 +77,69 @@ const PrimaryButton = styled.button`
   color: white;
 `;
 
+const headers = [
+  {
+    text: 'No.',
+    value: 'no'
+  },
+  {
+    text: '제목',
+    value: 'title'
+  },
+  {
+    text: '작성자',
+    value: 'writer'
+  },
+  {
+    text: '등록일',
+    value: 'regDate'
+  },
+  {
+    text: '조회수',
+    value: 'Hits'
+  },
+  {
+    text: '답변상태',
+    value: 'replyState'
+  },
+];
+
 export function StudentSubjectQna() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [students, setStudents] = useState(null);
+  const [question, setQuestion] = useState(null);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [searchOption, setSearchOption] = useState("all");
   const limit = 10;
   const offset = (page - 1) * limit;
-  const navigate = useNavigate();
+  let items;
+
+  useEffect(() => {
+    setQuestion(null);
+  }, [id]);
+
+  useEffect(() => {
+    if(!students) {
+      const promise = getStudentsBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setStudents(data);
+        });
+      };
+      getData();
+    }
+    if(!question) {
+      const promise = getSubjectQnaBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setQuestion(data);
+        });
+      };
+      getData();
+    }
+  });
 
   const postsData = (posts) => {
     if(posts) {
@@ -91,44 +148,19 @@ export function StudentSubjectQna() {
     }
   };
 
-  function changeReply(reply) {
-    if(subject_answers.find(d=> d.s_question_id == reply)) {return(<BadgeSuccess>답변완료</BadgeSuccess>)}
-    else {return(<BadgeSecondary>답변대기</BadgeSecondary>)};
+  function changeReply(question) {
+    if(question.answer) {
+      return(<BadgeSuccess>답변완료</BadgeSuccess>);
+    }
+    else {
+      return(<BadgeSecondary>답변대기</BadgeSecondary>);
+    };
   };
 
-  function onSearch(e) {
-    e.preventDefault();
+  function onSearch() {
+    setSearch("");
+    setSearchOption("all");
   };
-
-  const headers = [
-    {
-      text: 'No.',
-      value: 'no'
-    },
-    {
-      text: '제목',
-      value: 'title'
-    },
-    {
-      text: '작성자',
-      value: 'writer'
-    },
-    {
-      text: '등록일',
-      value: 'regDate'
-    },
-    {
-      text: '조회수',
-      value: 'Hits'
-    },
-    {
-      text: '답변상태',
-      value: 'replyState'
-    },
-  ];
-
-  const id = 1;
-  const question = subject_questions.filter(s => s.subject_id == id);
 
   const shortenTitle = (str, length) => {
     let result = '';
@@ -140,44 +172,50 @@ export function StudentSubjectQna() {
     return result;
   };
 
-  const items = question.map((s,i) => (
-    {
-      no: i + 1,
-      title: titleLink(s.s_question_id, shortenTitle(s.s_question_title, 35)),
-      writer: userList.find(u => u.uid == students.find(student => student.student_id == s.student_id).uid).user_name,
-      regDate: s.s_question_reg_date,
-      Hits: s.s_question_hits,
-      replyState: changeReply(s.s_question_id)
-    }
-  ));
+  if(question && students) {
+    items = question.map((s, i) => (
+      {
+        no: i + 1,
+        title: titleLink(s.question.subjectQuestionId, shortenTitle(s.question.title, 35)),
+        writer: students.find((w) => w.student.studentId === s.question.studentId).user.userName,
+        regDate: new Date(s.question.regDate).toISOString().split('T')[0],
+        Hits: s.question.hits,
+        replyState: changeReply(s)
+      }
+    ));
+  }
 
   function titleLink(id, title) {
     return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
   }
 
   return<>
-    <Container>
-      <TableBox>
-        <H2>Q&A</H2>
-        <Table 
-          headers={headers}
-          items={postsData(items)}
-          selectable={false}
-        />
-      </TableBox>
-      <ButtonBox>
-        <SearchBox>
-          <select className="searchSelect" onChange={(e) => setSearchOption(e.target.value)}>
-            <option key="all" value="all">전체</option>
-            <option key="title" value="title">제목</option>
-            <option key="writer" value="writer">작성자</option>
-          </select>
-          <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={onSearch}><p>검색</p></button>
-        </SearchBox>
-        <PrimaryButton onClick={() => navigate("write")}><p>작성</p></PrimaryButton>
-      </ButtonBox>
-      <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
-    </Container>
+    {
+      items &&
+      <Container>
+        <TableBox>
+          <H2>Q&A</H2>
+          <Table 
+            headers={headers}
+            items={postsData(items)}
+            selectable={false}
+          />
+        </TableBox>
+        <ButtonBox>
+          <SearchBox>
+            <select className="searchSelect" onChange={(e) => setSearchOption(e.target.value)}>
+              <option key="all" value="all">전체</option>
+              <option key="title" value="title">제목</option>
+              <option key="content" value="content">내용</option>
+              <option key="writer" value="writer">작성자</option>
+            </select>
+            <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
+            <button onClick={() => onSearch()}><p>검색</p></button>
+          </SearchBox>
+          <PrimaryButton onClick={() => navigate("write")}><p>작성</p></PrimaryButton>
+        </ButtonBox>
+        <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+      </Container>
+    }
   </>
 }

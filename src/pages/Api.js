@@ -117,6 +117,19 @@ export const getStudentsByCourseId = async (id) => {
   return students;
 }
 
+export const getStudentsBySubjectId = async (id) => {
+  let students;
+  await axios
+  .get(`/api/user/students/subject/${id}`)
+  .then((res) => {
+    students = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과목으로 과정에 속한 학생 불러오기 실패`);
+  });
+  return students;
+}
+
 export const getAllTrainers = async () => {
   let trainers;
   await axios
