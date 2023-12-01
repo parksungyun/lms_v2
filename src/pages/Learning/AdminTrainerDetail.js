@@ -262,15 +262,14 @@ export function AdminTrainerDetail() {
     });
 
   };
-  console.log(userPhoto);
-  console.log(process.env.PUBLIC_URL);
+  console.log(userPhoto.substring(userPhoto.lastIndexOf("\\") + 1))
   return <>
     {
       user &&
       <Container>
         <H2>강사 상세 정보</H2>
         <Content>
-          { imageSrc ? <Img src={imageSrc} alt="preview-img" /> : <Img src={process.env.PUBLIC_URL + userPhoto} alt={user.user.userName} /> }
+          { imageSrc ? <Img src={imageSrc} alt="preview-img" /> : <Img src={`/upload/${userPhoto.substring(userPhoto.lastIndexOf("\\") + 1)}`} alt={user.user.userName} /> }
           <Details>
             <Detail>
               <Label>이름</Label>
