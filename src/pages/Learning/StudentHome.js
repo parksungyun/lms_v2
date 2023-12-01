@@ -199,7 +199,7 @@ export function StudentHome() {
         no: i + 1,
         title: titleLink(c.courseBoardId, shortenTitle(c.title, 20, "cboard")),
         writer: academic.find((a) => a.academic.academicId == c.academicId).user.userName,
-        regDate: new Date(c.regDate).toLocaleDateString(),
+        regDate: new Date(c.regDate).toISOString().split('T')[0],
         hits: c.hits
       }
     ));
@@ -222,7 +222,7 @@ export function StudentHome() {
     <Container>
       <Content>
         <div>
-          <H2 className='title'>내 클래스</H2>
+          <H2 className='title'>내 과정</H2>
           <p>{subject[0].course.courseName}</p>
         </div>
         <PrimaryButton onClick={() => attendCheck()}><p>출석 체크</p></PrimaryButton>
