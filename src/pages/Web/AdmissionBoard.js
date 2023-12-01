@@ -152,8 +152,6 @@ export function AdmissionBoard() {
   }
 
   function onSearch() {
-    console.log(search);
-    console.log(searchOption);
     if(search.trim().length > 0) {
       const promise = getAdmissionPostsByContaining(search, searchOption);
       const getData = () => {
@@ -172,6 +170,8 @@ export function AdmissionBoard() {
       };
       getData();
     }
+    setSearch("");
+    setSearchOption("all");
   }
 
   return <>

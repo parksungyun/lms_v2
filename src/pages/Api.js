@@ -78,6 +78,19 @@ export const getSubjectByCourseId = async (id) => {
   return subjects;
 }
 
+export const getSubjectByStudentId = async (id) => {
+  let subjects;
+  await axios
+  .get(`/api/subject/student/${id}`)
+  .then((res) => {
+    subjects = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생으로 과정의 과목 불러오기 실패`);
+  });
+  return subjects;
+}
+
 export const getRecruitingCourses = async () => {
   let courses;
   await axios
@@ -558,4 +571,99 @@ export const getSubmitsByStudentId = async (id) => {
     console.log(`${err} : 학생이 제출한 모든 과제 불러오기 실패`);
   });
   return submit;
+}
+
+export const getStudyByStudentIdAndSubjectId = async (studentId, subjectId) => {
+  let study;
+  await axios
+  .get(`/api/subject/${subjectId}/study/${studentId}`)
+  .then((res) => {
+    study = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생의 과목에 대한 모든 강의 학습 정보 불러오기 실패`);
+  });
+  return study;
+}
+
+export const getStudyByStudentIdAndLectureId = async (studentId, lectureId) => {
+  let study;
+  await axios
+  .get(`/api/subject/study/${lectureId}/${studentId}`)
+  .then((res) => {
+    study = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생의 강의 학습 정보 불러오기 실패`);
+  });
+  return study;
+}
+
+export const getSubmitsByStudentIdAndSubjectId = async (studentId, subjectId) => {
+  let submit;
+  await axios
+  .get(`/api/subject/submit/student/${studentId}/${subjectId}`)
+  .then((res) => {
+    submit = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생이 제출한 모든 과제(과목) 불러오기 실패`);
+  });
+  return submit;
+}
+
+export const getSubjectBoardBySearch = async (keyword, type, id) => {
+  let posts;
+  await axios
+  .get(`/api/subject/${id}/board/search/${type}/${keyword}`)
+  .then((res) => {
+    console.log(res.data);
+    posts = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 검색된 과목 공지 불러오기 실패`);
+  });
+  return posts;
+}
+
+export const getLectureBySearch = async (keyword, type, id) => {
+  let posts;
+  await axios
+  .get(`/api/subject/${id}/lecture/search/${type}/${keyword}`)
+  .then((res) => {
+    console.log(res.data);
+    posts = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 검색된 강의 불러오기 실패`);
+  });
+  return posts;
+}
+
+export const getSubjectQnaBySearch = async (keyword, type, id) => {
+  let posts;
+  await axios
+  .get(`/api/subject/${id}/qna/search/${type}/${keyword}`)
+  .then((res) => {
+    console.log(res.data);
+    posts = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 검색된 과목 QnA 불러오기 실패`);
+  });
+  return posts;
+}
+
+export const getCourseBoardBySearch = async (keyword, type, id) => {
+  let posts;
+  await axios
+  .get(`/api/course/${id}/board/search/${type}/${keyword}`)
+  .then((res) => {
+    console.log(res.data);
+    posts = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 검색된 과정 공지 불러오기 실패`);
+  });
+  return posts;
 }

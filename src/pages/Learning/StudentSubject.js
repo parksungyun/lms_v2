@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import { Col, Row } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getAllTrainers, getHomeworksBySubjectId, getLecturesBySubjectId, getProgressByStudentIdAndSubjectId, getStudentByStudentId, getStudentsByCourseId, getSubjectBoardBySubjectId, getSubjectQnaBySubjectId,  getSubmitsByStudentId } from "../Api";
+import { getAllTrainers, getHomeworksBySubjectId, getLecturesBySubjectId, getProgressByStudentIdAndSubjectId, getStudentByStudentId, getStudentsByCourseId, getStudyByStudentIdAndSubjectId, getSubjectBoardBySubjectId, getSubjectQnaBySubjectId,  getSubmitsByStudentIdAndSubjectId } from "../Api";
 
 const BadgePrimary = styled.span`
   background-color: #5f7dcf;
@@ -175,10 +175,21 @@ export function StudentSubject() {
   const [question, setQuestion] = useState(null);
   const [lecture, setLecture] = useState(null);
   const [study, setStudy] = useState(null);
+  const [progress, setProgress] = useState(null);
   let boardItems;
   let hwItems;
   let lectureItems;
   let qnaItems;
+
+  useEffect(() => {
+    setBoard(null);
+    setHomework(null);
+    setSubmit(null);
+    setQuestion(null);
+    setLecture(null);
+    setStudy(null);
+    setProgress(null);
+  }, [id]);
 
   useEffect(() => {
     if(!user) {
@@ -218,7 +229,7 @@ export function StudentSubject() {
       getData();
     }
     if(!submit) {
-      const promise = getSubmitsByStudentId(studentId);
+      const promise = getSubmitsByStudentIdAndSubjectId(studentId, id);
       const getData = () => {
         promise.then((data) => {
           setSubmit(data);
@@ -226,15 +237,15 @@ export function StudentSubject() {
       };
       getData();
     }
-    // if(!study) {
-    //   const promise = getProgressByStudentIdAndSubjectId(studentId, id);
-    //   const getData = () => {
-    //     promise.then((data) => {
-    //       setStudy(data);
-    //     });
-    //   };
-    //   getData();
-    // }
+    if(!progress) {
+      const promise = getProgressByStudentIdAndSubjectId(studentId, id);
+      const getData = () => {
+        promise.then((data) => {
+          setProgress(data);
+        });
+      };
+      getData();
+    }
     if(!question) {
       const promise = getSubjectQnaBySubjectId(id);
       const getData = () => {
@@ -249,6 +260,15 @@ export function StudentSubject() {
       const getData = () => {
         promise.then((data) => {
           setLecture(data);
+        });
+      };
+      getData();
+    }
+    if(!study) {
+      const promise = getStudyByStudentIdAndSubjectId(studentId, id);
+      const getData = () => {
+        promise.then((data) => {
+          setStudy(data);
         });
       };
       getData();
@@ -269,17 +289,10 @@ export function StudentSubject() {
     }
   }, [user]);
 
-  // let i = 100 - (isStudy.length * 100 / lecture.length);
-  // if (i == 0) {
-  //   i = 100;
-  // } else if (i == 100) {
-  //   i = 0;
-  // }
-
-  function changeReplyHW(reply) {
-    if(submit.find((s) => s.submit.homeworkId === reply)) {
-      const post = submit.find((s) => s.submit.homeworkId === reply);
-      if(post.feedback) {
+  function changeReplyHW(homeworkId) {
+    const reply = submit.find((s) => s.submit.homeworkId === homeworkId);
+    if(reply) {
+      if(reply.feedback) {
         return(<BadgeSuccess>채점완료</BadgeSuccess>);
       }
       else {
@@ -291,15 +304,21 @@ export function StudentSubject() {
     }
   };
   
-  function changeReplyLecture(reply) {
+  function changeReplyLecture(lectureId) {
+    const reply = study.find((s) => s.lectureId === lectureId);
     if(reply) {
-      return(<BadgePrimary>학습중</BadgePrimary>);
+      if(reply.isStudy === 0) {
+        return(<BadgePrimary>수강진행</BadgePrimary>);
+      }
+      else if(reply.isStudy === 1) {
+        return(<BadgeSuccess>수강완료</BadgeSuccess>);
+      }
     }
-    else return(<BadgeSecondary>미학습</BadgeSecondary>);
+    else return(<BadgeSecondary>수강대기</BadgeSecondary>);
   };
 
   function changeReplyQNA(reply) {
-    if(question.find((q) => q.answer.subjectQuestionId === reply)) {
+    if(reply.answer) {
       return(<BadgeSuccess>답변완료</BadgeSuccess>);
     }
     else {
@@ -325,9 +344,9 @@ export function StudentSubject() {
     boardItems = board.map((b, i) => (
       {
         no: i + 1,
-        title: titleLink(b.subjectBoardId, shortenTitle(b.title, 20), `/lms/s/${id}/sboard`),
+        title: titleLink(b.subjectBoardId, shortenTitle(b.title, 11), `/lms/s/${id}/sboard`),
         writer: academic.find((a) => a.academic.academicId === b.academicId).user.userName,
-        regDate: new Date(b.regDate).toLocaleDateString(),
+        regDate: new Date(b.regDate).toISOString().split('T')[0],
         hits: b.hits
       }
     ));
@@ -337,7 +356,7 @@ export function StudentSubject() {
     hwItems = homework.map((h, i) => (
       {
         no: i + 1,
-        title: titleLink(h.homeworkId, shortenTitle(h.title, 20), `/lms/s/${id}/homework`),
+        title: titleLink(h.homeworkId, shortenTitle(h.title, 11), `/lms/s/${id}/homework`),
         startDate: h.startDate,
         endDate: h.endDate,
         submit: changeReplyHW(h.homeworkId)
@@ -346,13 +365,11 @@ export function StudentSubject() {
   }
 
   if(lecture && study) {
-    console.log(study);
-    console.log(lecture);
     lectureItems = lecture.map((l, i) => (
       {
         no: i + 1,
         title: l.title,
-        state: changeReplyLecture(study.find(s => s.lectureId === l.lectureId))
+        state: changeReplyLecture(l.lectureId)
       }
     ));
   }
@@ -361,10 +378,10 @@ export function StudentSubject() {
     qnaItems = question.map((q, i) => (
       {
         no: i + 1,
-        title: titleLink(q.question.subjectQuestionId, shortenTitle(q.question.title, 20), `/lms/s/${id}/sqna`),
+        title: titleLink(q.question.subjectQuestionId, shortenTitle(q.question.title, 11), `/lms/s/${id}/sqna`),
         writer: (students.find((a) => a.student.studentId === q.question.studentId)).user.userName,
-        regDate: new Date(q.question.regDate).toLocaleDateString(),
-        state: changeReplyQNA(q.question.subjectQuestionId)
+        regDate: new Date(q.question.regDate).toISOString().split('T')[0],
+        state: changeReplyQNA(q)
       }
     ));
   }
@@ -376,7 +393,7 @@ export function StudentSubject() {
         {
           boardItems &&
           <TableBox>
-            <StyledNavLink to='/lms/s/sboard'>공지 사항</StyledNavLink>
+            <StyledNavLink to={`/lms/s/${id}/sboard`}>공지 사항</StyledNavLink>
             <Table
               headers={studentSBoard}
               items={boardItems.length > 5 ? boardItems.slice(0, 5) : boardItems}
@@ -389,7 +406,7 @@ export function StudentSubject() {
         {
           hwItems &&
           <TableBox>
-            <StyledNavLink to='/lms/s/homework'>과제</StyledNavLink>
+            <StyledNavLink to={`/lms/s/${id}/homework`}>과제</StyledNavLink>
             <Table
               headers={studentSHW}
               items={hwItems.length > 5 ? hwItems.slice(0, 5) : hwItems}
@@ -402,13 +419,13 @@ export function StudentSubject() {
       <Row>
         <Col>
         {
-          (study && lectureItems) &&
+          (progress && lectureItems) &&
           <TableBox>
-            <StyledNavLink to='/lms/s/lecture'>강의</StyledNavLink>
+            <StyledNavLink to={`/lms/s/${id}/lecture`}>강의</StyledNavLink>
             <ProgressBar>
-              <ProgressBox width = {study.numOfStudy}/>
+              <ProgressBox width = {progress.numOfStudy / progress.numOfLecture * 100} />
             </ProgressBar>
-            <p>{study.numOfStudy}/{study.numOfLecture}강</p>
+            <p>{progress.numOfStudy}/{progress.numOfLecture}강</p>
             <Table
               headers={studentSLec}
               items={lectureItems.length > 3 ? lectureItems.slice(0, 3) : lectureItems}
@@ -421,7 +438,7 @@ export function StudentSubject() {
         {
           qnaItems &&
           <TableBox>
-            <StyledNavLink to='/lms/s/sqna'>Q&A</StyledNavLink>
+            <StyledNavLink to={`/lms/s/${id}/sqna`}>Q&A</StyledNavLink>
             <Table
               headers={studentSQNA}
               items={qnaItems.length > 5 ? qnaItems.slice(0, 5) : qnaItems}

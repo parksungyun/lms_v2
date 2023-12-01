@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import { Pagination } from "../../components/Pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Table } from "../../components/Table";
 import '../../styles/student_hw_table.css';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { academics, feedbacks, homeworks, submits, userList } from "../../assets/TempData";
+import { getAllTrainers, getHomeworksBySubjectId, getSubmitsByStudentIdAndSubjectId } from "../Api";
 
 const PrimaryButton = styled.button`
   background-color: #5f7dcf;
@@ -112,12 +113,48 @@ export function StudentHW() {
   const limit = 10;
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
-  const id = 1; // subject 값 받아오기
-  const studentid = 1; // studentid 값 받아오기
-  const homework = homeworks.filter(h => h.subject_id == id);
-  const submit = submits.filter(s => s.student_id == studentid);
+  const { id } = useParams();
+  const studentId = sessionStorage.getItem("id"); // studentId
+  const [homework, setHomework] = useState(null);
+  const [submit, setSubmit] = useState(null);
+  const [academic, setAcademic] = useState(null);
+  let items;
 
-  
+  useEffect(() => {
+    setHomework(null);
+    setSubmit(null);
+  }, [id]);
+
+  useEffect(() => {
+    if(!academic) {
+      const promise = getAllTrainers();
+      const getData = () => {
+        promise.then((data) => {
+          setAcademic(data);
+        });
+      };
+      getData();
+    }
+    if(!homework) {
+      const promise = getHomeworksBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setHomework(data);
+        });
+      };
+      getData();
+    }
+    if(!submit) {
+      const promise = getSubmitsByStudentIdAndSubjectId(studentId, id);
+      const getData = () => {
+        promise.then((data) => {
+          setSubmit(data);
+        });
+      };
+      getData();
+    }
+  });
+
   const shortenTitle = (str, length) => {
     let result = '';
     if (str.length > length) {
@@ -128,18 +165,20 @@ export function StudentHW() {
     return result;
   };
 
-  const items = homework.map((h, i) => (
-    {
-      no: i + 1,
-      title: titleLink(h.homework_id, shortenTitle(h.hw_title, 35)),
-      writer: userList.find(u => u.uid == academics.find(a => a.academic_id == h.academic_id).uid).user_name,
-      startDate: h.hw_start_date,
-      endDate: h.hw_end_date,
-      submit: disabledBtn(h.homework_id),
-      submitState: changeButton(submit.find(s => s.homework_id == h.homework_id).submit_id),
-      submitTime: changeColor(h.hw_end_date, submit.find(s => s.homework_id == h.homework_id).submit_mod_date)
-    }
-  ));
+  if(homework && submit && academic) {
+    items = homework.map((h, i) => (
+      {
+        no: i + 1,
+        title: titleLink(h.homeworkId, shortenTitle(h.title, 35)),
+        writer: academic.find((a) => a.academic.academicId === h.academicId).user.userName,
+        startDate: h.startDate,
+        endDate: h.endDate,
+        submit: disabledBtn(h.homeworkId),
+        submitState: changeButton(h.homeworkId),
+        submitTime: changeColor(h.endDate, h.homeworkId)
+      }
+    ));
+  }
 
   function titleLink(id, title) {
     return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
@@ -152,59 +191,65 @@ export function StudentHW() {
     }
   };
 
-  function disabledBtn(id) {
-    let temp;
-    let isFeedback = false;
-    if(submit.find((s) => s.homework_id == id)) {
-      temp = submit.find((s) => s.homework_id == id);
-      if(feedbacks.find((f) => f.submit_id == temp.submit_id)) {
-        isFeedback = true;
+  function disabledBtn(homeworkId) {
+    const reply = submit.find((s) => s.submit.homeworkId === homeworkId);
+    if(reply) {
+      if(reply.feedback) {
+        return (<PrimaryButton className="disabled" disabled><p>제출하기</p></PrimaryButton>)
+      }
+      else {
+        return(<PrimaryButton onClick={() => navigate(`/lms/s/${id}/homework/${homeworkId}/submit`, { state: homeworkId })}><p>제출하기</p></PrimaryButton>)
       }
     }
-    if(!isFeedback){
-      return(<PrimaryButton onClick={()=>navigate(`/lms/s/homework/${id}/submit`, { state: id })}><p>제출하기</p></PrimaryButton>)
-    } else {
-      return (<PrimaryButton className="disabled" disabled><p>제출하기</p></PrimaryButton>)
+    else {
+      return (<PrimaryButton onClick={() => navigate(`/lms/s/${id}/homework/${homeworkId}/submit`, { state: homeworkId })}><p>제출하기</p></PrimaryButton>)
     }
   };
 
-  function changeButton(id) {
-    let temp;
-    if(feedbacks.find((f) => f.submit_id == id)) {
-      temp = submits.find((h) => h.submit_id == id).homework_id;
-      return(<SuccessButton onClick={() => navigate(`/lms/s/homework/${temp}/feedback`, { state: temp })}><p>결과확인</p></SuccessButton>)
-    }
-    else if(id) {
-      temp = submits.find((h) => h.submit_id == id).homework_id;
-      return(<PrimaryButton onClick={() => navigate(`/lms/s/homework/${temp}/feedback`, { state: temp })}><p>제출확인</p></PrimaryButton>)
+  function changeButton(homeworkId) {
+    const reply = submit.find((s) => s.submit.homeworkId === homeworkId);
+    if(reply) {
+      if(reply.feedback) {
+        return(<SuccessButton onClick={() => navigate(`/lms/s/homework/${reply.feedback.submitId}/feedback`, { state: reply.feedback.submitId })}><p>결과확인</p></SuccessButton>);
+      }
+      else {
+        return(<PrimaryButton onClick={() => navigate(`/lms/s/homework/${reply.submit.submitId}/feedback`, { state: reply.submit.submitId })}><p>제출확인</p></PrimaryButton>);
+      }
     }
     else {
-      return(<SecondaryButton><p>제출대기</p></SecondaryButton>)
+      return(<SecondaryButton className="pe-none" disabled><p>제출대기</p></SecondaryButton>);
     }
   };
 
-  function changeColor(end, submitDate) {
+  function changeColor(end, homeworkId) {
+    if(!submit.find(s => s.submit.homeworkId === homeworkId)) {
+      return "";
+    }
+    const submitDate = submit.find(s => s.submit.homeworkId === homeworkId).submit.submitModDate;
     const currentDate = new Date(submitDate);
     const endDate = new Date(end);
     const diff = (endDate.getTime() - currentDate.getTime()) / 1000 / 24 / 60 / 60;
     if(diff < 0){
-      return(<P className="active">{submitDate}</P>)
+      return(<P className="active">{currentDate.toISOString().split('T')[0] + " " + currentDate.toISOString().split('T')[1].split('.')[0]}</P>)
     } else {
-      return (<P>{submitDate}</P>)
+      return (<P>{currentDate.toISOString().split('T')[0] + " " + currentDate.toISOString().split('T')[1].split('.')[0]}</P>)
     }
   };
 
   return<>
-    <Container>
-      <TableBox>
-        <H2>과제</H2>
-        <Table 
-          headers={headers}
-          items={postsData(items)}
-          selectable={false}
-        />
-      </TableBox>
-      <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
-    </Container>
+    {
+      items &&
+      <Container>
+        <TableBox>
+          <H2>과제</H2>
+          <Table 
+            headers={headers}
+            items={postsData(items)}
+            selectable={false}
+          />
+        </TableBox>
+        <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+      </Container>
+    } 
   </>
 }

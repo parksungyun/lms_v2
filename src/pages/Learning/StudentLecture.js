@@ -5,6 +5,8 @@ import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
 import { Pagination } from "../../components/Pagination";
 import { academics, lectures, userList } from "../../assets/TempData";
+import { useEffect } from "react";
+import { getAllTrainers, getLectureBySearch, getLecturesBySubjectId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -74,14 +76,41 @@ const headers = [
 ];
 
 export function StudentLecture() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [lecture, setLecture] = useState(null);
+  const [academic, setAcademic] = useState(null);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [searchOption, setSearchOption] = useState("all");
   const limit = 10;
   const offset = (page - 1) * limit;
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const lecture = lectures.filter(l => l.subject_id == id);
+  let items;
+
+  useEffect(() => {
+    setLecture(null);
+  }, [id]);
+
+  useEffect(() => {
+    if(!lecture) {
+      const promise = getLecturesBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setLecture(data);
+        });
+      };
+      getData();
+    }
+    if(!academic) {
+      const promise = getAllTrainers();
+      const getData = () => {
+        promise.then((data) => {
+          setAcademic(data);
+        });
+      };
+      getData();
+    }
+  });
 
   const shortenTitle = (str, length) => {
     let result = '';
@@ -93,15 +122,17 @@ export function StudentLecture() {
     return result;
   };
 
-  const items = lecture.map((l,i) => (
-    {
-      no: i + 1,
-      title: titleLink(l.lecture_id, shortenTitle(l.lecture_title, 35)),
-      writer: userList.find(u => u.uid == academics.find(a => a.academic_id == l.academic_id).uid).user_name,
-      regDate: l.lecture_reg_date,
-      Hits: l.lecture_hits
-    }
-  ));
+  if(lecture && academic) {
+    items = lecture.map((l, i) => (
+      {
+        no: i + 1,
+        title: titleLink(l.lectureId, shortenTitle(l.title, 35)),
+        writer: academic.find((a) => a.academic.academicId === l.academicId).user.userName,
+        regDate: new Date(l.regDate).toISOString().split('T')[0],
+        Hits: l.hits
+      }
+    ));
+  }
 
   function titleLink(id, title) {
     return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
@@ -114,11 +145,26 @@ export function StudentLecture() {
     }
   };
 
-  function onSearch(e) {
-    e.preventDefault();
+  function onSearch() {
+    if(search.trim().length > 0) {
+      const promise = getLectureBySearch(search, searchOption, id);
+      const getData = () => {
+        promise.then((data) => {
+          setLecture(data);
+        });
+      };
+      getData();
+    }
+    else {
+      setLecture(null);
+    }
+    setSearch("");
+    setSearchOption("all");
   };
 
   return<>
+    {
+     items &&
     <Container>
       <TableBox>
         <H2>강의</H2>
@@ -136,10 +182,11 @@ export function StudentLecture() {
             <option key="writer" value="writer">작성자</option>
           </select>
           <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={onSearch}><p>검색</p></button>
+          <button onClick={() => onSearch()}><p>검색</p></button>
         </SearchBox>
       </ButtonBox>
       <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
     </Container>
+    }
   </>
 }
