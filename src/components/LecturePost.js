@@ -3,6 +3,9 @@ import { academics, lectures, userList } from "../assets/TempData";
 import { BsFillEyeFill, BsDownload } from "react-icons/bs";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Lecture } from "./Lecture";
+import { useState } from "react";
+import { useEffect } from "react";
+import { getAllTrainers, getLectureByLectureId, getLecturesBySubjectId } from "../pages/Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -106,43 +109,85 @@ export function LecturePost() {
   const navigate = useNavigate();
   const { id } = useParams();
   const userType = sessionStorage.getItem("userType");
-  const lecture = lectures.find(data => data.lecture_id == id);
-  const user = userList.find(d=> d.uid == academics.find(d => d.academic_id == lectures.find(d => d.lecture_id == id).academic_id).uid);
-  const videos = lectures.filter(l => l.subject_id == lecture.subject_id).map((v) => (    
-    {
-      subject: v.subject_id,
-      id: v.lecture_id,
-      videoRrl: v.lecture_videoURL
+  const [lecture, setLecture] = useState(null);
+  const [academic, setAcademic] = useState(null);
+  const [lectures, setLectures] = useState(null);
+  let videos;
+
+  useEffect(() => {
+    if(!lecture) {
+      const promise = getLectureByLectureId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setLecture(data);
+        });
+      };
+      getData();
     }
-  ));
-  console.log(videos);
+    if(!academic) {
+      const promise = getAllTrainers();
+      const getData = () => {
+        promise.then((data) => {
+          setAcademic(data);
+        });
+      };
+      getData();
+    }
+  })
+
+  useEffect(() => {
+    if(lecture) {
+      if(!lectures) {
+        const promise = getLecturesBySubjectId(lecture.subjectId);
+        const getData = () => {
+        promise.then((data) => {
+          setLectures(data);
+        });
+      };
+      getData();
+      }
+    }
+  }, [lecture]);
+
+  if(lectures) {
+    videos = lectures.map((v) => (    
+      {
+        subject: v.subjectId,
+        id: v.lectureId,
+        videoUrl: v.videoURL
+      }
+    ));
+  }
   
   return<>
-    <Container>
-      <TableBox>
-        <H2>{lecture.lecture_title}</H2>
-        <Box>
-          <P>{user.user_name}</P>
-          <P>|</P>
-          <P>{lecture.lecture_reg_date}</P>
-          <P>|</P>
-          <IconBox>
-            <BsFillEyeFill />
-            <P>{lecture.lecture_hits}</P>
-          </IconBox>
+    {
+      (lecture && academic) &&
+      <Container>
+        <TableBox>
+          <H2>{lecture.title}</H2>
+          <Box>
+            <P>{academic.find((a) => a.academic.academicId === lecture.academicId).user.userName}</P>
+            <P>|</P>
+            <P>{new Date(lecture.regDate).toISOString().split('T')[0]}</P>
+            <P>|</P>
+            <IconBox>
+              <BsFillEyeFill />
+              <P>{lecture.hits}</P>
+            </IconBox>
+          </Box>
+          <Hr />
+          <Lecture src={lecture.videoURL} videos={videos} id={id}/>
+          <P>{lecture.content}</P>
+          <AttachedBox>
+          <Attached><p className="fw-bold">첨부파일</p></Attached>
+          <div><A href="">파일.pdf<Icon><BsDownload /></Icon></A></div>
+        </AttachedBox>
+        <Box className="button">
+          {userType === "s" ? null : <PrimaryButton className="button" onClick={()=>navigate("mod", { state: lecture.lectureId })}><p>수정</p></PrimaryButton>}
+          <SecondaryButton onClick={()=>navigate(`/lms/${userType}/${lecture.subjectId}/lecture`)}><p>목록</p></SecondaryButton>
         </Box>
-        <Hr />
-        <Lecture src={lecture.lecture_videoURL} videos={videos} id={id}/>
-        <P>{lecture.lecture_content}</P>
-        <AttachedBox>
-        <Attached><p className="fw-bold">첨부파일</p></Attached>
-        <div><A href="">파일.pdf<Icon><BsDownload /></Icon></A></div>
-      </AttachedBox>
-      <Box className="button">
-        {userType == "s" ? null : <PrimaryButton className="button" onClick={()=>navigate("mod", { state: lecture.lecture_id })}><p>수정</p></PrimaryButton>}
-        <SecondaryButton onClick={()=>navigate(`/lms/${userType}/${lecture.subject_id}/lecture`)}><p>목록</p></SecondaryButton>
-      </Box>
-      </TableBox>
-    </Container>
+        </TableBox>
+      </Container>
+    }
   </>
 }

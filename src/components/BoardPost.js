@@ -3,6 +3,9 @@ import { BsFillEyeFill } from "react-icons/bs";
 import { BsDownload } from "react-icons/bs";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { academics, course_board, subject_board, userList } from "../assets/TempData";
+import { useState } from "react";
+import { useEffect } from "react";
+import { getAllManagers, getAllTrainers, getCourseBoardByCourseBoardId, getSubjectBoardBySubjectBoardId } from "../pages/Api";
 
 const TableBox = styled.div`
   padding: 2rem;
@@ -94,49 +97,89 @@ export function BoardPost() {
   const { id } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
-
-  
-  let post;
-  let type;
+  const userType = sessionStorage.getItem("userType");
+  const [post, setPost] = useState(null);
+  const [academic, setAcademic] = useState(null);
   let navlink;
 
-  if(state[0] === "t" || state[2] === "sboard"){
-    type = 0;
-    post = subject_board.find((s) => s.subject_board_id == id);
-  }
-  if(state[0] === "m" || state[2] === "cboard"){
-    type = 1;
-    post = course_board.find((c) => c.course_board_id == id);
-  }
+  useEffect(() => {
+    if(!post) {
+      if(userType === "t" || state == "sboard") {
+        const promise = getSubjectBoardBySubjectBoardId(id);
+        const getData = () => {
+          promise.then((data) => {
+            setPost(data);
+          });
+        };
+        getData();
+      }
+      if(userType === "m" || state == "cboard") {
+        const promise = getCourseBoardByCourseBoardId(id);
+        const getData = () => {
+          promise.then((data) => {
+            setPost(data);
+          });
+        };
+        getData();
+      }
+    }
+    if(!academic) {
+      if(userType === "t" || state == "sboard") {
+        const promise = getAllTrainers();
+        const getData = () => {
+          promise.then((data) => {
+            setAcademic(data);
+          });
+        };
+        getData();
+      }
+      if(userType === "m" || state == "cboard") {
+        const promise = getAllManagers();
+        const getData = () => {
+          promise.then((data) => {
+            setAcademic(data);
+          });
+        };
+        getData();
+      }
+    }
+  });
 
-  if(state[2] === "cboard") navlink = `/lms/${state[0]}/cboard`;
-  else navlink = `/lms/${state[0]}/${state[1]}/${state[2]}`;
+  if(post) {
+    if(state == "cboard") navlink = `/lms/${userType}/cboard`;
+    else if(state == "sboard") navlink = `/lms/${userType}/${post.subjectId}/sboard`;
+    else if(userType === "m") navlink = `/lms/${userType}/${post.courseId}/board`;
+    else navlink = `/lms/${userType}/${post.subjectId}/board`;
+  }
 
   return<>
-    <TableBox>
-      <H2>{type === 0 ? post.s_post_title : post.c_post_title}</H2>
-      <Box>
-        <P>{userList.find((u) => u.uid == (academics.find((a) => a.academic_id == post.academic_id)).uid).user_name}</P>
-        <P>|</P>
-        <P>{type === 0 ? post.s_post_reg_date : post.c_post_reg_date}</P>
-        <P>|</P>
-        <IconBox>
-          <BsFillEyeFill />
-          <P>{type === 0 ? post.s_post_hits : post.c_post_hits}</P>
-        </IconBox>
-      </Box>
-      <Hr />
-      <Content>
-      {type === 0 ? post.s_post_content : post.c_post_content}
-      </Content>
-      <AttachedBox>
-        <Attached><p className="fw-bold">첨부파일</p></Attached>
-        <div><A href={type === 0 ? post.s_post_fileURL : post.c_post_fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
-      </AttachedBox>
-      <Box className="button">
-        { state[0] === "s" ? null : <PrimaryButton onClick={() => navigate("mod", { state : [id, state[0]] })}><p>수정</p></PrimaryButton>}
-        <SecondaryButton onClick={() => navigate(navlink)}><p>목록</p></SecondaryButton>
-      </Box>
-    </TableBox>
+    {
+      (academic && post) &&
+      <TableBox>
+        <H2>{post.title}</H2>
+        <Box>
+          <P>{academic.find((a) => a.academic.academicId === post.academicId).user.userName}</P>
+          <P>|</P>
+          <P>{new Date(post.regDate).toISOString().split('T')[0]}</P>
+          <P>|</P>
+          <IconBox>
+            <BsFillEyeFill />
+            <P>{post.hits}</P>
+          </IconBox>
+        </Box>
+        <Hr />
+        <Content>
+        {post.content}
+        </Content>
+        <AttachedBox>
+          <Attached><p className="fw-bold">첨부파일</p></Attached>
+          <div><A href={post.fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
+        </AttachedBox>
+        <Box className="button">
+          { userType === "s" ? null : <PrimaryButton onClick={() => navigate("mod", { state : [id, state] })}><p>수정</p></PrimaryButton>}
+          <SecondaryButton onClick={() => navigate(navlink)}><p>목록</p></SecondaryButton>
+        </Box>
+      </TableBox>
+    }
   </>
 }

@@ -5,7 +5,7 @@ import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
 import { Pagination } from "../../components/Pagination";
 import { useEffect } from "react";
-import { getStudentsBySubjectId, getSubjectQnaBySubjectId } from "../Api";
+import { getStudentsBySubjectId, getSubjectQnaBySearch, getSubjectQnaBySubjectId } from "../Api";
 
 const BadgeSuccess = styled.span`
   background-color: green;
@@ -158,6 +158,18 @@ export function StudentSubjectQna() {
   };
 
   function onSearch() {
+    if(search.trim().length > 0) {
+      const promise = getSubjectQnaBySearch(search, searchOption, id);
+      const getData = () => {
+        promise.then((data) => {
+          setQuestion(data);
+        });
+      };
+      getData();
+    }
+    else {
+      setQuestion(null);
+    }
     setSearch("");
     setSearchOption("all");
   };

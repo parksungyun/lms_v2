@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
 import { Pagination } from "../../components/Pagination";
 import { course_answers, course_questions, students } from "../../assets/TempData";
+import { getCourseQnaByStudentId, getStudentByStudentId } from "../Api";
 
 const BadgeSuccess = styled.span`
   background-color: green;
@@ -81,14 +82,25 @@ const headers = [
 ];
 
 export function StudentCourseQna() {
+  const id = sessionStorage.getItem("id"); // studentId
+  const [question, setQuestion] = useState(null);
   const [page, setPage] = useState(1);
   const limit = 10;
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
+  let items;
 
-  const id = 1; // 임시 student_id
-  const student = students.find((s) => s.student_id == id);
-  const question = course_questions.filter((c) => (c.course_id == student.course_id) && (c.student_id == student.student_id));
+  useEffect(() => {
+    if(!question) {
+      const promise = getCourseQnaByStudentId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setQuestion(data);
+        });
+      };
+      getData();
+    }
+  })
   
   const shortenTitle = (str, length) => {
     let result = '';
@@ -100,14 +112,16 @@ export function StudentCourseQna() {
     return result;
   };
 
-  const items = question.map((q, i) => (
-    {
-      no: i + 1,
-      title: titleLink(q.c_question_id, shortenTitle(q.c_question_title, 35)),
-      regDate: q.c_question_reg_date,
-      replyState: changeReply(q.c_question_id)
-    }
-  ));
+  if(question) {
+    items = question.map((q, i) => (
+      {
+        no: i + 1,
+        title: titleLink(q.question.courseQuestionId, shortenTitle(q.question.title, 35)),
+        regDate: new Date(q.question.regDate).toISOString().split('T')[0],
+        replyState: changeReply(q)
+      }
+    ));
+  }
     
   const postsData = (posts) => {
     if(posts) {
@@ -117,8 +131,12 @@ export function StudentCourseQna() {
   };
 
   function changeReply(reply) {
-    if(course_answers.find(c => c.c_question_id == reply)) {return(<BadgeSuccess>답변완료</BadgeSuccess>)}
-    else {return(<BadgeSecondary>답변대기</BadgeSecondary>)};
+    if(reply.answer) {
+      return(<BadgeSuccess>답변완료</BadgeSuccess>);
+    }
+    else {
+      return(<BadgeSecondary>답변대기</BadgeSecondary>);
+    }
   };
 
   function titleLink(id, title) {
@@ -126,19 +144,22 @@ export function StudentCourseQna() {
   }
 
   return<>
-    <Container>
-      <TableBox>
-        <H2>1:1 문의</H2>
-        <Table 
-          headers={headers}
-          items={postsData(items)}
-          selectable={false}
-        />
-      </TableBox>
-      <ButtonBox>
-        <PrimaryButton onClick={() => navigate("write")}><p>1:1 문의하기</p></PrimaryButton>
-      </ButtonBox>
-      <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
-    </Container>
+    {
+      items && 
+      <Container>
+        <TableBox>
+          <H2>1:1 문의</H2>
+          <Table 
+            headers={headers}
+            items={postsData(items)}
+            selectable={false}
+          />
+        </TableBox>
+        <ButtonBox>
+          <PrimaryButton onClick={() => navigate("write")}><p>1:1 문의하기</p></PrimaryButton>
+        </ButtonBox>
+        <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+      </Container>
+    }
   </>
 }

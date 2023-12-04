@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Table } from "../../components/Table";
 import '../../styles/student_hw_table.css';
 import { useNavigate, useParams } from "react-router-dom";
-import { academics, feedbacks, homeworks, submits, userList } from "../../assets/TempData";
 import { getAllTrainers, getHomeworksBySubjectId, getSubmitsByStudentIdAndSubjectId } from "../Api";
 
 const PrimaryButton = styled.button`
@@ -210,10 +209,10 @@ export function StudentHW() {
     const reply = submit.find((s) => s.submit.homeworkId === homeworkId);
     if(reply) {
       if(reply.feedback) {
-        return(<SuccessButton onClick={() => navigate(`/lms/s/homework/${reply.feedback.submitId}/feedback`, { state: reply.feedback.submitId })}><p>결과확인</p></SuccessButton>);
+        return(<SuccessButton onClick={() => navigate(`/lms/s/${homeworkId}/homework/${reply.feedback.submitId}/feedback`, { state: homeworkId })}><p>결과확인</p></SuccessButton>);
       }
       else {
-        return(<PrimaryButton onClick={() => navigate(`/lms/s/homework/${reply.submit.submitId}/feedback`, { state: reply.submit.submitId })}><p>제출확인</p></PrimaryButton>);
+        return(<PrimaryButton onClick={() => navigate(`/lms/s/${homeworkId}/homework/${reply.submit.submitId}/feedback`, { state: homeworkId })}><p>제출확인</p></PrimaryButton>);
       }
     }
     else {

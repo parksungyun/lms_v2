@@ -4,6 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { BsFillEyeFill } from "react-icons/bs";
 import { students, subject_answers, subject_questions, userList } from "../../assets/TempData";
 import { ReplyPost } from "../../components/ReplyPost";
+import { useState } from "react";
+import { useEffect } from "react";
+import { getAllTrainers, getStudentsBySubjectId, getSubjectQnaBySubjectQuestionId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -100,40 +103,79 @@ const IconBox = styled.div`
 
 
 export function StudentSubjectQnaPost() {
-  const { id } = useParams();
-  const question = subject_questions.find(s => s.s_question_id == id);
-  const answer = subject_answers.find(s => s.s_question_id == question.s_question_id);
   const navigate = useNavigate();
+  const { id } = useParams();
+  const [question, setQuestion] = useState(null);
+  const [students, setStudents] = useState(null);
+  const [academic, setAcademic] = useState(null);
+
+  useEffect(() => {
+    if(!question) {
+      const promise = getSubjectQnaBySubjectQuestionId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setQuestion(data);
+        });
+      };
+      getData();
+    }
+    if(!academic) {
+      const promise = getAllTrainers();
+      const getData = () => {
+        promise.then((data) => {
+          setAcademic(data);
+        });
+      };
+      getData();
+    }
+  });
+
+  useEffect(() => {
+    if(question) {
+      if(!students) {
+        const promise = getStudentsBySubjectId(question.question.subjectId);
+        const getData = () => {
+          promise.then((data) => {
+            setStudents(data);
+          });
+        };
+        getData();
+      }
+    }
+  }, [question]);
 
   return<>
-    <Container>
-      <TableBox>
-        <H2>{question.s_question_title}</H2>
-        <Box>
-          <P>{userList.find(u => u.uid == students.find(s => s.student_id == question.student_id).uid).user_name}</P>
-          <P>|</P>
-          <P>{question.s_question_reg_date}</P>
-          <P>|</P>
-          <IconBox>
-            <BsFillEyeFill />
-            <P>{question.s_question_hits}</P>
-          </IconBox>
-        </Box>
-        <Hr />
-        <Content>{question.s_question_content}</Content>
-        <AttachedBox>
-          <Attached><p className="fw-bold">첨부파일</p></Attached>
-          <div><A href={question.s_question_fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
-        </AttachedBox>
-        <Hr />
-        {
-          answer && <ReplyPost id={answer.s_question_id} type={"s"} />
-        }
-        <Box className="button">
-          <PrimaryButton onClick={()=>navigate("mod", { state: question.s_question_id })}><p>수정</p></PrimaryButton>
-          <SecondaryButton onClick={()=>navigate("/lms/s/sqna")}><p>목록</p></SecondaryButton>
-        </Box>
-      </TableBox>
-    </Container>
+    {
+      (question && academic && students) &&
+      <Container>
+        <TableBox>
+          <H2>{question.question.title}</H2>
+          <Box>
+            <P>{students.find((s) => s.student.studentId === question.question.studentId).user.userName}</P>
+            <P>|</P>
+            <P>{new Date(question.question.regDate).toISOString().split('T')[0]}</P>
+            <P>|</P>
+            <IconBox>
+              <BsFillEyeFill />
+              <P>{question.question.hits}</P>
+            </IconBox>
+          </Box>
+          <Hr />
+          <Content>{question.question.content}</Content>
+          <AttachedBox>
+            <Attached><p className="fw-bold">첨부파일</p></Attached>
+            <div><A href={question.question.fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
+          </AttachedBox>
+          <Hr />
+          {
+            question.answer && <ReplyPost question={question} academic={academic.find((a) => a.academic.academicId === question.answer.academicId)} />
+          }
+          <Box className="button">
+            <PrimaryButton onClick={() => navigate("mod", { state: question.question.subjectQuestionId })}><p>수정</p></PrimaryButton>
+            <SecondaryButton onClick={() => navigate(`/lms/s/${question.question.subjectId}/sqna`)}><p>목록</p></SecondaryButton>
+          </Box>
+        </TableBox>
+      </Container>
+    }
   </>
 }

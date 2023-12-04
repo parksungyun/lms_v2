@@ -40,6 +40,7 @@ const Img = styled.img`
 `;
 
 export function VideoModal({chart, id}){
+  const userType = sessionStorage.getItem("userType");
   const now = chart.findIndex((c) => c.id == id);
   const next = chart[now + 1];
   console.log(now)
@@ -60,7 +61,7 @@ export function VideoModal({chart, id}){
           <Modal.Body className="d-flex flex-column justify-content-center align-items-center">
             <Img src={gift} alt="축하합니다" />
             <Box className="button">
-              <PrimaryButton onClick={() => navigate(``)}><p>목록</p></PrimaryButton>
+              <PrimaryButton onClick={() => navigate(`/lms/${userType}/${now.subject}/lecture`)}><p>목록</p></PrimaryButton>
               <PrimaryButton onClick={handleClose}><p>다시 보기</p></PrimaryButton>
             {
               isVideo != chart.length - 1 ? <>

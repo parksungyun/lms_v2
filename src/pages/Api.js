@@ -630,7 +630,6 @@ export const getSubjectBoardBySearch = async (keyword, type, id) => {
   await axios
   .get(`/api/subject/${id}/board/search/${type}/${keyword}`)
   .then((res) => {
-    console.log(res.data);
     posts = res.data.data;
   })
   .catch((err) => {
@@ -644,7 +643,6 @@ export const getLectureBySearch = async (keyword, type, id) => {
   await axios
   .get(`/api/subject/${id}/lecture/search/${type}/${keyword}`)
   .then((res) => {
-    console.log(res.data);
     posts = res.data.data;
   })
   .catch((err) => {
@@ -658,7 +656,6 @@ export const getSubjectQnaBySearch = async (keyword, type, id) => {
   await axios
   .get(`/api/subject/${id}/qna/search/${type}/${keyword}`)
   .then((res) => {
-    console.log(res.data);
     posts = res.data.data;
   })
   .catch((err) => {
@@ -672,11 +669,23 @@ export const getCourseBoardBySearch = async (keyword, type, id) => {
   await axios
   .get(`/api/course/${id}/board/search/${type}/${keyword}`)
   .then((res) => {
-    console.log(res.data);
     posts = res.data.data;
   })
   .catch((err) => {
     console.log(`${err} : 검색된 과정 공지 불러오기 실패`);
   });
   return posts;
+}
+
+export const getSubmitByStudentIdAndHomeworkId = async (studentId, homeworkId) => {
+  let submit;
+  await axios
+  .get(`/api/subject/submit/student/${studentId}/homework/${homeworkId}`)
+  .then((res) => {
+    submit = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과제 제출 불러오기 실패`);
+  });
+  return submit;
 }
