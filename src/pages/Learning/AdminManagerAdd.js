@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { department, managerPosition, userList } from "../../assets/TempData";
-import defaultImg from "../../assets/img/default.png";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -139,7 +138,7 @@ export function AdminManagerAdd() {
   const [userId, setUserId] = useState("");
   const [userBirth, setUserBirth] = useState("");
   const [userDept, setUserDept] = useState(0);
-  const [userPhoto, setUserPhoto] = useState(defaultImg);
+  const [userPhoto, setUserPhoto] = useState("");
   const [userPosition, setUserPosition] = useState();
   const [userPhone, setUserPhone] = useState("");
   const [userAddr, setUserAddr] = useState("");

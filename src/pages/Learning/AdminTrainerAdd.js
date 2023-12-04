@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { department, trainerPosition, userList } from "../../assets/TempData";
-import defaultImg from "../../assets/img/default.png";
 import { getUserByUserId } from "../Api";
+import axios from "axios";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -68,7 +67,7 @@ const Img = styled.img`
   border-radius: 1rem;
 `;
 
-const Details = styled.form`
+const Details = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -129,6 +128,13 @@ const LoadText = styled.p`
   color: #5f7dcf;
 `;
 
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 0;
+`;
+
 export function AdminTrainerAdd() {
   const navigate = useNavigate();
   
@@ -136,11 +142,12 @@ export function AdminTrainerAdd() {
   const [user, setUser] = useState(null);
   const [loadText, setLoadText] = useState("");
 
+  const [userUid, setUserUid] = useState("");
   const [userName, setUserName] = useState("");
   const [userId, setUserId] = useState("");
   const [userBirth, setUserBirth] = useState("");
   const [userDept, setUserDept] = useState(1);
-  const [userPhoto, setUserPhoto] = useState(defaultImg);
+  const [userPhoto, setUserPhoto] = useState("");
   const [userPosition, setUserPosition] = useState();
   const [userPhone, setUserPhone] = useState("");
   const [userAddr, setUserAddr] = useState("");
@@ -150,15 +157,21 @@ export function AdminTrainerAdd() {
   const [userMAuth, setUserMAuth] = useState();
   const [userCAuth, setUserCAuth] = useState();
   const [userRemark, setUserRemark] = useState();
+  const [image, setImage] = useState();
+  const [error, setError] = useState(0);
+  let userAuth;
+  let available;
 
   useEffect(()=> {
     if(user) {
+      setUserUid(user.uid);
       setUserName(user.userName);
       setUserId(user.userId);
       setUserBirth(user.userBirth);
       setUserPhone(user.userPhone);
       setUserEmail(user.userEmail);
       setUserAddr(user.userAddr);
+      setImage("/upload/UserDefault.png")
       setLoadText(`${user.userName} 님의 정보를 불러왔습니다.`);
     }
     else {
@@ -205,9 +218,64 @@ export function AdminTrainerAdd() {
   };
 
   function onSubmit() {
-
+    if (userCAuth && userMAuth && userTAuth) {
+      userAuth = 3;
+      setError(0);
+    } else if (userCAuth && userMAuth && !(userTAuth)) {
+      userAuth = 2;
+      setError(0);
+    } else if (userTAuth && !(userCAuth) && !(userMAuth)) {
+      userAuth = 1;
+      setError(0);
+    } else if (userCAuth && !(userTAuth) && !(userMAuth)) {
+      userAuth = 0;
+      setError(0);
+    } else {
+      setError(1);
+    }
+    if (userAvailable) {
+      available = 0;
+    } else {available = 1;}
   }
-
+  if (error == 0) {
+    const data = {
+      uid: userUid,
+      userDept: userDept,
+      userPosition: userPosition,
+      userRemark: userRemark,
+      userAuth: userAuth,
+      userAvailable: available
+    }
+    const fd = new FormData();
+    if (userPhoto) {
+      fd.append("file", userPhoto);
+      console.log(fd);
+      for (const pair of fd.entries()) {
+        console.log(pair[0] + ', ' + pair[1]);
+    }
+    } else {
+      console.error("No file selected.");
+    }
+    axios
+      .post("/api/user/add", data)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(`${err} : Add 실패`);
+      });
+      // fetch(`/api/file/upload/${userUid}`, {
+      //     method: 'POST',
+      //     body: fd,
+      // })
+      // .then(response => response.json())
+      // .then(data => {
+      //     console.log('File upload success:', data);
+      // })
+      // .catch(error => {
+      //     console.error('File upload failed:', error);
+      // });
+  }
   return <>
     <Container>
       <H2>강사 등록</H2>
@@ -222,7 +290,7 @@ export function AdminTrainerAdd() {
           </LoadUser>
         </LoadBox>
         <ContentDivide>
-          { imageSrc ? <Img src={imageSrc} alt="preview-img" /> : <Img src={userPhoto} alt="default" />}
+          { imageSrc ? <Img src={imageSrc} alt="preview-img" /> : <Img src={image} alt="default" />}
           <Details action="" method="POST">
             <Detail>
               <Label>이름</Label>
@@ -251,29 +319,15 @@ export function AdminTrainerAdd() {
             <Detail>
               <Label>부서</Label>
               <Select name="user_dept" id="user_dept" onChange={(e) => setUserDept(e.target.value)} value={userDept} disabled>
-                {
-                  department.map((data) => (
-                    <option value={data.dept_id} key={data.dept_id}>
-                      {
-                        data.dept_name
-                      }
-                    </option>
-                  ))
-                }
+                <option value={0}>행정팀</option>
+                <option value={1}>교육팀</option>
               </Select>
             </Detail>
             <Detail>
               <Label>포지션</Label>
               <Select name="user_position" id="user_position" onChange={(e) => setUserPosition(e.target.value)} value={userPosition}>
-                {
-                  trainerPosition.map((data) => (
-                    <option value={data.position_id} key={data.position_id}>
-                      {
-                        data.position_name
-                      }
-                    </option>
-                  ))
-                }
+                <option value="Web Development">Web Development</option>
+                <option value="Design">Design</option>
               </Select>
             </Detail>
             <Detail>
@@ -286,16 +340,17 @@ export function AdminTrainerAdd() {
             </Detail>
             <Detail>
               <Label>권한</Label>
-              <Check type="checkbox" name="user_t_auth" id="user_t_auth" value={userTAuth} onChange={(e) => {setUserTAuth(e.target.value)}} /> 강사 관리
-              <Check type="checkbox" name="user_m_auth" id="user_m_auth" value={userMAuth} onChange={(e) => {setUserMAuth(e.target.value)}} /> 매니저 관리
-              <Check type="checkbox" name="user_c_auth" id="user_c_auth" value={userCAuth} onChange={(e) => {setUserCAuth(e.target.value)}} /> 과정 관리
+              <Check type="checkbox" name="user_t_auth" id="user_t_auth" checked={userTAuth} onChange={(e) => {setUserTAuth(e.target.checked)}} /> 강사 관리
+              <Check type="checkbox" name="user_m_auth" id="user_m_auth" checked={userMAuth} onChange={(e) => {setUserMAuth(e.target.checked)}} /> 매니저 관리
+              <Check type="checkbox" name="user_c_auth" id="user_c_auth" checked={userCAuth} onChange={(e) => {setUserCAuth(e.target.checked)}} /> 과정 관리
+              {error == 1 && <ErrorMsg>없는 권한입니다. 다시 확인해주세요.</ErrorMsg>}
             </Detail>
             <Detail>
               <Label>활성화</Label>
-              <Check type="checkbox" name="user_available" id="user_available" value={userAvailable} onChange={(e) => {setUserAvailable(e.target.value)}} /> 비활성화
+              <Check type="checkbox" name="user_available" id="user_available" checked={userAvailable} onChange={(e) => {setUserAvailable(e.target.checked)}} /> 비활성화
             </Detail>
             <ButtonBox>
-              <PrimaryButton onClick={onSubmit()}><p>등록</p></PrimaryButton>
+              <PrimaryButton onClick={()=>onSubmit()}><p>등록</p></PrimaryButton>
               <SecondaryButton onClick={() => navigate("/lms/a/trainerSetting")}><p>목록</p></SecondaryButton>
             </ButtonBox>
           </Details>
