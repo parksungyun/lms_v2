@@ -148,16 +148,16 @@ export function AdminTrainerAdd() {
   const [userBirth, setUserBirth] = useState("");
   const [userDept, setUserDept] = useState(1);
   const [userPhoto, setUserPhoto] = useState("");
-  const [userPosition, setUserPosition] = useState();
+  const [userPosition, setUserPosition] = useState("");
   const [userPhone, setUserPhone] = useState("");
   const [userAddr, setUserAddr] = useState("");
   const [userEmail, setUserEmail] = useState("");
-  const [userAvailable, setUserAvailable] = useState();
-  const [userTAuth, setUserTAuth] = useState();
-  const [userMAuth, setUserMAuth] = useState();
-  const [userCAuth, setUserCAuth] = useState();
-  const [userRemark, setUserRemark] = useState();
-  const [image, setImage] = useState();
+  const [userAvailable, setUserAvailable] = useState(0);
+  const [userTAuth, setUserTAuth] = useState(false);
+  const [userMAuth, setUserMAuth] = useState(false);
+  const [userCAuth, setUserCAuth] = useState(false);
+  const [userRemark, setUserRemark] = useState("");
+  const [image, setImage] = useState("");
   const [error, setError] = useState(0);
   let userAuth;
   let available;
@@ -240,8 +240,14 @@ export function AdminTrainerAdd() {
   if (error == 0) {
     const data = {
       uid: userUid,
+      userId: userId,
+      userName: userName,
+      userBirth: userBirth,
       userDept: userDept,
+      userPhone: userPhone,
       userPosition: userPosition,
+      userAddr: userAddr,
+      userEmail: userEmail,
       userRemark: userRemark,
       userAuth: userAuth,
       userAvailable: available
@@ -256,6 +262,7 @@ export function AdminTrainerAdd() {
     } else {
       console.error("No file selected.");
     }
+    console.log(data);
     axios
       .post("/api/user/add", data)
       .then((res) => {
