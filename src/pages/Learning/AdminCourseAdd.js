@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { userList, academics } from "../../assets/TempData";
-import defaultImg from "../../assets/img/default2.png";
 import { BsPatchPlusFill, BsPatchMinusFill } from "react-icons/bs";
 import { useEffect } from "react";
 
@@ -185,7 +184,7 @@ export function AdminCourseAdd() {
   const [recruitStart, setRecruitStart] = useState();
   const [recruitEnd, setRecruitEnd] = useState();
   const [capacity, setCapacity] = useState();
-  const [coursePhoto, setCoursePhoto] = useState(defaultImg);
+  const [coursePhoto, setCoursePhoto] = useState("");
   const [courseInfo, setCourseInfo] = useState();
   const [courseAvailable, setCourseAvailable] = useState();
   
@@ -266,7 +265,7 @@ export function AdminCourseAdd() {
       <H2>과정 등록</H2>
       <Content>
         <ContentDivide>
-          {imageSrc ? <Img src={imageSrc} alt="preview-img" /> : <Img src={defaultImg} alt="default" />}
+          {imageSrc ? <Img src={imageSrc} alt="preview-img" /> : <Img src={coursePhoto} alt="default" />}
           <Details action="" method="POST">
             <Detail>
               <Label>과정명</Label>

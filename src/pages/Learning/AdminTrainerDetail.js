@@ -107,6 +107,13 @@ const Check = styled.input`
 
 `;
 
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 0;
+`;
+
 export function AdminTrainerDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -124,11 +131,13 @@ export function AdminTrainerDetail() {
   const [userRemark, setUserRemark] = useState("");
   const [imageSrc, setImageSrc] = useState('');
   const [userAvailable, setUserAvailable] = useState();
-  const [userAuth, setUserAuth] = useState();
   const [userTAuth, setUserTAuth] = useState(false);
   const [userMAuth, setUserMAuth] = useState(false);
   const [userCAuth, setUserCAuth] = useState(false);
+  const [auth, setAuth] = useState(false);
   const [image, setImage] = useState("");
+  const [error, setError] = useState(0);
+  let userAuth;
 
   useEffect(()=>{
     if(!user) {
@@ -154,25 +163,26 @@ export function AdminTrainerDetail() {
       setUserAddr(user.user.userAddr);
       setUserEmail(user.user.userEmail);
       setUserRemark(user.academic.remark);
-      setUserAuth(user.academic.auth);
+      setAuth(user.academic.auth);
       setUserAvailable(user.academic.available);
+      setImage("/upload/" + user.academic.userPhoto.substring(user.academic.userPhoto.lastIndexOf("\\") + 1))
     }
   },[user]);
 
   useEffect(()=>{
-    if (userAuth == 0) {
+    if (auth == 0) {
       setUserCAuth(true);
-    } else if (userAuth == 1) {
+    } else if (auth == 1) {
       setUserTAuth(true);
-    } else if (userAuth == 2) {
+    } else if (auth == 2) {
       setUserCAuth(true);
       setUserMAuth(true);
-    } else if (userAuth == 4) {
+    } else if (auth == 3) {
       setUserCAuth(true);
       setUserTAuth(true);
       setUserMAuth(true);
     }
-  },[userAuth]);
+  },[auth]);
 
   const encodeFileToBase64 = (fileBlob) => {
     const reader = new FileReader();
@@ -196,6 +206,8 @@ export function AdminTrainerDetail() {
     });
   };
 
+  console.log(auth);
+
   function changeAvailable() {
     axios
     .get(`/api/user/${user.user.uid}/changeAvailable/${userAvailable}`)
@@ -209,67 +221,85 @@ export function AdminTrainerDetail() {
   };
 
   function onSubmit() {
-    const data = {
-      uid: user.user.uid,
-      userId: userId,
-      userName: userName,
-      userBirth: userBirth,
-      userDept: userDept,
-      userPhoto: userPhoto,
-      userPosition: userPosition,
-      userAddr: userAddr,
-      userEmail: userEmail,
-      userRemark: userRemark,
-      userAuth: userAuth,
-      userAvailable: userAvailable
-    }
-    const fd = new FormData();
-    if (userPhoto) {
-      fd.append("file", userPhoto);
-      console.log(fd);
-      for (const pair of fd.entries()) {
-        console.log(pair[0] + ', ' + pair[1]);
-    }
+    if (userCAuth && userMAuth && userTAuth) {
+      userAuth = 3;
+      setError(0);
+    } else if (userCAuth && userMAuth && !(userTAuth)) {
+      userAuth = 2;
+      setError(0);
+    } else if (userTAuth && !(userCAuth) && !(userMAuth)) {
+      userAuth = 1;
+      setError(0);
+    } else if (userCAuth && !(userTAuth) && !(userMAuth)) {
+      userAuth = 0;
+      setError(0);
     } else {
-        console.error("No file selected.");
+      setError(1);
+      userAuth = auth;
     }
-    axios
-    .post("/api/user/mod", data)
-    .then((res) => {
-      console.log(res.data.data);
-    })
-    .catch((err) => {
-      console.log(`${err} : Mod 실패`);
-    });
-    // axios
-    // .post("/api/file/upload", fd)
-    // .then((res) => {
-    //   console.log(res.data.data);
-    // })
-    // .catch((err) => {
-    //   console.log(`${err} : Upload 실패`)
-    // })
-    fetch(`/api/file/upload/${user.user.uid}`, {
-        method: 'POST',
-        body: fd,
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('File upload success:', data);
-    })
-    .catch(error => {
-        console.error('File upload failed:', error);
-    });
-
+    console.log(userAuth);
+    if (error == 0) {
+      const data = {
+        uid: user.user.uid,
+        userId: userId,
+        userName: userName,
+        userBirth: userBirth,
+        userDept: userDept,
+        userPhone: userPhone,
+        userPosition: userPosition,
+        userAddr: userAddr,
+        userEmail: userEmail,
+        userRemark: userRemark,
+        userAuth: userAuth,
+        userAvailable: userAvailable
+      }
+      const fd = new FormData();
+      if (userPhoto) {
+        fd.append("file", userPhoto);
+        console.log(fd);
+        for (const pair of fd.entries()) {
+          console.log(pair[0] + ', ' + pair[1]);
+      }
+      } else {
+        console.error("No file selected.");
+      }
+      axios
+      .post("/api/user/mod", data)
+      .then((res) => {
+        console.log(res.data.data);
+      })
+      .catch((err) => {
+        console.log(`${err} : Mod 실패`);
+      });
+      // axios
+      // .post("/api/file/upload", fd)
+      // .then((res) => {
+      //   console.log(res.data.data);
+      // })
+      // .catch((err) => {
+      //   console.log(`${err} : Upload 실패`)
+      // })
+      fetch(`/api/file/upload/${user.user.uid}`, {
+          method: 'POST',
+          body: fd,
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('File upload success:', data);
+      })
+      .catch(error => {
+          console.error('File upload failed:', error);
+      });
+    }
   };
-  console.log(userPhoto.substring(userPhoto.lastIndexOf("\\") + 1))
+  // console.log(userPhoto.substring(userPhoto.lastIndexOf("\\") + 1))
   return <>
     {
-      user &&
+      user && 
       <Container>
         <H2>강사 상세 정보</H2>
         <Content>
-          { imageSrc ? <Img src={imageSrc} alt="preview-img" /> : <Img src={`/upload/${userPhoto.substring(userPhoto.lastIndexOf("\\") + 1)}`} alt={user.user.userName} /> }
+          { imageSrc ? <Img src={imageSrc} alt="preview-img" /> : <Img src={image} alt={user.user.userName} /> }
           <Details>
             <Detail>
               <Label>이름</Label>
@@ -323,9 +353,10 @@ export function AdminTrainerDetail() {
             </Detail>
             <Detail>
               <Label>권한</Label>
-              <Check type="checkbox" name="user_t_auth" id="user_t_auth" checked={userTAuth} onChange={(e) => {setUserTAuth(e.target.value)}} /> 강사 관리
-              <Check type="checkbox" name="user_m_auth" id="user_m_auth" checked={userMAuth} onChange={(e) => {setUserMAuth(e.target.value)}} /> 매니저 관리
-              <Check type="checkbox" name="user_c_auth" id="user_c_auth" checked={userCAuth} onChange={(e) => {setUserCAuth(e.target.value)}} /> 과정 관리
+              <Check type="checkbox" name="user_t_auth" id="user_t_auth" checked={userTAuth} onChange={(e) => {setUserTAuth(e.target.checked)}} /> 강사 관리
+              <Check type="checkbox" name="user_m_auth" id="user_m_auth" checked={userMAuth} onChange={(e) => {setUserMAuth(e.target.checked)}} /> 매니저 관리
+              <Check type="checkbox" name="user_c_auth" id="user_c_auth" checked={userCAuth} onChange={(e) => {setUserCAuth(e.target.checked)}} /> 과정 관리
+             {error == 1 && <ErrorMsg>없는 권한입니다. 다시 확인해주세요.</ErrorMsg>}
             </Detail>
             <Detail>
               <Label>활성화</Label>
