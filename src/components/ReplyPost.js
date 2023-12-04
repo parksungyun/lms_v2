@@ -1,6 +1,7 @@
 import styled from "styled-components"
-import { academics, admission_answers, admission_questions, course_answers, course_questions, subject_answers, subject_questions, userList } from "../assets/TempData";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
+import { getAdmissionPostById, getAllManagers, getAllTrainers, getCourseQnaByCourseQuestionId, getSubjectQnaBySubjectQuestionId } from "../pages/Api";
 
 const CommentBox = styled.div`
   margin-top: 2rem;
@@ -24,38 +25,19 @@ const Text = styled.p`
   font-size: 1.1rem;
 `;
 
-export function ReplyPost({ id, type }) {
-  const navigate = useNavigate();
-  let question;
-  let answer;
-  let academic;
-
-  if(type == "s") {
-    question = subject_questions.find(data => data.s_question_id == id);
-    answer = subject_answers.find(data => data.s_question_id == question.s_question_id);
-    academic = userList.find(data => data.uid == (academics.find(d => d.academic_id == answer.academic_id)).uid);
-  }
-
-  if(type == "c") {
-    question = course_questions.find(data => data.c_question_id == id);
-    answer = course_answers.find(data => data.c_question_id == question.c_question_id);
-    academic = userList.find(data => data.uid == (academics.find(d => d.academic_id == answer.academic_id)).uid);
-  }
-
-  if(type == "a") {
-    question = admission_questions.find(data => data.a_question_id == id);
-    answer = admission_answers.find(data => data.a_question_id == question.a_question_id);
-    academic = userList.find(data => data.uid == (academics.find(d => d.academic_id == answer.academic_id)).uid);
-  }
+export function ReplyPost({ question, academic }) {
 
   return <>
-    <CommentBox>
-      <CommentWriter>
-        <Text>{academic.user_name} | {type == "s" && answer.s_answer_reg_date}{type == "c" && answer.c_answer_reg_date}{type == "a" && answer.a_answer_reg_date}</Text>
-      </CommentWriter>
-      <Comment>
-        <Text>{type == "s" && answer.s_answer_content}{type == "c" && answer.c_answer_content}{type == "a" && answer.a_answer_content}</Text>
-      </Comment>
-    </CommentBox>
+    {
+      (academic) &&
+      <CommentBox>
+        <CommentWriter>
+          <Text>{academic.user.userName} | {new Date(question.answer.answerRegDate).toISOString().split('T')[0]}</Text>
+        </CommentWriter>
+        <Comment>
+          <Text>{question.answer.answerContent}</Text>
+        </Comment>
+      </CommentBox>
+    }
   </>
 }

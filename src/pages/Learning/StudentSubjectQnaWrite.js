@@ -1,5 +1,6 @@
+import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -72,24 +73,69 @@ const ContentInput = styled.textarea`
   resize: none;
 `;
 
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 1rem 0 0 0;
+  text-align: center;
+`;
+
 export function StudentSubjectQnaWrite() {
   const navigate = useNavigate();
-  const [qna_title, setQna_title] = useState();
-  const [qna_content, setQna_content] = useState();
+  const [qnaTitle, setQnaTitle] = useState();
+  const [qnaContent, setQnaContent] = useState();
+  const [errorCheck, setErrorCheck] = useState();
+  const pathName = useLocation().pathname;
+  const link = pathName.substring(0, pathName.lastIndexOf('/'));
+  const subjectId = pathName.split('/')[3];
+
+  function onSubmit() {
+    if(!qnaTitle) {
+      setErrorCheck(1);
+    }
+    else if(!qnaContent) {
+      setErrorCheck(2);
+    }
+    else {
+      const data = {
+        subjectId: subjectId,
+        studentId: sessionStorage.getItem("id"),
+        title: qnaTitle,
+        content: qnaContent
+      };
+      console.log(data);
+      axios
+      .post("/api/subject/qna/write", data)
+      .then((res) => {
+        navigate(link);
+      })
+      .catch((err) => {
+        console.log(`${err} : 과목 QnA 게시글 작성 실패`);
+      });
+    }
+  }
+
   return<>
     <Container>
       <TableBox>
         <H2>QnA 등록</H2>
         <form action="" method="POST">
-          <Input type="text" name="qna_title" id="qna_title" value={qna_title} onChange={(e)=>setQna_title(e.target.value)} placeholder="제목 입력해주세요"/>
+          <Input type="text" name="qnaTitle" id="qnaTitle" value={qnaTitle} onChange={(e)=>setQnaTitle(e.target.value)} placeholder="제목 입력해주세요"/>
           <Hr />
-          <ContentInput type="text" name="qna_content" id="qna_content" value={qna_content}  onChange={(e)=>setQna_content(e.target.value)} placeholder="내용 입력해주세요"/>
-          <Input type="file" name="qna_file" id="qna_file" accept="" />
-          <Box>
-            <PrimaryButton type="submit"><p>등록</p></PrimaryButton>
-            <SecondaryButton onClick={() => navigate("/lms/s/sqna")}><p>목록</p></SecondaryButton>
-          </Box>
+          <ContentInput type="text" name="qnaContent" id="qnaContent" value={qnaContent}  onChange={(e)=>setQnaContent(e.target.value)} placeholder="내용 입력해주세요"/>
+          <Input type="file" name="qnaFile" id="qnaFile" accept="" />
         </form>
+        {
+          errorCheck === 1 && <ErrorMsg>제목을 입력해주세요</ErrorMsg>
+        }
+        {
+          errorCheck === 2 && <ErrorMsg>내용을 입력해주세요</ErrorMsg>
+        }
+        <Box>
+          <PrimaryButton onClick={() => onSubmit()}><p>등록</p></PrimaryButton>
+          <SecondaryButton onClick={() => navigate(link)}><p>목록</p></SecondaryButton>
+        </Box>
       </TableBox>
     </Container>
   </>

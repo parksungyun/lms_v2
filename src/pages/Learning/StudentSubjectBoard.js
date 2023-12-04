@@ -96,7 +96,7 @@ export function StudentSubjectBoard() {
   };
   
   function titleLink(link, title) {
-    return (<p onClick={() => navigate(`${link}`, { state : ["s", id, "sboard"] })}>{title}</p>);
+    return (<p onClick={() => navigate(`${link}`, { state : ["sboard"] })}>{title}</p>);
   }
 
   function onSearch() {

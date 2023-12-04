@@ -117,8 +117,6 @@ const P = styled.p`
     return <VideoModal chart={videos} id={id}/>
   };
 
-  console.log(id);
-
   return (
     <>
       <Box>

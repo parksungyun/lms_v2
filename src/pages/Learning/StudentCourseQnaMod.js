@@ -3,6 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { course_questions } from "../../assets/TempData";
 import { DeleteModal } from "../../components/DeleteModal";
+import axios from "axios";
+import { useEffect } from "react";
+import { getCourseQnaByCourseQuestionId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -82,28 +85,93 @@ const ContentInput = styled.textarea`
   resize: none;
 `;
 
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 1rem 0 0 0;
+  text-align: center;
+`;
+
 export function StudentCourseQnaMod() {
   const { state } = useLocation();
-  const question = course_questions.find(c => c.c_question_id == state)
-  const [qna_content, setQna_content] = useState(question.c_question_content);
-  const [qna_title, setQna_title] = useState(question.c_question_title);
+  const [question, setQuestion] = useState(null);
+  const [qnaTitle, setQnaTitle] = useState();
+  const [qnaContent, setQnaContent] = useState();
+  const [errorCheck, setErrorCheck] = useState();
   const navigate = useNavigate();
+  const pathName = useLocation().pathname;
+  const link = pathName.substring(0, pathName.lastIndexOf('/'));
+
+  useEffect(() => {
+    if(!question) {
+      const promise = getCourseQnaByCourseQuestionId(state);
+        const getData = () => {
+          promise.then((data) => {
+            setQuestion(data);
+          });
+        };
+        getData();
+    }
+  });
+
+  useEffect(() => {
+    if(question) {
+      setQnaTitle(question.question.title);
+      setQnaContent(question.question.content);
+    }
+  }, [question]);
+
+  function onSubmit() {
+    if(!qnaTitle) {
+      setErrorCheck(1);
+    }
+    else if(!qnaContent) {
+      setErrorCheck(2);
+    }
+    else {
+      const data = {
+        studentId: question.question.studentId,
+        title: qnaTitle,
+        content: qnaContent
+      };
+      console.log(data);
+      axios
+      .post(`/api/course/qna/${state}/mod`, data)
+      .then((res) => {
+        navigate(link);
+      })
+      .catch((err) => {
+        console.log(`${err} : 과정 QnA 게시글 수정 실패`);
+      });
+    }
+  }
+
   return<>
-    <Container>
-      <TableBox>
-        <H2>1:1 문의 수정</H2>
-        {/* <form action="" method="POST"> */}
-          <Input type="text" name="qna_title" id="qna_title" value={qna_title} onChange={(e)=>setQna_title(e.target.value)}/>
-          <Hr />
-          <ContentInput type="text" name="qna_content" id="qna_content" value={qna_content}  onChange={(e)=>setQna_content(e.target.value)}/>
-          <Input type="file" name="qna_file" id="qna_file" accept="" />
+    {
+      (question) &&
+      <Container>
+        <TableBox>
+          <H2>1:1 문의 수정</H2>
+          <form>
+            <Input type="text" name="qnaTitle" id="qnaTitle" value={qnaTitle} onChange={(e)=>setQnaTitle(e.target.value)} placeholder="제목 입력해주세요" />
+            <Hr />
+            <ContentInput type="text" name="qnaContent" id="qnaContent" value={qnaContent} onChange={(e)=>setQnaContent(e.target.value)} placeholder="내용 입력해주세요" />
+            <Input type="file" name="qnaFile" id="qnaFile" accept="" />
+          </form>
+          {
+            errorCheck === 1 && <ErrorMsg>제목을 입력해주세요</ErrorMsg>
+          }
+          {
+            errorCheck === 2 && <ErrorMsg>내용을 입력해주세요</ErrorMsg>
+          }
           <Box>
-            <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
+            <PrimaryButton onClick={() => onSubmit()}><p>수정</p></PrimaryButton>
             <DeleteModal name={"삭제"}></DeleteModal>
             <SecondaryButton onClick={() => navigate(`/lms/s/cqna/${question.c_question_id}`)}><p>취소</p></SecondaryButton>
           </Box>
-        {/* </form> */}
-      </TableBox>
-    </Container>
+        </TableBox>
+      </Container>
+    }
   </>
 }

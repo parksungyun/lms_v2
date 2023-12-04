@@ -2,7 +2,8 @@ import styled from "styled-components";
 import { BsFillEyeFill } from "react-icons/bs";
 import { BsDownload } from "react-icons/bs";
 import { useNavigate, useParams } from "react-router-dom";
-import { academics, homeworks, userList } from "../../assets/TempData";
+import { useState, useEffect } from "react";
+import { getAllTrainers, getHomeworkByHomeworkId } from "../Api";
 
 const TableBox = styled.div`
   padding: 2rem;
@@ -106,34 +107,58 @@ const BadgePrimary = styled.span`
 export function StudentHWPost() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const post = homeworks.find((h) => h.homework_id == id);
-  const trainer = userList.find((u) => u.uid == (academics.find((a) => a.academic_id == post.academic_id).uid));
+  const [post, setPost] = useState(null);
+  const [academic, setAcademic] = useState(null);
+  
+  useEffect(() => {
+    if(!academic) {
+      const promise = getAllTrainers();
+      const getData = () => {
+        promise.then((data) => {
+          setAcademic(data);
+        });
+      };
+      getData();
+    }
+    if(!post) {
+      const promise = getHomeworkByHomeworkId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setPost(data);
+        });
+      };
+      getData();
+    }
+  });
 
   return<>
-    <TableBox>
-      <H2>{post.hw_title}</H2>
-      <Box>
-        <P>{trainer.user_name}</P>
-        <P>|</P>
-        <P>{post.hw_reg_date}</P>
-      </Box>
-      <Hr />
-      <Content>
-        <Box className="Badge">
-          <BadgePrimary>시작일</BadgePrimary>
-          <P>{post.hw_start_date}</P>
-          <BadgeDanger>종료일</BadgeDanger>
-          <P>{post.hw_end_date}</P>
+    {
+      (post && academic) &&
+      <TableBox>
+        <H2>{post.title}</H2>
+        <Box>
+          <P>{academic.find((a) => a.academic.academicId === post.academicId).user.userName}</P>
+          <P>|</P>
+          <P>{new Date(post.regDate).toISOString().split('T')[0]}</P>
         </Box>
-        {post.hw_content}
-      </Content>
-      <AttachedBox>
-        <Attached><p className="fw-bold">첨부파일</p></Attached>
-        <div><A href={post.hw_fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
-      </AttachedBox>
-      <Box className="button">
-        <SecondaryButton onClick={()=>navigate("/lms/s/homework")}><p>목록</p></SecondaryButton>
-      </Box>
-    </TableBox>
+        <Hr />
+        <Content>
+          <Box className="Badge">
+            <BadgePrimary>시작일</BadgePrimary>
+            <P>{post.startDate}</P>
+            <BadgeDanger>종료일</BadgeDanger>
+            <P>{post.endDate}</P>
+          </Box>
+          {post.content}
+        </Content>
+        <AttachedBox>
+          <Attached><p className="fw-bold">첨부파일</p></Attached>
+          <div><A href={post.fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
+        </AttachedBox>
+        <Box className="button">
+          <SecondaryButton onClick={()=>navigate(`/lms/s/${post.subjectId}/homework`)}><p>목록</p></SecondaryButton>
+        </Box>
+      </TableBox>
+    }
   </>
 }

@@ -104,7 +104,7 @@ export function LmsSidebar() {
           {
             (userType === "s" && datas) && <>
               <MenuItem
-                active={pathName === `/lms/${userType}/cboard`}
+                active={pathName.startsWith(`/lms/${userType}/cboard`)}
                 icon={<BsMegaphone  />}
                 component={<NavLink to={`/lms/${userType}/cboard`} />}>
                 {"과정 공지"}
@@ -123,31 +123,31 @@ export function LmsSidebar() {
                         },
                       }}>
                       <MenuItem
-                        active={pathName === `/lms/${userType}/${data.subject.subjectId}/subject`}
+                        active={pathName.startsWith(`/lms/${userType}/${data.subject.subjectId}/subject`)}
                         icon={<BsHouseDoor />}
                         component={<NavLink to={`/lms/${userType}/${data.subject.subjectId}/subject`} />}>
                         {"강의실"}
                       </MenuItem>
                       <MenuItem
-                        active={pathName === `/lms/${userType}/${data.subject.subjectId}/sboard`}
+                        active={pathName.startsWith(`/lms/${userType}/${data.subject.subjectId}/sboard`)}
                         icon={<BsMegaphone />}
                         component={<NavLink to={`/lms/${userType}/${data.subject.subjectId}/sboard`}/>}>
                         {"공지"}
                       </MenuItem>
                       <MenuItem
-                        active={pathName === `/lms/${userType}/${data.subject.subjectId}/homework`}
+                        active={pathName.startsWith(`/lms/${userType}/${data.subject.subjectId}/homework`)}
                         icon={<BsListCheck />}
                         component={<NavLink to={`/lms/${userType}/${data.subject.subjectId}/homework`} />}>
                         {"과제"}
                       </MenuItem>
                       <MenuItem
-                        active={pathName === `/lms/${userType}/${data.subject.subjectId}/lecture`}
+                        active={pathName.startsWith(`/lms/${userType}/${data.subject.subjectId}/lecture`)}
                         icon={<BsPencil />}
                         component={<NavLink to={`/lms/${userType}/${data.subject.subjectId}/lecture`} />}>
                         {"강의"}
                       </MenuItem>
                       <MenuItem
-                        active={pathName === `/lms/${userType}/${data.subject.subjectId}/sqna`}
+                        active={pathName.startsWith(`/lms/${userType}/${data.subject.subjectId}/sqna`)}
                         icon={<BsQuestionCircle />}
                         component={<NavLink to={`/lms/${userType}/${data.subject.subjectId}/sqna`} />}>
                         {"Q&A"}
@@ -173,25 +173,25 @@ export function LmsSidebar() {
                     },
                   }}>
                   <MenuItem
-                    active={pathName === `/lms/${userType}/${data.courseId}/info`}
+                    active={pathName.startsWith(`/lms/${userType}/${data.courseId}/info`)}
                     icon={<BsInfoCircle />}
                     component={<NavLink to={`/lms/${userType}/${data.courseId}/info`} />}>
                     {"정보"}
                   </MenuItem>
                   <MenuItem
-                    active={pathName === `/lms/${userType}/${data.courseId}/board`}
+                    active={pathName.startsWith(`/lms/${userType}/${data.courseId}/board`)}
                     icon={<BsMegaphone />}
                     component={<NavLink to={`/lms/${userType}/${data.courseId}/board`}/>}>
                     {"공지"}
                   </MenuItem>
                   <MenuItem
-                    active={pathName === `/lms/${userType}/${data.courseId}/qna`}
+                    active={pathName.startsWith(`/lms/${userType}/${data.courseId}/qna`)}
                     icon={<RiMailLine />}
                     component={<NavLink to={`/lms/${userType}/${data.courseId}/qna`} />}>
                     {"1:1 문의"}
                   </MenuItem>
                   <MenuItem
-                    active={pathName === `/lms/${userType}/${data.courseId}/review`}
+                    active={pathName.startsWith(`/lms/${userType}/${data.courseId}/review`)}
                     icon={<BsStar />}
                     component={<NavLink to={`/lms/${userType}/${data.courseId}/review`} />}>
                     {"강의 평가"}
@@ -215,31 +215,31 @@ export function LmsSidebar() {
                     },
                   }}>
                   <MenuItem
-                    active={pathName === `/lms/${userType}/${data.subject.subjectId}/subject`}
+                    active={pathName.startsWith(`/lms/${userType}/${data.subject.subjectId}/subject`)}
                     icon={<BsInfoCircle />}
                     component={<NavLink to={`/lms/${userType}/${data.subject.subjectId}/subject`} />}>
                     {"정보"}
                   </MenuItem>
                   <MenuItem
-                    active={pathName === `/lms/${userType}/${data.subject.subjectId}/lecture`}
+                    active={pathName.startsWith(`/lms/${userType}/${data.subject.subjectId}/lecture`)}
                     icon={<BsPencil />}
                     component={<NavLink to={`/lms/${userType}/${data.subject.subjectId}/lecture`} />}>
                     {"강의"}
                   </MenuItem>
                   <MenuItem
-                    active={pathName === `/lms/${userType}/${data.subject.subjectId}/board`}
+                    active={pathName.startsWith(`/lms/${userType}/${data.subject.subjectId}/board`)}
                     icon={<BsMegaphone />}
                     component={<NavLink to={`/lms/${userType}/${data.subject.subjectId}/board`}/>}>
                     {"공지"}
                   </MenuItem>
                   <MenuItem
-                    active={pathName === `/lms/${userType}/${data.subject.subjectId}/homework`}
+                    active={pathName.startsWith(`/lms/${userType}/${data.subject.subjectId}/homework`)}
                     icon={<BsListCheck />}
                     component={<NavLink to={`/lms/${userType}/${data.subject.subjectId}/homework`} />}>
                     {"과제"}
                   </MenuItem>
                   <MenuItem
-                    active={pathName === `/lms/${userType}/${data.subject.subjectId}/qna`}
+                    active={pathName.startsWith(`/lms/${userType}/${data.subject.subjectId}/qna`)}
                     icon={<BsQuestionCircle />}
                     component={<NavLink to={`/lms/${userType}/${data.subject.subjectId}/qna`} />}>
                     {"Q&A"}
@@ -259,7 +259,7 @@ export function LmsSidebar() {
           {
             userType === "s"
             && <MenuItem
-                active={pathName === `/lms/${userType}/cqna`}
+                active={pathName.startsWith(`/lms/${userType}/cqna`)}
                 icon={<RiMailLine />}
                 component={<NavLink to={`/lms/${userType}/cqna`} />}>
                 {"1:1 문의"}
@@ -268,7 +268,7 @@ export function LmsSidebar() {
           {
             (userType === "t" || userType === "m")
             && <MenuItem
-                active={pathName === `/lms/a`}
+                active={pathName.startsWith(`/lms/a`)}
                 icon={<RiUserSettingsLine />}
                 component={<NavLink to={`/lms/a`} />}>
                 {"관리자 페이지"}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { homeworks, submits } from "../../assets/TempData";
+import { getHomeworkByHomeworkId, getSubmitByStudentIdAndHomeworkId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -73,37 +74,59 @@ const Box = styled.div`
   margin-bottom: 0;
 `;
 
-// sub_id 존재시 기존 내용에서 덮어씌기 하면서 제출일 새로고침
+// submitId 존재시 기존 내용에서 덮어씌기 하면서 제출일 새로고침
 export function StudentHWSubmit() {
   const { state } = useLocation();
-  const studentid = 1; // 임의 student_id
-  const homework = homeworks.find(h => h.homework_id == state);
+  const id = sessionStorage.getItem("id"); // studentId
+  const [homework, setHomework] = useState(null);
+  const [submit, setSubmit] = useState(null);
   const [submitContent, setSubmitContent] = useState("");
   const navigate = useNavigate();
-  let submit;
-
-  if(submits.filter((s) => s.student_id == studentid).find((s) => s.homework_id == homework.homework_id)){
-    submit = submits.filter((s) => s.student_id == studentid).find((s) => s.homework_id == homework.homework_id);
-  }
 
   useEffect(() => {
-    if(submit) setSubmitContent(submit.submit_content);
+    if(!homework) {
+      const promise = getHomeworkByHomeworkId(state);
+      const getData = () => {
+        promise.then((data) => {
+          setHomework(data);
+        });
+      };
+      getData();
+    }
+    if(!submit) {
+      const promise = getSubmitByStudentIdAndHomeworkId(id, state);
+      const getData = () => {
+        promise.then((data) => {
+          setSubmit(data);
+        });
+      };
+      getData();
+    }
+  })
+
+  useEffect(() => {
+    if(submit) {
+      setSubmitContent(submit.submit.submitContent);
+    }
   }, [submit]);
 
   return<>
-    <Container>
-      <TableBox>
-        <H2>{homework.hw_title}</H2>
-        <Hr />
-        <form action="" method="POST">
-          <ContentInput type="text" name="hw_submit_content" id="hw_submit_content" value={submitContent} onChange={(e)=>setSubmitContent(e.target.value)} />
-          <Input type="file" name="hw_file" id="hw_file" accept="" />
+    {
+      homework &&
+      <Container>
+        <TableBox>
+          <H2>{homework.title}</H2>
+          <Hr />
+          <form>
+            <ContentInput type="text" name="content" id="content" value={submitContent} onChange={(e)=>setSubmitContent(e.target.value)} />
+            <Input type="file" name="file" id="file" accept="" />
+          </form>
           <Box>
-            <PrimaryButton type="submit"><p>{ submit ? "다시 제출" : "제출"}</p></PrimaryButton>
-            <SecondaryButton onClick={() => navigate("/lms/s/homework")}><p>목록</p></SecondaryButton>
+            <PrimaryButton><p>{ submit ? "다시 제출" : "제출"}</p></PrimaryButton>
+            <SecondaryButton onClick={() => navigate(`/lms/s/${homework.subjectId}/homework`)}><p>목록</p></SecondaryButton>
           </Box>
-        </form>
-      </TableBox>
-    </Container>
+        </TableBox>
+      </Container>
+    }
   </>
 }

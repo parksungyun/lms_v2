@@ -1,7 +1,10 @@
 import styled from "styled-components";
 import { BsDownload } from "react-icons/bs";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { academics, feedbacks, homeworks, submits, userList } from "../../assets/TempData";
+import { useState } from "react";
+import { useEffect } from "react";
+import { getAllTrainers, getHomeworkByHomeworkId, getStudentByStudentId, getSubmitByStudentIdAndHomeworkId, getSubmitBySubmitId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -107,37 +110,73 @@ const SecondaryButton = styled.button`
 `;
 
 export function StudentHWReview() {
-  const studentid = 1; // 임의 student_id
+  const { id } = useParams();
+  const studentId = sessionStorage.getItem("id"); //studentId
   const { state } = useLocation();
   const navigate = useNavigate();
-  const homework = homeworks.find(h => h.homework_id == state);
-  const submit = submits.filter(s => s.homework_id == homework.homework_id);
-  const student = submit.find(s => s.student_id == studentid);
-  const feedback = feedbacks.find(f => f.submit_id == student.submit_id);
+  const [homework, setHomework] = useState(null);
+  const [submit, setSubmit] = useState(null);
+  const [academic, setAcademic] = useState(null);
+
+  useEffect(() => {
+    if(!homework) {
+      const promise = getHomeworkByHomeworkId(state);
+      const getData = () => {
+        promise.then((data) => {
+          setHomework(data);
+        });
+      };
+      getData();
+    }
+    if(!submit) {
+      const promise = getSubmitBySubmitId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setSubmit(data);
+        });
+      };
+      getData();
+    }
+    if(!academic) {
+      const promise = getAllTrainers();
+      const getData = () => {
+        promise.then((data) => {
+          setAcademic(data);
+        });
+      };
+      getData();
+    }
+  });
 
   return<>
-    <Container>
-      <TableBox>
-        <H2>{homework.hw_title}</H2>
-        <Hr />
-        <Content>{student.submit_content}</Content>
-        <AttachedBox>
-          <Attached><p className="fw-bold">첨부파일</p></Attached>
-          <div><A href={student.submit_fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
-        </AttachedBox>
-        <Hr />
-        <CommentBox>
-        <CommentWriter>
-          <Text>{userList.find(u => u.uid == academics.find(a => a.academic_id == feedback.academic_id).uid).user_name} | {feedback.feedback_reg_date}</Text>
-        </CommentWriter>
-        <Comment>
-          <Text>{feedback.hw_comment}</Text>
-        </Comment>
-      </CommentBox>
-      <Box>
-        <SecondaryButton onClick={()=>navigate("/lms/s/homework")}><p>목록</p></SecondaryButton>
-      </Box>
-      </TableBox>
-    </Container>
+    {
+      (homework && submit && academic) &&
+      <Container>
+        <TableBox>
+          <H2>{homework.title}</H2>
+          <Hr />
+          <Content>{submit.submit.submitContent}</Content>
+          <AttachedBox>
+            <Attached><p className="fw-bold">첨부파일</p></Attached>
+            <div><A href={submit.submit.submitFileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
+          </AttachedBox>
+          <Hr />
+          {
+            submit.feedback &&
+            <CommentBox>
+            <CommentWriter>
+              <Text>{academic.find((a) => a.academic.academicId === submit.feedback.academicId).user.userName} | {new Date(submit.feedback.feedbackRegDate).toISOString().split('T')[0]}</Text>
+            </CommentWriter>
+            <Comment>
+              <Text>{submit.feedback.hwComment}</Text>
+            </Comment>
+          </CommentBox>
+          }
+        <Box>
+          <SecondaryButton onClick={()=>navigate(`/lms/s/${homework.subjectId}/homework`)}><p>목록</p></SecondaryButton>
+        </Box>
+        </TableBox>
+      </Container>
+    }
   </>
 }
