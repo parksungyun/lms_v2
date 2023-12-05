@@ -3,6 +3,9 @@ import { academics, subjects, userList } from "../../assets/TempData";
 import styled from "styled-components";
 import { BsStarFill } from "react-icons/bs";
 import { useState } from "react";
+import { useEffect } from "react";
+import { getAllTrainers, getSubjectById } from "../Api";
+import axios from "axios";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -48,6 +51,7 @@ const TextArea = styled.textarea`
   border-radius: 0.5rem;
   resize: none;
   height: 10rem;
+  margin-top: 1rem;
 `;
 
 const StarArea = styled.div`
@@ -76,6 +80,7 @@ const SubjectName = styled.p`
 
 const TrainerName = styled.p`
   font-size: 1.1rem;
+  margin: 0;
 `;
 
 const SubjectInfo = styled.div`
@@ -92,19 +97,80 @@ const Divider = styled.hr`
 const Text = styled.p`
   font-size: 1.2rem;
   font-weight: 700;
+  margin: 0;
+`;
+
+const MiniText = styled.p`
+  font-size: 0.9rem;
+  &.red {
+    color: red;
+    margin-top: 5px;
+  }
+`;
+
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 1rem 0 0 0;
+  text-align: center;
 `;
 
 export function SubjectReview() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const subject = subjects.find((s) => s.subject_id == id);
-  const trainer = userList.find((u) => u.uid == (academics.find((a) => a.academic_id == subject.academic_id).uid));
+  const studentId = sessionStorage.getItem("id");
+  const [subject, setSubject] = useState(null);
+  const [academic, setAcademic] = useState(null);
   const [rating, setRating] = useState([true, false, false, false, false]);
   const [content, setContent] = useState("");
+  const [errorCheck, setErrorCheck] = useState();
   const temp = [0, 1, 2, 3, 4];
+
+  useEffect(() => {
+    if(!academic) {
+      const promise = getAllTrainers();
+      const getData = () => {
+        promise.then((data) => {
+          setAcademic(data);
+        });
+      };
+      getData();
+    }
+    if(!subject) {
+      const promise = getSubjectById(id);
+      const getData = () => {
+        promise.then((data) => {
+          setSubject(data);
+        });
+      };
+      getData();
+    }
+  })
 
   function onSubmit() {
     let score = rating.filter(Boolean).length;
+
+    if(!content) {
+      setErrorCheck(1);
+    }
+    else {
+      const data = {
+        subjectId: id,
+        reviewScore: score,
+        reviewComment: content,
+        studentId: studentId,
+      };
+      console.log(data);
+      axios
+      .post(`/api/course/review/write`, data)
+      .then((res) => {
+        navigate("/lms/s/mypage");
+      })
+      .catch((err) => {
+        console.log(`${err} : 강의평가 등록 실패`);
+      });
+    }
   }
 
   function handleStarClick(index) {
@@ -116,32 +182,44 @@ export function SubjectReview() {
   }
 
   return <>
-    <Container>
-      <Content>
-        <SubjectInfo>
-          <SubjectName>{subject.subject_name}</SubjectName>
-          <TrainerName>{trainer.user_name}</TrainerName>
-        </SubjectInfo>
-        <Divider />
-        <Text>
-          강의 점수를 입력해주세요. (1점 ~ 5점)
-        </Text>
-        <StarArea>
+    {
+      (subject && academic) &&
+      <Container>
+        <Content>
+          <SubjectInfo>
+            <SubjectName>{subject.subject.subjectName}</SubjectName>
+            <TrainerName>{academic.find((a) => a.academic.academicId === subject.subject.academicId).user.userName}</TrainerName>
+            <MiniText className="red">
+              * 강의평가는 한번 등록하면 수정하거나 확인할 수 없으니 주의해주세요!
+            </MiniText>
+          </SubjectInfo>
+          <Divider />
+          <Text>
+            강의점수를 입력해주세요. (1점 ~ 5점)
+          </Text>
+          <MiniText>
+            * 강의점수를 입력하지 않으면 기본 1점이 입력됩니다.
+          </MiniText>
+          <StarArea>
+            {
+              temp.map((i) => (
+                <Star key={i} onClick={() => handleStarClick(i)} className={rating[i] && 'active'} />
+              ))
+            }
+          </StarArea>
+          <Text>
+            강의평을 입력해주세요.
+          </Text>
+          <TextArea name="reviewContent" id="reviewContent" value={content} onChange={(e) => {setContent(e.target.value)}} />
           {
-            temp.map((i) => (
-              <Star key={i} onClick={() => handleStarClick(i)} className={rating[i] && 'active'} />
-            ))
+            errorCheck === 1 && <ErrorMsg>강의평을 입력해주세요</ErrorMsg>
           }
-        </StarArea>
-        <Text>
-          강의평을 입력해주세요.
-        </Text>
-        <TextArea name="review_content" id="review_content" value={content} onChange={(e) => {setContent(e.target.value)}} />
-      </Content>
-      <ButtonBox>
-        <PrimaryButton type="submit" onClick={onSubmit}><p>등록</p></PrimaryButton>
-        <SecondaryButton onClick={() => navigate(-1)}><p>목록</p></SecondaryButton>
-      </ButtonBox>
-    </Container>
+        </Content>
+        <ButtonBox>
+          <PrimaryButton onClick={() => onSubmit()}><p>등록</p></PrimaryButton>
+          <SecondaryButton onClick={() => navigate(-1)}><p>목록</p></SecondaryButton>
+        </ButtonBox>
+      </Container>
+    }
   </>
 }

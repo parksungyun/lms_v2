@@ -4,6 +4,7 @@ import { academics, course_board, course_questions, homeworks, lectures, subject
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Pagination } from "./Pagination";
+import { useEffect } from "react";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -42,12 +43,34 @@ const header = [
   },
 ];
 
-export function MyPost({type, id}) {
+export function MyPost() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const limit = 10;
   const offset = (page - 1) * limit;
-  let data;
+  const type = sessionStorage.getItem("userType");
+  const id = sessionStorage.getItem("id"); // studentId OR academicId
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    if(type === "s") {
+      if(!data) {
+        
+      }
+    }
+
+    if(type === "t") {
+      if(!data) {
+        
+      }
+    }
+
+    if(type === "m") {
+      if(!data) {
+        
+      }
+    }
+  })
 
   const shortenTitle = (str, length) => {
     let result = '';

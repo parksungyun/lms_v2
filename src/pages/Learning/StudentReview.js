@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { Table } from "../../components/Table";
 import { academics, courses, students, subjects, userList } from "../../assets/TempData";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getAllTrainers, getCourseById, getStudentByStudentId, getSubjectByStudentId, getSubjectReviewByStudentId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -48,28 +50,68 @@ const headers = [
 
 export function StudentReview() {
   const navigate = useNavigate();
-  const id = 1;
-  const student = students.find((s) => s.student_id == id);
-  const user = userList.find((u) => u.uid == student.uid);
-  const course = courses.find((c) => c.course_id == student.course_id);
-  const subject = subjects.filter(data => data.course_id == course.course_id);
-  const currentDate = new Date();
-  const endDate = new Date(course.end_date);
-  const diff = (endDate.getTime() - currentDate.getTime()) / 1000 / 24 / 60 / 60;
+  const id = sessionStorage.getItem("id"); // studentId
+  const [user, setUser] = useState(null);
+  const [academic, setAcademic] = useState(null);
+  const [subjects, setSubjects] = useState(null);
+  const [review, setReview] = useState(null);
+  let items;
 
-  const items = subject.map((s, i) => (
-    {
-      no: i + 1,
-      subject_name: s.subject_name,
-      trainer_name: userList.find((u) => u.uid == (academics.find((a) => a.academic_id == s.academic_id).uid)).user_name,
-      review_period: getReviewPeriod(),
-      review_link: disabledBtn(s.subject_id),
+  useEffect(() => {
+    if(!user) {
+      const promise = getStudentByStudentId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setUser(data);
+        });
+      };
+      getData();
     }
-  ))
+    if(!academic) {
+      const promise = getAllTrainers();
+      const getData = () => {
+        promise.then((data) => {
+          setAcademic(data);
+        });
+      };
+      getData();
+    }
+    if(!subjects) {
+      const promise = getSubjectByStudentId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setSubjects(data);
+        });
+      };
+      getData();
+    }
+    if(!review) {
+      const promise = getSubjectReviewByStudentId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setReview(data);
+        });
+      };
+      getData();
+    }
+  })
 
-  function getReviewPeriod() {
-    const start = new Date(endDate - 6 * 1000 * 60 * 60 * 24);
-    return <p>{`${getDateFormat(start)} ~ ${course.end_date}`}</p>
+  if(subjects && academic && review) {
+    items = subjects.map((s, i) => (
+      {
+        no: i + 1,
+        subject_name: s.subject.subjectName,
+        trainer_name: academic.find((a) => a.academic.academicId === s.subject.academicId).user.userName,
+        review_period: getReviewPeriod(s.course.endDate),
+        review_link: disabledBtn(s),
+      }
+    ))
+  }
+
+  function getReviewPeriod(endDate) {
+    const end = new Date(endDate);
+    const start = new Date(end - 6 * 1000 * 60 * 60 * 24);
+    return <p>{`${getDateFormat(start)} ~ ${endDate}`}</p>
   }
 
   function getDateFormat(date) {
@@ -79,10 +121,18 @@ export function StudentReview() {
     return  year + "-" + (("00" + month.toString()).slice(-2)) + "-" + (("00" + day.toString()).slice(-2));
   }
 
-  function disabledBtn(id) {
-    if(diff >= -7 && diff <= 0){
-      return(<PrimaryButton onClick={() => onReview(id)}><p>평가하기</p></PrimaryButton>)
-    } else {
+  function disabledBtn(subject) {
+    const currentDate = new Date();
+    const endDate = new Date(subject.course.endDate);
+    const diff = (endDate.getTime() - currentDate.getTime()) / 1000 / 24 / 60 / 60;
+    if(review.find((r) => (r.subjectId === subject.subject.subjectId) && (r.studentId == id))) {
+      return (<PrimaryButton className="disabled" disabled><p>평가완료</p></PrimaryButton>)
+    }
+
+    if(diff < 7 && diff >= 0){
+      return(<PrimaryButton onClick={() => onReview(subject.subject.subjectId)}><p>평가하기</p></PrimaryButton>)
+    }
+    else {
       return (<PrimaryButton className="disabled" disabled><p>평가하기</p></PrimaryButton>)
     }
   };

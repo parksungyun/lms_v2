@@ -689,3 +689,55 @@ export const getSubmitByStudentIdAndHomeworkId = async (studentId, homeworkId) =
   });
   return submit;
 }
+
+export const getSubjectReviewByCourseId = async (id) => {
+  let reviews;
+  await axios
+  .get(`/api/course/${id}/review`)
+  .then((res) => {
+    reviews = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과정의 모든 과목에 대한 강의평가 불러오기 실패`);
+  });
+  return reviews;
+}
+
+export const getSubjectReviewByStudentId = async (id) => {
+  let reviews;
+  await axios
+  .get(`/api/course/student/${id}/review`)
+  .then((res) => {
+    reviews = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생의 강의평가 불러오기 실패`);
+  });
+  return reviews;
+}
+
+export const getSubjectReviewBySubjectId = async (id) => {
+  let reviews;
+  await axios
+  .get(`/api/subject/${id}/review`)
+  .then((res) => {
+    reviews = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과목의 모든 강의평가 불러오기 실패`);
+  });
+  return reviews;
+}
+
+export const getStudentAttendanceByStudentId = async (id) => {
+  let attendance;
+  await axios
+  .get(`/api/user/student/${id}/attendance`)
+  .then((res) => {
+    attendance = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생 출결 불러오기 실패`);
+  });
+  return attendance;
+}

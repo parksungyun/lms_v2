@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import { userList, students, courses, attendances, absence_code, academics } from "../../assets/TempData";
 import { Pagination } from "../../components/Pagination";
+import { getAllManagers, getCourseById, getStudentAttendanceByStudentId, getStudentByStudentId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -149,31 +150,25 @@ const headers = [
 
 
 
-export function StudentAttendance() {
-  const id = 1;
-  const student = students.find((s) => s.student_id == id);
-  const user = userList.find((u) => u.uid == student.uid);
-  const course = courses.find((c) => c.course_id == student.course_id);
-  const manager = userList.find((u) => u.uid == (academics.find((m) => m.academic_id == course.academic_id)).uid);
-  const attendance = attendances.filter(data => data.student_id == student.student_id);
-  const absence = attendance.filter(data => data.absence_id > 0);
-
+export function StudentAttendance({course, academic, attendance}) {
+  // const absence = attendance.filter(data => data.absence_id > 0);
   const [searchCode, setSearchCode] = useState();
   const [searchStartDate, setSearchStartDate] = useState();
   const [searchEndDate, setSearchEndDate] = useState();
   const [page, setPage] = useState(1);
   const limit = 10;
   const offset = (page - 1) * limit;
-  
-  const items = attendance.map((a, i) => (
+  let items;
+
+  items = attendance.map((a, i) => (
     {
       no: i + 1,
-      date: a.attend_date,
-      attendTime: a.attend_time,
-      leaveTime: a.leave_time,
-      attend: changeCode(a.absence_id),
-      codeId: a.absence_id,
-      state: changeState(a.attendance_id, a.absence_id),
+      date: a.attendDate,
+      attendTime: a.attendTime,
+      leaveTime: a.leaveTime,
+      attend: changeCode(a.absenceId),
+      codeId: a.absenceId,
+      state: changeState(a.attendanceId, a.absenceId),
     }
   ))
 
@@ -200,56 +195,59 @@ export function StudentAttendance() {
   }
 
   return <>
-    <Container>
-      <Box>
-        <ContentBox className="col-3">
-          <Bold>과정명</Bold>
-          <p>{course.course_name}</p>
-        </ContentBox>
-        <ContentBox className="col-2">
-          <Bold>담당 매니저</Bold>
-          <p>{manager.user_name}</p>
-        </ContentBox>
-        <ContentBox className="col-3">
-          <Bold>훈련기간</Bold>
-          <p>{course.start_date} ~ {course.end_date}</p>
-        </ContentBox>
-        <ContentBox className="col-2">
-          <Bold>출석일수</Bold>
-          <p>{attendance.length - absence.length}</p>
-        </ContentBox>
-        <ContentBox className="col-2">
-          <Bold>결석일수</Bold>
-          <p>{absence.length}</p>
-        </ContentBox>
-      </Box>
-      <Search>
-        <Detail>
-          <Label>출결코드</Label>
-          <Select name="searchCode" id="searchCode" onChange={(e) => setSearchCode(e.target.value)} value={searchCode}>
-            {
-              absence_code.map((data) => (
-                <option value={data.absence_id} key={data.absence_id}>
-                  {data.absence_id}: {data.absence_name}
-                </option>
-              ))
-            }
-          </Select>
-        </Detail>
-        <Detail>
-          <Label>기간</Label>
-          <InputDate type="date" name="start_date" id="start_date"  value={searchStartDate} onChange={(e) => {setSearchStartDate(e.target.value)}} />
-          ~
-          <InputDate type="date" name="end_date" id="end_date"  value={searchEndDate} onChange={(e) => {setSearchEndDate(e.target.value)}} />
-        </Detail>
-        <PrimaryButton onClick={onSearch}><p>검색</p></PrimaryButton>
-      </Search>
-      <Table 
-        headers={headers}
-        items={postsData(items)}
-        selectable={false}
-      />
-      <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
-    </Container>
+    {
+      (academic && course && items) &&
+      <Container>
+        <Box>
+          <ContentBox className="col-3">
+            <Bold>과정명</Bold>
+            <p>{course.courseName}</p>
+          </ContentBox>
+          <ContentBox className="col-2">
+            <Bold>담당 매니저</Bold>
+            <p>{academic.find((a) => a.academic.academicId === course.academicId)}</p>
+          </ContentBox>
+          <ContentBox className="col-3">
+            <Bold>훈련기간</Bold>
+            <p>{course.startDate} ~ {course.endDate}</p>
+          </ContentBox>
+          <ContentBox className="col-2">
+            <Bold>출석일수</Bold>
+            {/* <p>{attendance.length - absence.length}</p> */}
+          </ContentBox>
+          <ContentBox className="col-2">
+            <Bold>결석일수</Bold>
+            {/* <p>{absence.length}</p> */}
+          </ContentBox>
+        </Box>
+        <Search>
+          <Detail>
+            <Label>출결코드</Label>
+            {/* <Select name="searchCode" id="searchCode" onChange={(e) => setSearchCode(e.target.value)} value={searchCode}>
+              {
+                absence_code.map((data) => (
+                  <option value={data.absence_id} key={data.absence_id}>
+                    {data.absence_id}: {data.absence_name}
+                  </option>
+                ))
+              }
+            </Select> */}
+          </Detail>
+          <Detail>
+            <Label>기간</Label>
+            <InputDate type="date" name="start_date" id="start_date"  value={searchStartDate} onChange={(e) => {setSearchStartDate(e.target.value)}} />
+            ~
+            <InputDate type="date" name="end_date" id="end_date"  value={searchEndDate} onChange={(e) => {setSearchEndDate(e.target.value)}} />
+          </Detail>
+          <PrimaryButton onClick={onSearch}><p>검색</p></PrimaryButton>
+        </Search>
+        <Table 
+          headers={headers}
+          items={postsData(items)}
+          selectable={false}
+        />
+        <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+      </Container>
+    }
   </>
 }
