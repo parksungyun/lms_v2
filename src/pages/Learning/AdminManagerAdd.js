@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { department, managerPosition, userList } from "../../assets/TempData";
+import axios from "axios";
+import { getUserByUserId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -66,7 +68,7 @@ const Img = styled.img`
   border-radius: 1rem;
 `;
 
-const Details = styled.form`
+const Details = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -127,44 +129,77 @@ const LoadText = styled.p`
   color: #5f7dcf;
 `;
 
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 0;
+`;
+
 export function AdminManagerAdd() {
   const navigate = useNavigate();
   
   const [search, setSearch] = useState("");
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(null);
   const [loadText, setLoadText] = useState("");
 
+  const [userUid, setUserUid] = useState("");
   const [userName, setUserName] = useState("");
   const [userId, setUserId] = useState("");
   const [userBirth, setUserBirth] = useState("");
   const [userDept, setUserDept] = useState(0);
   const [userPhoto, setUserPhoto] = useState("");
-  const [userPosition, setUserPosition] = useState();
+  const [userPosition, setUserPosition] = useState("주임");
   const [userPhone, setUserPhone] = useState("");
   const [userAddr, setUserAddr] = useState("");
   const [userEmail, setUserEmail] = useState("");
-  const [userAvailable, setUserAvailable] = useState();
-  const [userTAuth, setUserTAuth] = useState();
-  const [userMAuth, setUserMAuth] = useState();
-  const [userCAuth, setUserCAuth] = useState();
-  const [userRemark, setUserRemark] = useState();
+  const [userAvailable, setUserAvailable] = useState(false);
+  const [userTAuth, setUserTAuth] = useState(false);
+  const [userMAuth, setUserMAuth] = useState(false);
+  const [userCAuth, setUserCAuth] = useState(false);
+  const [auth, setAuth] = useState();
+  const [userRemark, setUserRemark] = useState("");
+  const [image, setImage] = useState("");
+  const [error, setError] = useState(0);
+  let userAuth;
+  let available;
 
   useEffect(()=> {
     if(user) {
-      setUserName(user.user_name);
-      setUserId(user.user_id);
-      setUserBirth(user.user_birth);
-      setUserPhone(user.user_phone);
-      setUserEmail(user.user_email);
-      setUserAddr(user.user_addr);
+      setUserUid(user.uid);
+      setUserName(user.userName);
+      setUserId(user.userId);
+      setUserBirth(user.userBirth);
+      setUserPhone(user.userPhone);
+      setUserEmail(user.userEmail);
+      setUserAddr(user.userAddr);
+      setImage("/upload/UserDefault.png")
+      setLoadText(`${user.userName} 님의 정보를 불러왔습니다.`);
+    }
+    else {
+      setUserName("");
+      setUserId("");
+      setUserBirth("");
+      setUserPhone("");
+      setUserEmail("");
+      setUserAddr("");
     }
   }, [user]);
 
   function onSearch(item) {
-    const temp = userList.find((u) => u.user_id == item);
-    if(temp) {
-      setLoadText(`${temp.user_name} 님의 정보를 불러왔습니다.`);
-      setUser(temp);
+    if(item) {
+      const promise = getUserByUserId(item);
+      const getData = () => {
+        promise.then((data) => {
+          if (data) {
+            setUser(data);
+          } else {
+            setUser(null);
+            setLoadText("이미 등록된 사용자 입니다.")
+          }
+        });
+      };
+      getData();
     }
     else {
       setLoadText("사용자 검색 결과가 없습니다.");
@@ -184,10 +219,85 @@ export function AdminManagerAdd() {
     });
   };
 
+  useEffect(()=>{
+    if (auth == 0) {
+      setUserCAuth(true);
+    } else if (auth == 1) {
+      setUserTAuth(true);
+    } else if (auth == 2) {
+      setUserCAuth(true);
+      setUserMAuth(true);
+    } else if (auth == 3) {
+      setUserCAuth(true);
+      setUserTAuth(true);
+      setUserMAuth(true);
+    }
+  },[auth]);
+
   function onSubmit() {
-
+    if (userCAuth && userMAuth && userTAuth) {
+      userAuth = 3;
+      setError(0);
+    } else if (userCAuth && userMAuth && !(userTAuth)) {
+      userAuth = 2;
+      setError(0);
+    } else if (userTAuth && !(userCAuth) && !(userMAuth)) {
+      userAuth = 1;
+      setError(0);
+    } else if (userCAuth && !(userTAuth) && !(userMAuth)) {
+      userAuth = 0;
+      setError(0);
+    } else {
+      setError(1);
+      userAuth = auth;
+    }
+    if (userAvailable) {
+      available = 0;
+    } else {available = 1;}
+  if (error == 0) {
+    const data = {
+      uid: userUid,
+      userDept: userDept,
+      userPosition: userPosition,
+      userRemark: userRemark,
+      userAuth: userAuth,
+      userAvailable: available
+    }
+    const fd = new FormData();
+    if (userPhoto) {
+      fd.append("file", userPhoto);
+      console.log(fd);
+      for (const pair of fd.entries()) {
+        console.log(pair[0] + ', ' + pair[1]);
+    }
+    } else {
+      console.error("No file selected.");
+    }
+    console.log(data);
+    axios
+      .post("/api/user/academic/add", data)
+      .then((res) => {
+        console.log(res.data);
+        setError(2);
+      })
+      .catch((err) => {
+        console.log(`${err} : Add 실패`);
+        setError(3);
+      });
+      fetch(`/api/file/upload/${userUid}`, {
+          method: 'POST',
+          body: fd,
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('File upload success:', data);
+      })
+      .catch(error => {
+          console.error('File upload failed:', error);
+          setError(3);
+      });
+    }
   }
-
   return <>
     <Container>
       <H2>매니저 등록</H2>
@@ -202,7 +312,7 @@ export function AdminManagerAdd() {
           </LoadUser>
         </LoadBox>
         <ContentDivide>
-          { imageSrc ? <Img src={imageSrc} alt="preview-img" /> : <Img src={userPhoto} alt="default" />}
+          { imageSrc ? <Img src={imageSrc} alt="preview-img" /> : <Img src={image} alt="default" />}
           <Details action="" method="POST">
             <Detail>
               <Label>이름</Label>
@@ -231,29 +341,17 @@ export function AdminManagerAdd() {
             <Detail>
               <Label>부서</Label>
               <Select name="user_dept" id="user_dept" onChange={(e) => setUserDept(e.target.value)} value={userDept} disabled>
-                {
-                  department.map((data) => (
-                    <option value={data.dept_id} key={data.dept_id}>
-                      {
-                        data.dept_name
-                      }
-                    </option>
-                  ))
-                }
+                <option value={0}>행정팀</option>
+                <option value={1}>교육팀</option>
               </Select>
             </Detail>
             <Detail>
               <Label>포지션</Label>
               <Select name="user_position" id="user_position" onChange={(e) => setUserPosition(e.target.value)} value={userPosition}>
-                {
-                  managerPosition.map((data) => (
-                    <option value={data.position_id} key={data.position_id}>
-                      {
-                        data.position_name
-                      }
-                    </option>
-                  ))
-                }
+               <option value="주임">주임</option>
+                <option value="대리">대리</option>
+                <option value="과장">과장</option>
+                <option value="부장">부장</option>
               </Select>
             </Detail>
             <Detail>
@@ -269,13 +367,16 @@ export function AdminManagerAdd() {
               <Check type="checkbox" name="user_t_auth" id="user_t_auth" value={userTAuth} onChange={(e) => {setUserTAuth(e.target.value)}} /> 강사 관리
               <Check type="checkbox" name="user_m_auth" id="user_m_auth" value={userMAuth} onChange={(e) => {setUserMAuth(e.target.value)}} /> 매니저 관리
               <Check type="checkbox" name="user_c_auth" id="user_c_auth" value={userCAuth} onChange={(e) => {setUserCAuth(e.target.value)}} /> 과정 관리
+              {error == 1 && <ErrorMsg>없는 권한입니다. 다시 확인해주세요.</ErrorMsg>}
             </Detail>
             <Detail>
               <Label>활성화</Label>
               <Check type="checkbox" name="user_available" id="user_available" value={userAvailable} onChange={(e) => {setUserAvailable(e.target.value)}} /> 비활성화
             </Detail>
+              {error == 2 && window.location.reload()}
+              {error == 3 && <ErrorMsg>등록이 실패하였습니다.</ErrorMsg>}
             <ButtonBox>
-              <PrimaryButton type="submit" onClick={onSubmit}><p>등록</p></PrimaryButton>
+              <PrimaryButton type="submit" onClick={()=>onSubmit()}><p>등록</p></PrimaryButton>
               <SecondaryButton onClick={() => navigate("/lms/a/trainerSetting")}><p>목록</p></SecondaryButton>
             </ButtonBox>
           </Details>

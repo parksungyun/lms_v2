@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { userList, academics } from "../../assets/TempData";
 import { BsPatchPlusFill, BsPatchMinusFill } from "react-icons/bs";
 import { useEffect } from "react";
+import { getAllManagers, getAllTrainers } from "../Api";
+import axios from "axios";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -57,7 +58,7 @@ const Img = styled.img`
   border-radius: 1rem;
 `;
 
-const Details = styled.form`
+const Details = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -172,6 +173,13 @@ const DeleteBox = styled.div`
   }
 `;
 
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 0;
+`;
+
 export function AdminCourseAdd() {
   const navigate = useNavigate();
 
@@ -184,20 +192,46 @@ export function AdminCourseAdd() {
   const [recruitStart, setRecruitStart] = useState();
   const [recruitEnd, setRecruitEnd] = useState();
   const [capacity, setCapacity] = useState();
-  const [coursePhoto, setCoursePhoto] = useState("");
+  const [coursePhoto, setCoursePhoto] = useState("/upload/CourseDefault.png");
   const [courseInfo, setCourseInfo] = useState();
   const [courseAvailable, setCourseAvailable] = useState();
-  
+  const [imageSrc, setImageSrc] = useState('');
+  const [managers, setManagers] = useState(null);
+  const [trainers, setTrainers] = useState(null);
+  const [error, setError] = useState(0);
+  let available;
+
+  useEffect(() => {
+    if(!managers) {
+      const promise = getAllManagers();
+      const getData = () => {
+        promise.then((data) => {
+          setManagers(data);
+        })
+      };
+      getData();
+    };
+    if(!trainers) {
+      const promise = getAllTrainers();
+      const getData = () => {
+        promise.then((data) => {
+          setTrainers(data);
+        })
+      };
+      getData();
+    };
+  });
+  useEffect(()=>{
+    setSelected(managers[0].academic.academicId)
+  },[managers])
+  console.log(managers)
   const temp = [
     {
-      subject_id: 0,
       subject_name: '',
       academic_id: 0,
     }
   ];
-  
   const [subject, setSubject] = useState(temp);
-
   const [subjectNo, setSubjectNo] = useState(1);
 
   useEffect(() => {
@@ -243,8 +277,6 @@ export function AdminCourseAdd() {
     setSubjectNo(subjectNo + 1);
   }
 
-  const [imageSrc, setImageSrc] = useState('');
-
   const encodeFileToBase64 = (fileBlob) => {
     const reader = new FileReader();
     reader.readAsDataURL(fileBlob);
@@ -257,10 +289,59 @@ export function AdminCourseAdd() {
   };
 
   function onSubmit() {
+    if(courseAvailable) {
+      available = 0;
+    } else {available = 1;}
+    const data = {
+      academicId: selected,
+      courseName: courseName,
+      subjectNo: subjectNo,
+      capacity: capacity,
+      startDate: startDate,
+      endDate: endDate,
+      recruitStart: recruitStart,
+      recruitEnd: recruitEnd,
+      courseInfo: courseInfo
+    };
+    console.log(data);
+    const fd = new FormData();
+    if (coursePhoto) {
+      fd.append("file", coursePhoto);
+      console.log(fd);
+      for (const pair of fd.entries()) {
+        console.log(pair[0] + ', ' + pair[1]);
+    }
+    } else {
+      console.error("No file selected.");
+    }
+    axios
+    .post("/api/course/add", data)
+    .then((res) => {
+      console.log(res.data.data)
+      setError(1);
+    })
+    .catch((err) => {
+      console.log(`${err} : Add 실패`)
+      setError(2);
+    })
+    // fetch(`/api/file/upload/course/${courseName}`, {
+    //   method: 'POST',
+    //   body: fd,
+    // })
+    // .then(response => response.json())
+    // .then(data => {
+    //     console.log('File upload success:', data);
+    // })
+    // .catch(error => {
+    //     console.error('File upload failed:', error);
+    //     setError(2);
+    // });
 
   }
-
+  console.log(selected)
   return <>
+    {
+      (managers && trainers) &&
     <Container>
       <H2>과정 등록</H2>
       <Content>
@@ -299,11 +380,9 @@ export function AdminCourseAdd() {
               <Label>담당 매니저</Label>
               <Select name="manager" id="manager" onChange={(e) => setSelected(e.target.value)} value={selected}>
                 {
-                  academics.filter(a => a.dept == 0).map((data) => (
-                    <option value={data.academic_id} key={data.academic_id}>
-                      {
-                        userList.find((u) => u.uid == data.uid).user_name
-                      }
+                  managers.map((data) => (
+                    <option value={data.academic.academicId} key={data.academic.academicId}>
+                      {data.user.userName}
                     </option>
                   ))
                 }
@@ -318,11 +397,9 @@ export function AdminCourseAdd() {
                       <Input type="text" name={`subject${i}`} id={`subject${i}`} value={subjectName[i]} onChange={(e) => onChangeSubjectName(e, i)} />
                       <SubjectSelect name={`subjectT${i}`} id={`subjectT${i}`} onChange={(e) => onChangeSubject(e, i)} value={subjectSelected[i]}>
                         {
-                          academics.filter(a => a.dept == 1).map((trainer) => (
-                            <option value={trainer.academic_id} key={trainer.academic_id}>
-                              {
-                                userList.find((u) => u.uid == trainer.uid).user_name
-                              }
+                          trainers.map((t) => (
+                            <option value={t.academic.academicId} key={t.academic.academicId}>
+                              {t.user.userName}
                             </option>
                           ))
                         }
@@ -338,15 +415,16 @@ export function AdminCourseAdd() {
             </Detail>
             <Detail>
               <Label>활성화</Label>
-              <Check type="checkbox" name="user_available" id="user_available" value={courseAvailable} onChange={(e) => {setCourseAvailable(e.target.value)}} /> 비활성화
+              <Check type="checkbox" name="user_available" id="user_available" checked={courseAvailable} onChange={(e) => {setCourseAvailable(e.target.checked)}} /> 비활성화
             </Detail>
             <ButtonBox>
-              <PrimaryButton type="submit" onClick={onSubmit}><p>등록</p></PrimaryButton>
+              <PrimaryButton type="submit" onClick={()=>onSubmit()}><p>등록</p></PrimaryButton>
               <SecondaryButton onClick={() => navigate("/lms/a/courseSetting")}><p>목록</p></SecondaryButton>
             </ButtonBox>
         </Details>
         </ContentDivide>
       </Content>
     </Container>
+    }
   </>
 }

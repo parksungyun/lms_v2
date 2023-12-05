@@ -741,3 +741,16 @@ export const getStudentAttendanceByStudentId = async (id) => {
   });
   return attendance;
 }
+
+export const getAllStudents = async () => {
+  let students;
+  await axios
+  .get("/api/user/students")
+  .then((res) => {
+    students = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 모든 학생 불러오기 실패`);
+  });
+  return students;
+}

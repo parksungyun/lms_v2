@@ -92,7 +92,6 @@ const trainerSetting = [
 
 export function AdminTrainerSetting() {
   const [trainers, setTrainers] = useState(null);
-  const [subjects, setSubjects] = useState(null);
   let items;
   useEffect(() => {
     if(!trainers) {
@@ -100,15 +99,6 @@ export function AdminTrainerSetting() {
       const getData = () => {
         promise.then((data) => {
           setTrainers(data);
-        });
-      };
-      getData();
-    }
-    if(!subjects) {
-      const promise = getAllCourses();
-      const getData = () => {
-        promise.then((data) => {
-          setSubjects(data);
         });
       };
       getData();

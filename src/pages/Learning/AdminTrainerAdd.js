@@ -148,14 +148,15 @@ export function AdminTrainerAdd() {
   const [userBirth, setUserBirth] = useState("");
   const [userDept, setUserDept] = useState(1);
   const [userPhoto, setUserPhoto] = useState("");
-  const [userPosition, setUserPosition] = useState("");
+  const [userPosition, setUserPosition] = useState("Web Development");
   const [userPhone, setUserPhone] = useState("");
   const [userAddr, setUserAddr] = useState("");
   const [userEmail, setUserEmail] = useState("");
-  const [userAvailable, setUserAvailable] = useState(0);
+  const [userAvailable, setUserAvailable] = useState(false);
   const [userTAuth, setUserTAuth] = useState(false);
   const [userMAuth, setUserMAuth] = useState(false);
   const [userCAuth, setUserCAuth] = useState(false);
+  const [auth, setAuth] = useState();
   const [userRemark, setUserRemark] = useState("");
   const [image, setImage] = useState("");
   const [error, setError] = useState(0);
@@ -217,6 +218,21 @@ export function AdminTrainerAdd() {
     });
   };
 
+  useEffect(()=>{
+    if (auth == 0) {
+      setUserCAuth(true);
+    } else if (auth == 1) {
+      setUserTAuth(true);
+    } else if (auth == 2) {
+      setUserCAuth(true);
+      setUserMAuth(true);
+    } else if (auth == 3) {
+      setUserCAuth(true);
+      setUserTAuth(true);
+      setUserMAuth(true);
+    }
+  },[auth]);
+
   function onSubmit() {
     if (userCAuth && userMAuth && userTAuth) {
       userAuth = 3;
@@ -232,22 +248,16 @@ export function AdminTrainerAdd() {
       setError(0);
     } else {
       setError(1);
+      userAuth = auth;
     }
     if (userAvailable) {
       available = 0;
     } else {available = 1;}
-  }
   if (error == 0) {
     const data = {
       uid: userUid,
-      userId: userId,
-      userName: userName,
-      userBirth: userBirth,
       userDept: userDept,
-      userPhone: userPhone,
       userPosition: userPosition,
-      userAddr: userAddr,
-      userEmail: userEmail,
       userRemark: userRemark,
       userAuth: userAuth,
       userAvailable: available
@@ -264,24 +274,28 @@ export function AdminTrainerAdd() {
     }
     console.log(data);
     axios
-      .post("/api/user/add", data)
+      .post("/api/user/academic/add", data)
       .then((res) => {
         console.log(res.data);
+        setError(2);
       })
       .catch((err) => {
         console.log(`${err} : Add 실패`);
+        setError(3);
       });
-      // fetch(`/api/file/upload/${userUid}`, {
-      //     method: 'POST',
-      //     body: fd,
-      // })
-      // .then(response => response.json())
-      // .then(data => {
-      //     console.log('File upload success:', data);
-      // })
-      // .catch(error => {
-      //     console.error('File upload failed:', error);
-      // });
+      fetch(`/api/file/upload/${userUid}`, {
+          method: 'POST',
+          body: fd,
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('File upload success:', data);
+      })
+      .catch(error => {
+          console.error('File upload failed:', error);
+          setError(3);
+      });
+    }
   }
   return <>
     <Container>
@@ -356,6 +370,8 @@ export function AdminTrainerAdd() {
               <Label>활성화</Label>
               <Check type="checkbox" name="user_available" id="user_available" checked={userAvailable} onChange={(e) => {setUserAvailable(e.target.checked)}} /> 비활성화
             </Detail>
+              {error == 2 && window.location.reload()}
+              {error == 3 && <ErrorMsg>등록이 실패하였습니다.</ErrorMsg>}
             <ButtonBox>
               <PrimaryButton onClick={()=>onSubmit()}><p>등록</p></PrimaryButton>
               <SecondaryButton onClick={() => navigate("/lms/a/trainerSetting")}><p>목록</p></SecondaryButton>

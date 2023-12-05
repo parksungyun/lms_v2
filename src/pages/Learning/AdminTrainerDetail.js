@@ -206,8 +206,6 @@ export function AdminTrainerDetail() {
     });
   };
 
-  console.log(auth);
-
   function changeAvailable() {
     axios
     .get(`/api/user/${user.user.uid}/changeAvailable/${userAvailable}`)
@@ -264,7 +262,7 @@ export function AdminTrainerDetail() {
         console.error("No file selected.");
       }
       axios
-      .post("/api/user/mod", data)
+      .post("/api/user/academic/mod", data)
       .then((res) => {
         console.log(res.data.data);
       })

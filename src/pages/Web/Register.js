@@ -124,7 +124,7 @@ export function Register() {
       setErrorCheck(10);
     }
     else if (!(userId && userPw && userPwCheck && userName && userBirth && userPhone && userAddress && userEmail)) {
-      setCheckID(1);
+      setErrorCheck(1);
     }
     else if (!/^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/.test(userPw)) {
       setErrorCheck(2)

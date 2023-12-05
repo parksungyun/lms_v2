@@ -3,6 +3,9 @@ import { Table } from "../../components/Table";
 import { academics, userList, courses, students, subjects } from "../../assets/TempData";
 import '../../styles/course_admin_table.css';
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
+import { getAllCourses, getAllManagers, getAllStudents } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -111,22 +114,59 @@ const courseSetting = [
 ];
 
 export function AdminCourseSetting() {
-  const items = courses.map((c, i) => (
-    {
-      no: i + 1,
-      name: c.course_name,
-      start_date: c.start_date,
-      end_date: c.end_date,
-      recruit_start: c.recruit_start,
-      recruit_end: c.recruit_end,
-      current: students.filter((s) => s.course_id == c.course_id).length,
-      capacity: c.capacity,
-      manager: userList[academics[c.academic_id - 1].uid - 1].user_name,
-      subject: subjects.filter((s) => s.course_id == c.course_id).length,
-      studentInfo: <PrimaryButtonSmall onClick={() => onStudentInfo(c.course_id)}><p>학생조회</p></PrimaryButtonSmall>,
-      info: <SecondaryButton onClick={() => onDetail(c.course_id)}><p>상세정보</p></SecondaryButton>
+  const [courses, setCourses] = useState(null);
+  const [managers, setManagers] = useState(null);
+  const [students, setStudents] = useState(null);
+  let items;
+  useEffect(() => {
+    if(!courses) {
+      const promise = getAllCourses();
+      const getData = () => {
+        promise.then((data) => {
+          setCourses(data);
+        });
+      };
+      getData();
     }
-  ))
+    if(!managers) {
+      const promise = getAllManagers();
+      const getData = () => {
+        promise.then((data) => {
+          setManagers(data);
+        })
+      };
+      getData();
+    };
+    if(!students) {
+      const promise = getAllStudents();
+      const getData = () => {
+        promise.then((data) => {
+          setStudents(data);
+        })
+      };
+      getData();
+    };
+  });
+  if(courses && managers && students) {
+    items = courses.map((a, i) => (
+      {
+        no: i + 1,
+        name: a.courseName,
+        start_date: a.startDate,
+        end_date: a.endDate,
+        recruit_start: a.recruitStart,
+        recruit_end: a.recruitEnd,
+        current: students.filter(s => s.student.courseId == a.courseId).length,
+        capacity: a.capacity,
+        manager: managers.find(m => m.academic.academicId == a.academicId).user.userName,
+        subject: a.subjectNo,
+        studentInfo: <SecondaryButton onClick={() => onStudentInfo(a.courseId)}><p>상세정보</p></SecondaryButton>,
+        info: <SecondaryButton onClick={() => onDetail(a.courseId)}><p>상세정보</p></SecondaryButton>
+      }
+    ))
+  }
+
+  console.log(students);
 
   const navigate = useNavigate();
 
@@ -139,18 +179,21 @@ export function AdminCourseSetting() {
   }
 
   return <>
-    <Container>
-      <Content>
-        <H2 className="title">과정 관리</H2>
-        <PrimaryButton onClick={() => navigate("add")}><p>과정 등록</p></PrimaryButton>
-      </Content>
-      <TableBox>
-        <Table 
-          headers={courseSetting}
-          items={items}
-          selectable={false}
-        />
-      </TableBox>
-    </Container>
+    {
+     (items) && 
+      <Container>
+        <Content>
+          <H2 className="title">과정 관리</H2>
+          <PrimaryButton onClick={() => navigate("add")}><p>과정 등록</p></PrimaryButton>
+        </Content>
+        <TableBox>
+          <Table 
+            headers={courseSetting}
+            items={items}
+            selectable={false}
+          />
+        </TableBox>
+      </Container>
+    }
   </>
 }

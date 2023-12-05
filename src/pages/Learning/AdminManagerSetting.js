@@ -4,6 +4,9 @@ import { academics, courses, managerPosition } from "../../assets/TempData";
 import { userList } from "../../assets/TempData";
 import '../../styles/admin_table.css';
 import { useNavigate } from "react-router-dom";
+import { getAllManagers } from "../Api";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -88,26 +91,40 @@ const managerSetting = [
 ];
 
 export function AdminManagerSetting() {
-  const managers = academics.filter((a) => a.dept == 0);
-  const items = managers.map((a, i) => (
-    {
-      no: i + 1,
-      name: userList[a.uid - 1].user_name,
-      birth: userList[a.uid - 1].user_birth,
-      phone: userList[a.uid - 1].user_phone,
-      email: userList[a.uid - 1].user_email,
-      position: managerPosition.find((p) => p.position_id == a.position).position_name,
-      course: courses.filter((c) => c.academic_id == a.academic_id).length,
-      info: <SecondaryButton onClick={() => onDetail(a.academic_id)}><p>상세정보</p></SecondaryButton>
+  const [managers, setManagers] = useState(null);
+  let items;
+  useEffect(() => {
+    if(!managers) {
+      const promise = getAllManagers();
+      const getData = () => {
+        promise.then((data) => {
+          setManagers(data);
+        });
+      };
+      getData();
     }
-  ));
+  });
+  if(managers) {
+    items = managers.map((a, i) => (
+      {
+        no: i + 1,
+        name: a.user.userName,
+        birth: a.user.userBirth,
+        phone: a.user.userPhone,
+        email: a.user.userEmail,
+        position: a.position,
+        course: a.num,
+        info: <SecondaryButton onClick={() => onDetail(a.academic.academicId)}><p>상세정보</p></SecondaryButton>
+      }
+    ))
+  }
 
   const navigate = useNavigate();
 
   function onDetail(id) {
     navigate(`${id}`);
   }
-
+  console.log(items);
   return <>
     <Container>
       <Content>

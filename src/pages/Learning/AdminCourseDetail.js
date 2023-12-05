@@ -61,7 +61,7 @@ const Img = styled.img`
   border-radius: 1rem;
 `;
 
-const Details = styled.form`
+const Details = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
