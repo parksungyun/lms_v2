@@ -194,7 +194,7 @@ export function AdminCourseAdd() {
   const [capacity, setCapacity] = useState();
   const [coursePhoto, setCoursePhoto] = useState("/upload/CourseDefault.png");
   const [courseInfo, setCourseInfo] = useState();
-  const [courseAvailable, setCourseAvailable] = useState();
+  // const [courseAvailable, setCourseAvailable] = useState();
   const [imageSrc, setImageSrc] = useState('');
   const [managers, setManagers] = useState(null);
   const [trainers, setTrainers] = useState(null);
@@ -221,32 +221,31 @@ export function AdminCourseAdd() {
       getData();
     };
   });
-  useEffect(()=>{
-    setSelected(managers[0].academic.academicId)
-  },[managers])
-  console.log(managers)
+
   const temp = [
     {
-      subject_name: '',
-      academic_id: 0,
+      count: 0,
+      subjectName: subjectName[subjectName.length - 1],
+      academicId: subjectSelected[subjectSelected.length - 1],
     }
   ];
+
   const [subject, setSubject] = useState(temp);
   const [subjectNo, setSubjectNo] = useState(1);
 
   useEffect(() => {
-    const temp2 = subject.map((s,i) => s.subject_name.value);
+    const temp2 = subject.map((s,i) => s.subjectName);
     setSubjectName(temp2);
 
-    const temp = subject.map((s) => s.academic_id.value);
+    const temp = subject.map((s) => s.academicId);
     setSubjectSelected(temp);
   }, [subjectNo]);
 
   useEffect(() => {
-    const temp = subject.map((s) => s.academic_id);
+    const temp = subject.map((s) => s.academicId);
     setSubjectSelected(temp);
 
-    const temp2 = subject.map((s) => s.subject_name);
+    const temp2 = subject.map((s) => s.subjectName);
     setSubjectName(temp2);
   }, []);
 
@@ -263,15 +262,30 @@ export function AdminCourseAdd() {
   }
 
   function onDeleteSubject(i) {
-    setSubject(subject.filter(s => s.subject_id !== subject[i].subject_id));
+    setSubject(subject.filter(s => s.count !== subject[i].count));
     setSubjectNo(subjectNo - 1);
   }
 
+  useEffect(()=>{
+    if(trainers) {
+      subject.forEach((data, i)=>{
+        data = {
+          count: i,
+          subjectName: subjectName[i],
+          academicId: subjectSelected[i]
+        }
+        subject[i] = data;
+      })
+    }
+  },[subjectName, subjectSelected]);
+
+  console.log(subject);
+
   function addSubject() {
     const tempsubject = {
-      subject_id: subject[subject.length - 1].subject_id + 1,
-      subject_name: '',
-      academic_id: 0,
+      count: subject[subject.length - 1].count + 1,
+      subjectName: "",
+      academicId: 0,
     };
     setSubject((add) => [...add, tempsubject]);
     setSubjectNo(subjectNo + 1);
@@ -289,9 +303,9 @@ export function AdminCourseAdd() {
   };
 
   function onSubmit() {
-    if(courseAvailable) {
-      available = 0;
-    } else {available = 1;}
+    // if(courseAvailable) {
+    //   available = 0;
+    // } else {available = 1;}
     const data = {
       academicId: selected,
       courseName: courseName,
@@ -314,6 +328,7 @@ export function AdminCourseAdd() {
     } else {
       console.error("No file selected.");
     }
+
     axios
     .post("/api/course/add", data)
     .then((res) => {
@@ -321,12 +336,22 @@ export function AdminCourseAdd() {
       setError(1);
     })
     .catch((err) => {
-      console.log(`${err} : Add 실패`)
+      console.log(`${err} : Course Add 실패`)
       setError(2);
     })
+
+    axios
+    .post(`/api/subject/add/${courseName}`, subject)
+    .then((res) => {
+      console.log(res.data.data)
+    })
+    .catch((err) => {
+      console.log(`${err} : Subject Add 실패`)
+    })
+
     // fetch(`/api/file/upload/course/${courseName}`, {
     //   method: 'POST',
-    //   body: fd,
+    //   body: fd
     // })
     // .then(response => response.json())
     // .then(data => {
@@ -336,9 +361,8 @@ export function AdminCourseAdd() {
     //     console.error('File upload failed:', error);
     //     setError(2);
     // });
-
   }
-  console.log(selected)
+  console.log(courseName);
   return <>
     {
       (managers && trainers) &&
@@ -379,6 +403,7 @@ export function AdminCourseAdd() {
             <Detail>
               <Label>담당 매니저</Label>
               <Select name="manager" id="manager" onChange={(e) => setSelected(e.target.value)} value={selected}>
+                <option>매니저 선택</option>
                 {
                   managers.map((data) => (
                     <option value={data.academic.academicId} key={data.academic.academicId}>
@@ -396,6 +421,7 @@ export function AdminCourseAdd() {
                     <Subject key={i}>
                       <Input type="text" name={`subject${i}`} id={`subject${i}`} value={subjectName[i]} onChange={(e) => onChangeSubjectName(e, i)} />
                       <SubjectSelect name={`subjectT${i}`} id={`subjectT${i}`} onChange={(e) => onChangeSubject(e, i)} value={subjectSelected[i]}>
+                        <option>강사 선택</option>
                         {
                           trainers.map((t) => (
                             <option value={t.academic.academicId} key={t.academic.academicId}>
@@ -413,10 +439,10 @@ export function AdminCourseAdd() {
                 <AddBox><BsPatchPlusFill className="addIcon" onClick={() => addSubject()} /></AddBox>
               </SubjectBox>
             </Detail>
-            <Detail>
+            {/* <Detail>
               <Label>활성화</Label>
               <Check type="checkbox" name="user_available" id="user_available" checked={courseAvailable} onChange={(e) => {setCourseAvailable(e.target.checked)}} /> 비활성화
-            </Detail>
+            </Detail> */}
             <ButtonBox>
               <PrimaryButton type="submit" onClick={()=>onSubmit()}><p>등록</p></PrimaryButton>
               <SecondaryButton onClick={() => navigate("/lms/a/courseSetting")}><p>목록</p></SecondaryButton>
