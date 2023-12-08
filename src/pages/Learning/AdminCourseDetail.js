@@ -3,6 +3,8 @@ import { academics, userList, courses, subjects } from "../../assets/TempData";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { BsPatchPlusFill, BsPatchMinusFill } from "react-icons/bs";
+import { getAllManagers, getAllTrainers, getCourseById, getSubjectByCourseId } from "../Api";
+import axios from "axios";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -171,162 +173,313 @@ const DeleteBox = styled.div`
   }
 `;
 
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 0;
+`;
+
 export function AdminCourseDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const course = courses.find((c) => c.course_id == id);
-  const academic = academics.find((a) => a.academic_id == course.academic_id);
-  const user = userList.find((u) => u.uid == academic.uid);
-
-  const [selected, setSelected] = useState(course.academic_id);
+  const [selected, setSelected] = useState();
   const [subjectSelected, setSubjectSelected] = useState([]);
   const [subjectName, setSubjectName] = useState([]);
-  const [courseName, setCourseName] = useState(course.course_name);
-  const [startDate, setStartDate] = useState(course.start_date);
-  const [endDate, setEndDate] = useState(course.end_date);
-  const [recruitStart, setRecruitStart] = useState(course.recruit_start);
-  const [recruitEnd, setRecruitEnd] = useState(course.recruit_end);
-  const [capacity, setCapacity] = useState(course.capacity);
-  const [coursePhoto, setCoursePhoto] = useState(course.course_photo);
-  const [courseInfo, setCourseInfo] = useState(course.course_info);
-  const [subjectNo, setSubjectNo] = useState(course.subject_no);
-  const [subject, setSubject] = useState(subjects.filter(s => s.course_id == id));
-  
-  useEffect(() => {
-    const temp2 = subject.map((s,i) => s.subject_name.value);
-    setSubjectName(temp2);
+  const [courseName, setCourseName] = useState();
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
+  const [recruitStart, setRecruitStart] = useState();
+  const [recruitEnd, setRecruitEnd] = useState();
+  const [capacity, setCapacity] = useState();
+  const [coursePhoto, setCoursePhoto] = useState();
+  const [courseInfo, setCourseInfo] = useState();
+  const [subjectNo, setSubjectNo] = useState();
+  const [subjects, setSubjects] = useState(null);
+  const [courses, setCourses] = useState(null);
+  const [managers, setManagers] = useState(null);
+  const [trainers, setTrainers] = useState(null);
+  const [imageSrc, setImageSrc] = useState();
+  const [image, setImage] = useState();
+  const date = new Date().toISOString().split('T')[0];
+  const [del, setDel] = useState();
+  const [error, setError] = useState(0);
 
-    const temp = subject.map((s) => s.academic_id.value);
-    setSubjectSelected(temp);
+  useEffect(()=>{
+    if(!courses){
+      const promise = getCourseById(id);
+      const getData = () => {
+        promise.then((data) => {
+          setCourses(data);
+          setDel(data.subjectNo);
+        })
+      };
+      getData();
+    };
+    if(!subjects){
+      const promise = getSubjectByCourseId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setSubjects(data);
+          setSubjectName(data.map(d => d.subject.subjectName));
+          setSubjectSelected(data.map(d => d.subject.academicId));
+        })
+      };
+      getData();
+    };
+    if(!managers){
+      const promise = getAllManagers();
+      const getData = () => {
+        promise.then((data) => {
+          setManagers(data);
+        })
+      };
+      getData();
+    };
+    if(!trainers){
+      const promise = getAllTrainers();
+      const getData = () => {
+        promise.then((data) => {
+          setTrainers(data);
+        })
+      };
+      getData();
+    };
+  });
+
+  useEffect(() => {
+    if (courses && subjects) {
+      const temp2 = subjects.map((s,i) => s.subjectName);
+      setSubjectName(temp2);
+  
+      const temp = subjects.map((s) => s.academicId);
+      setSubjectSelected(temp);
+    }
   }, [subjectNo]);
 
   useEffect(() => {
-    const temp = subject.map((s) => s.academic_id);
-    setSubjectSelected(temp);
+    if (courses && subjects) {
+      setSelected(courses.academicId);
+      setCourseName(courses.courseName);
+      setStartDate(courses.startDate);
+      setEndDate(courses.endDate);
+      setRecruitStart(courses.recruitStart);
+      setRecruitEnd(courses.recruitEnd);
+      setCapacity(courses.capacity);
+      setCoursePhoto(courses.coursePhoto);
+      setCourseInfo(courses.courseInfo);
+      setSubjectNo(courses.subjectNo);
+      setImage("/upload/" + courses.coursePhoto.substring(courses.coursePhoto.lastIndexOf("\\") + 1));
+    }
+  }, [courses, subjects]);
 
-    const temp2 = subject.map((s) => s.subject_name);
-    setSubjectName(temp2);
-  }, []);
+  useEffect(()=>{
+    if(trainers) {
+      subjects.forEach((data, i)=>{
+        data = {
+          count: i,
+          subjectName: subjectName[i],
+          academicId: subjectSelected[i]
+        }
+        subjects[i] = data;
+      })
+    }
+  },[subjectName, subjectSelected, trainers]);
 
-  function onSubmit() {
-
-  }
+  console.log(subjects)
 
   function onDeleteSubject(i) {
-    setSubject(subject.filter(s => s.subject_id !== subject[i].subject_id));
+    setSubjects(subjects.filter(s => s.count !== subjects[i].count));
     setSubjectNo(subjectNo - 1);
-  }
+  };
   
   function addSubject() {
-    const tempsubject = {
-      subject_id: subject[subject.length - 1].subject_id + 1,
-      subject_name: '',
-      academic_id: 0,
+    const subject = {
+      count: subjects[subjects.length - 1].count + 1,
+      subjectName: '',
+      academicId: 0,
     };
-    setSubject((add) => [...add, tempsubject]);
+    setSubjects((add) => [...add, subject]);
     setSubjectNo(subjectNo + 1);
-  }
+  };
 
   function onChangeSubject(e, i) {
     let temp = [...subjectSelected];
     temp[i] = e.target.value;
     setSubjectSelected(temp);
-  }
+  };
 
   function onChangeSubjectName(e, i) {
     let temp = [...subjectName];
     temp[i] = e.target.value;
     setSubjectName(temp);
     console.log(subjectName)
-  }
+  };
 
+  const encodeFileToBase64 = (fileBlob) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(fileBlob);
+    return new Promise((resolve) => {
+      reader.onload = () => {
+        setImageSrc(reader.result);
+        resolve();
+      };
+    });
+  };
+
+  function onSubmit() {
+    const data = {
+      academicId: selected,
+      courseName: courseName,
+      subjectNo: subjectNo,
+      capacity: capacity,
+      startDate: startDate,
+      endDate: endDate,
+      recruitStart: recruitStart,
+      recruitEnd: recruitEnd,
+      courseInfo: courseInfo
+    };
+
+    const fd = new FormData();
+    if (coursePhoto) {
+      fd.append("file", coursePhoto);
+      console.log(fd);
+      for (const pair of fd.entries()) {
+        console.log(pair[0] + ', ' + pair[1]);
+    }
+    } else {
+      console.error("No file selected.");
+    };
+
+    console.log(data);
+    axios
+    .post(`/api/course/mod/${id}`, data)
+    .then((res) => {
+      console.log(res.data.data);
+      setError(2);
+    })
+    .catch((err) => {
+      console.log(`${err} : Mod Error`)
+      setError(3);
+    });
+    let check;
+    if (date >= startDate) {
+      check = 1;
+    } else { check = 0; };
+    axios
+    .post(`/api/subject/mod/${id}/${check}`, subjects)
+    .then((res) => {
+      console.log(res.data.data)
+    })
+    .catch((err) => {
+      console.log(`${err} : Subject Mod 실패`)
+      setError(3);
+    })
+
+    fetch(`/api/file/upload/course/${id}`, {
+      method: 'POST',
+      body: fd
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('File upload success:', data);
+    })
+    .catch(error => {
+        console.error('File upload failed:', error);
+        setError(3);
+    });
+  };    
+  
   return <>
-    <Container>
-      <H2>과정 상세 정보</H2>
-      <Content>
-        <Img src={course.course_photo} alt={course.course_name} />
-        <Details action="" method="POST">
-            <Detail>
-              <Label>과정명</Label>
-              <Input type="text" name="course_name" id="course_name" value={courseName} onChange={(e) => {setCourseName(e.target.value)}} />
-            </Detail>
-            <Detail>
-              <Label>훈련기간</Label>
-              <InputDate type="date" name="start_date" id="start_date"  value={startDate} onChange={(e) => {setStartDate(e.target.value)}} />
-              ~
-              <InputDate type="date" name="end_date" id="end_date"  value={endDate} onChange={(e) => {setEndDate(e.target.value)}} />
-            </Detail>
-            <Detail>
-              <Label>모집기간</Label>
-              <InputDate type="date" name="recruit_start" id="recruit_start"  value={recruitStart} onChange={(e) => {setRecruitStart(e.target.value)}} />
-              ~
-              <InputDate type="date" name="recruit_end" id="recruit_end"  value={recruitEnd} onChange={(e) => {setRecruitEnd(e.target.value)}} />
-            </Detail>
-            <Detail>
-              <Label>정원</Label>
-              <Input type="number" name="capacity" id="capacity" value={capacity} onChange={(e) => {setCapacity(e.target.value)}} />
-            </Detail>
-            <Detail>
-              <Label>사진</Label>
-              <Input type="file" name="course_photo" id="course_photo" accept="image/*" onChange={(e) => {setCoursePhoto(e.target.files[0])}} />
-            </Detail>
-            <Detail>
-              <Label>과정 소개</Label>
-              <TextArea name="course_info" id="course_info" value={courseInfo} onChange={(e) => {setCourseInfo(e.target.value)}} />
-            </Detail>
-            <Detail>
-              <Label>담당 매니저</Label>
-              <Select name="manager" id="manager" onChange={(e) => setSelected(e.target.value)} value={selected}>
-                {
-                  academics.filter(a => a.dept == 0).map((data) => (
-                    <option value={data.academic_id} key={data.academic_id}>
-                      {
-                        userList.find((u) => u.uid == data.uid).user_name
-                      }
-                    </option>
-                  ))
-                }
-              </Select>
-            </Detail>
-            <Detail>
-              <Label>과목</Label>
-              <SubjectBox>
-                {
-                  subject.map((data, i) => (
-                    <Subject key={i}>
-                      <Input type="text" name={`subject${i}`} id={`subject${i}`} value={subjectName[i]} onChange={(e) => onChangeSubjectName(e, i)} />
-                      <SubjectSelect name={`subjectT${i}`} id={`subjectT${i}`} onChange={(e) => onChangeSubject(e, i)} value={subjectSelected[i]}>
-                        {
-                          academics.filter(a => a.dept == 1).map((trainer) => (
-                            <option value={trainer.academic_id} key={trainer.academic_id}>
-                              {
-                                userList.find((u) => u.uid == trainer.uid).user_name
-                              }
-                            </option>
-                          ))
-                        }
-                      </SubjectSelect>
-                      <DeleteBox>
-                        {i + 1 == subject.length && i != 0 ? <BsPatchMinusFill className="deleteIcon" onClick={() => onDeleteSubject(i)} /> : <BsPatchMinusFill className="notAvail" />}
-                      </DeleteBox>
-                    </Subject>
-                  ))
-                }
-                <AddBox><BsPatchPlusFill className="addIcon" onClick={() => addSubject()} /></AddBox>
-              </SubjectBox>
-            </Detail>
-            <Detail>
-              <Label>활성화</Label>
-              {
-                course.available == 1 ? <DangerButton><p>비활성화</p></DangerButton> : <PrimaryButton><p>활성화</p></PrimaryButton>
-              }
-            </Detail>
-            <ButtonBox>
-              <PrimaryButton type="submit" onClick={onSubmit}><p>수정</p></PrimaryButton>
-              <SecondaryButton onClick={() => navigate("/lms/a/courseSetting")}><p>목록</p></SecondaryButton>
-            </ButtonBox>
-        </Details>
-      </Content>
-    </Container>
+    {
+      (courses && subjects && trainers && managers) && 
+        <Container>
+          <H2>과정 상세 정보</H2>
+          <Content>
+            {imageSrc ? <Img src={imageSrc} alt="preview-img" /> : <Img src={image} alt="default" />}
+            <Details action="" method="POST">
+                <Detail>
+                  <Label>과정명</Label>
+                  <Input type="text" name="course_name" id="course_name" value={courseName} onChange={(e) => {setCourseName(e.target.value)}} />
+                </Detail>
+                <Detail>
+                  <Label>훈련기간</Label>
+                  <InputDate type="date" name="start_date" id="start_date"  value={startDate} disabled/>
+                  ~
+                  <InputDate type="date" name="end_date" id="end_date"  value={endDate} onChange={(e) => {setEndDate(e.target.value)}} />
+                </Detail>
+                <Detail>
+                  <Label>모집기간</Label>
+                  <InputDate type="date" name="recruit_start" id="recruit_start"  value={recruitStart} onChange={(e) => {setRecruitStart(e.target.value)}} />
+                  ~
+                  <InputDate type="date" name="recruit_end" id="recruit_end"  value={recruitEnd} onChange={(e) => {setRecruitEnd(e.target.value)}} />
+                </Detail>
+                <Detail>
+                  <Label>정원</Label>
+                  <Input type="number" name="capacity" id="capacity" value={capacity} onChange={(e) => {setCapacity(e.target.value)}} />
+                </Detail>
+                <Detail>
+                  <Label>사진</Label>
+                  <Input type="file" name="course_photo" id="course_photo" accept="image/*" onChange={(e) => {setCoursePhoto(e.target.files[0]); encodeFileToBase64(e.target.files[0])}} />
+                </Detail>
+                <Detail>
+                  <Label>과정 소개</Label>
+                  <TextArea name="course_info" id="course_info" value={courseInfo} onChange={(e) => {setCourseInfo(e.target.value)}} />
+                </Detail>
+                <Detail>
+                  <Label>담당 매니저</Label>
+                  <Select name="manager" id="manager" onChange={(e) => setSelected(e.target.value)} value={selected}>
+                    <option>매니저 선택</option>
+                    {
+                      managers.map((data) => (
+                        <option value={data.academic.academicId} key={data.academic.academicId}>
+                          {data.user.userName}
+                        </option>
+                      ))
+                    }
+                  </Select>
+                </Detail>
+                <Detail>
+                  <Label>과목</Label>
+                  <SubjectBox>
+                  {
+                      subjects.map((data, i) => (
+                        <Subject key={i}>
+                          <Input type="text" name={`subject${i}`} id={`subject${i}`} value={subjectName[i]} onChange={(e) => onChangeSubjectName(e, i)} />
+                          <SubjectSelect name={`subjectT${i}`} id={`subjectT${i}`} onChange={(e) => onChangeSubject(e, i)} value={subjectSelected[i]}>
+                            <option>강사 선택</option>
+                            {
+                              trainers.map((t) => (
+                                <option value={t.academic.academicId} key={t.academic.academicId}>
+                                  {t.user.userName}
+                                </option>
+                              ))
+                            }
+                          </SubjectSelect>
+                          <DeleteBox>
+                            {date >= startDate ? i + 1 == subjects.length && i != del - 1 ? <BsPatchMinusFill className="deleteIcon" onClick={() => onDeleteSubject(i)} /> : <BsPatchMinusFill className="notAvail" /> : i + 1 == subjects.length && i != 0 ? <BsPatchMinusFill className="deleteIcon" onClick={() => onDeleteSubject(i)} /> : <BsPatchMinusFill className="notAvail" />}
+                          </DeleteBox>
+                        </Subject>
+                      ))
+                    }
+                    <AddBox><BsPatchPlusFill className="addIcon" onClick={() => addSubject()} /></AddBox>
+                  </SubjectBox>
+                </Detail>
+                {/* <Detail>
+                  <Label>활성화</Label>
+                  {
+                    courses.available == 1 ? <DangerButton><p>비활성화</p></DangerButton> : <PrimaryButton><p>활성화</p></PrimaryButton>
+                  }
+                </Detail> */}
+                  {error == 2 && window.location.reload()}
+                  {error == 3 && <ErrorMsg>등록이 실패하였습니다.</ErrorMsg>}
+                <ButtonBox>
+                  <PrimaryButton type="submit" onClick={() => onSubmit()}><p>수정</p></PrimaryButton>
+                  <SecondaryButton onClick={() => navigate("/lms/a/courseSetting")}><p>목록</p></SecondaryButton>
+                </ButtonBox>
+            </Details>
+          </Content>
+        </Container>
+    }
   </>
 }

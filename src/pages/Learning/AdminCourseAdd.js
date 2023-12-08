@@ -199,6 +199,7 @@ export function AdminCourseAdd() {
   const [managers, setManagers] = useState(null);
   const [trainers, setTrainers] = useState(null);
   const [error, setError] = useState(0);
+  const [courseId, setCourseId] = useState();
   let available;
 
   useEffect(() => {
@@ -318,6 +319,23 @@ export function AdminCourseAdd() {
       courseInfo: courseInfo
     };
     console.log(data);
+
+    axios
+    .post("/api/course/add", data)
+    .then((res) => {
+      console.log(res.data.data)
+      console.log(res.data.data.courseId);
+      setCourseId(res.data.data.courseId);
+      console.log(courseId)
+      setError(1);
+    })
+    .catch((err) => {
+      console.log(`${err} : Course Add 실패`)
+      setError(2);
+    })
+  }
+
+  useEffect(()=>{
     const fd = new FormData();
     if (coursePhoto) {
       fd.append("file", coursePhoto);
@@ -328,41 +346,31 @@ export function AdminCourseAdd() {
     } else {
       console.error("No file selected.");
     }
+    if (courseId) {
+      axios
+      .post(`/api/subject/add/${courseId}`, subject)
+      .then((res) => {
+        console.log(res.data.data)
+      })
+      .catch((err) => {
+        console.log(`${err} : Subject Add 실패`)
+      })
+  
+      fetch(`/api/file/upload/course/${courseId}`, {
+        method: 'POST',
+        body: fd
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('File upload success:', data);
+      })
+      .catch(error => {
+          console.error('File upload failed:', error);
+          setError(2);
+      });
+    };
+  },[courseId]);
 
-    axios
-    .post("/api/course/add", data)
-    .then((res) => {
-      console.log(res.data.data)
-      setError(1);
-    })
-    .catch((err) => {
-      console.log(`${err} : Course Add 실패`)
-      setError(2);
-    })
-
-    axios
-    .post(`/api/subject/add/${courseName}`, subject)
-    .then((res) => {
-      console.log(res.data.data)
-    })
-    .catch((err) => {
-      console.log(`${err} : Subject Add 실패`)
-    })
-
-    // fetch(`/api/file/upload/course/${courseName}`, {
-    //   method: 'POST',
-    //   body: fd
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //     console.log('File upload success:', data);
-    // })
-    // .catch(error => {
-    //     console.error('File upload failed:', error);
-    //     setError(2);
-    // });
-  }
-  console.log(courseName);
   return <>
     {
       (managers && trainers) &&

@@ -1,8 +1,11 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { userList, courses, students } from "../../assets/TempData";
 import { Table } from "../../components/Table";
 import '../../styles/admin_table.css';
+import { useState } from "react";
+import { getCourseById, getStudentsByCourseId } from "../Api";
+import { useEffect } from "react";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -58,6 +61,20 @@ const H2 = styled.p`
   }
 `;
 
+const PrimaryButton = styled.button`
+  border: 0;
+  border-radius: 5px;
+  background-color: #5f7dcf;
+  padding: 0.8rem 1.4rem;
+  color: white;
+`;
+
+const Title = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+`;
+
 const studentDetail = [
   {
     text: 'No.',
@@ -87,55 +104,86 @@ const studentDetail = [
 
 export function AdminCourseStudentDetail() {
   const { id } = useParams();
-  const course = courses.find((c) => c.course_id == id);
-  const student = students.filter((s) => s.course_id == course.course_id);
-  const user = student.map((s) => (userList.find((u) => u.uid == s.uid)));
-  
-  const items = student.map((s, i) => (
-    {
-      no: i + 1,
-      user_name: user[i].user_name,
-      user_id: user[i].user_id,
-      user_birth: user[i].user_birth,
-      user_phone: user[i].user_phone,
-      user_email: user[i].user_email,
-    }
-  ))
+  const [course, setCourse] = useState(null);
+  const [students, setStudents] = useState(null);
+  const navigate = useNavigate();
+  let items;
 
+  useEffect(() => {
+    if(!course) {
+      const promise = getCourseById(id);
+      const getData = () => {
+        promise.then((data) => {
+          setCourse(data);
+        })
+      };
+      getData();
+    };
+    if(!students) {
+      const promise = getStudentsByCourseId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setStudents(data);
+        })
+      };
+      getData();
+    };
+  });
+  if (course && students) {
+    items = students.map((s, i) => (
+      {
+        no: i + 1,
+        user_name: s.user.userName,
+        user_id: s.user.userId,
+        user_birth: s.user.userBirth,
+        user_phone: s.user.userPhone,
+        user_email: s.user.userEmail,
+      }
+    ))
+  }
+  
+  console.log(students);
+  console.log(items);
   return <>
-    <Container>
-      <H2>학생 조회</H2>
-      <Content>
-        <Box>
-          <ContentBox className="col-2">
-            <Bold>과정명</Bold>
-            <p>{course.course_name}</p>
-          </ContentBox>
-          <ContentBox className="col-3">
-            <Bold>훈련 기간</Bold>
-            <p>{course.start_date} ~ {course.end_date}</p>
-          </ContentBox>
-          <ContentBox className="col-3">
-            <Bold>모집 기간</Bold>
-            <p>{course.recruit_start} ~ {course.recruit_end}</p>
-          </ContentBox>
-          <ContentBox className="col-2">
-            <Bold>정원</Bold>
-            <p>{course.capacity} 명</p>
-          </ContentBox>
-          <ContentBox className="col-2">
-            <Bold>현재인원</Bold>
-            <p>{student.length} 명</p>
-          </ContentBox>
-        </Box>
-        <TableBox>
-          <Table 
-            headers={studentDetail}
-            items={items}
-            selectable={false}
-          />
-        </TableBox>
-      </Content>
-    </Container>
+    {
+      (items) &&
+        <Container>
+          <Title>
+            <H2>학생 조회</H2>
+            <PrimaryButton onClick={() => navigate("add")}><p>학생 등록</p></PrimaryButton>
+          </Title>
+          <Content>
+            <Box>
+              <ContentBox className="col-2">
+                <Bold>과정명</Bold>
+                <p>{course.courseName}</p>
+              </ContentBox>
+              <ContentBox className="col-3">
+                <Bold>훈련 기간</Bold>
+                <p>{course.startDate} ~ {course.endDate}</p>
+              </ContentBox>
+              <ContentBox className="col-3">
+                <Bold>모집 기간</Bold>
+                <p>{course.recruitStart} ~ {course.recruitEnd}</p>
+              </ContentBox>
+              <ContentBox className="col-2">
+                <Bold>정원</Bold>
+                <p>{course.capacity} 명</p>
+              </ContentBox>
+              <ContentBox className="col-2">
+                <Bold>현재인원</Bold>
+                <p>{students.length} 명</p>
+              </ContentBox>
+            </Box>
+            <TableBox>
+              <Table 
+                headers={studentDetail}
+                items={items}
+                selectable={false}
+              />
+            </TableBox>
+          </Content>
+        </Container>
+    }
   </>
 }

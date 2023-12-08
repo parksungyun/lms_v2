@@ -83,6 +83,7 @@ import { StudentHWPost } from "./Learning/StudentHWPost"
 import { AdmissionPwCheck } from "./Web/AdmissionPwCheck"
 import { AdmissionMod } from "./Web/AdmissionMod"
 import axios from "axios"
+import { AdminCourseStudentAdd } from "./Learning/AdminCourseStudentAdd"
 
 // export const SideContext = createContext();
 
@@ -263,7 +264,10 @@ export function Router() {
                   <Route path="add" element={<AdminCourseAdd />} />
                   <Route path=":id" element={<ParentsWrapper />}>
                     <Route index element={<AdminCourseDetail />} />
-                    <Route path="s" element={<AdminCourseStudentDetail />} />
+                    <Route path="s" element={<ParentsWrapper />}>
+                      <Route index element={<AdminCourseStudentDetail />} />
+                      <Route path="add" element={<AdminCourseStudentAdd />} />
+                    </Route>
                   </Route>
                 </Route>
               </Route>
