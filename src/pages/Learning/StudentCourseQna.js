@@ -117,7 +117,7 @@ export function StudentCourseQna() {
       {
         no: i + 1,
         title: titleLink(q.question.courseQuestionId, shortenTitle(q.question.title, 35)),
-        regDate: new Date(q.question.regDate).toISOString().split('T')[0],
+        regDate: new Date(q.question.regDate).toLocaleDateString("fr-CA"),
         replyState: changeReply(q)
       }
     ));

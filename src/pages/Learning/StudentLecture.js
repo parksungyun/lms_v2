@@ -128,7 +128,7 @@ export function StudentLecture() {
         no: i + 1,
         title: titleLink(l.lectureId, shortenTitle(l.title, 35)),
         writer: academic.find((a) => a.academic.academicId === l.academicId).user.userName,
-        regDate: new Date(l.regDate).toISOString().split('T')[0],
+        regDate: new Date(l.regDate).toLocaleDateString("fr-CA"),
         Hits: l.hits
       }
     ));

@@ -229,9 +229,9 @@ export function StudentHW() {
     const endDate = new Date(end);
     const diff = (endDate.getTime() - currentDate.getTime()) / 1000 / 24 / 60 / 60;
     if(diff < 0){
-      return(<P className="active">{currentDate.toISOString().split('T')[0] + " " + currentDate.toISOString().split('T')[1].split('.')[0]}</P>)
+      return(<P className="active">{currentDate.toLocaleDateString("fr-CA") + " " + currentDate.toLocaleTimeString("af-ZA")}</P>)
     } else {
-      return (<P>{currentDate.toISOString().split('T')[0] + " " + currentDate.toISOString().split('T')[1].split('.')[0]}</P>)
+      return (<P>{currentDate.toLocaleDateString("fr-CA") + " " + currentDate.toLocaleTimeString("af-ZA")}</P>)
     }
   };
 

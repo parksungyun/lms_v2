@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { homeworks, submits } from "../../assets/TempData";
 import { getHomeworkByHomeworkId, getSubmitByStudentIdAndHomeworkId } from "../Api";
+import axios from "axios";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -109,6 +110,24 @@ export function StudentHWSubmit() {
       setSubmitContent(submit.submit.submitContent);
     }
   }, [submit]);
+  
+  // 첨부파일 등록하는 부분 필요
+  function onSubmit() {
+    const data = {
+      homeworkId: state,
+      studentId: sessionStorage.getItem("id"),
+      submitContent: submitContent,
+    };
+    console.log(data);
+    axios
+    .post("/api/subject/submit", data)
+    .then((res) => {
+      navigate(`/lms/s/${homework.subjectId}/homework`);
+    })
+    .catch((err) => {
+      console.log(`${err} : 과제 제출 실패`);
+    });
+  }
 
   return<>
     {
@@ -122,7 +141,7 @@ export function StudentHWSubmit() {
             <Input type="file" name="file" id="file" accept="" />
           </form>
           <Box>
-            <PrimaryButton><p>{ submit ? "다시 제출" : "제출"}</p></PrimaryButton>
+            <PrimaryButton onClick={() => onSubmit()}><p>{ submit ? "다시 제출" : "제출"}</p></PrimaryButton>
             <SecondaryButton onClick={() => navigate(`/lms/s/${homework.subjectId}/homework`)}><p>목록</p></SecondaryButton>
           </Box>
         </TableBox>

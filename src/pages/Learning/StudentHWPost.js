@@ -139,7 +139,7 @@ export function StudentHWPost() {
         <Box>
           <P>{academic.find((a) => a.academic.academicId === post.academicId).user.userName}</P>
           <P>|</P>
-          <P>{new Date(post.regDate).toISOString().split('T')[0]}</P>
+          <P>{new Date(post.regDate).toLocaleDateString("fr-CA")}</P>
         </Box>
         <Hr />
         <Content>

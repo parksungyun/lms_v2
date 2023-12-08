@@ -106,7 +106,7 @@ export function MyPost() {
         no: i + 1,
         title: titleLink(d.id, shortenTitle(d.title, 20), d.type),
         content: shortenTitle(d.content, 45),
-        regDate: new Date(d.regDate).toISOString().split('T')[0],
+        regDate: new Date(d.regDate).toLocaleDateString("fr-CA"),
       }
     ));
   }

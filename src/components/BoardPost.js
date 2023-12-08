@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { BsFillEyeFill } from "react-icons/bs";
 import { BsDownload } from "react-icons/bs";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { academics, course_board, subject_board, userList } from "../assets/TempData";
 import { useState } from "react";
 import { useEffect } from "react";
 import { getAllManagers, getAllTrainers, getCourseBoardByCourseBoardId, getSubjectBoardBySubjectBoardId } from "../pages/Api";
@@ -161,7 +160,7 @@ export function BoardPost() {
         <Box>
           <P>{academic.find((a) => a.academic.academicId === post.academicId).user.userName}</P>
           <P>|</P>
-          <P>{new Date(post.regDate).toISOString().split('T')[0]}</P>
+          <P>{new Date(post.regDate).toLocaleDateString("fr-CA")}</P>
           <P>|</P>
           <IconBox>
             <BsFillEyeFill />

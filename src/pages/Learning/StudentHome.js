@@ -198,7 +198,7 @@ export function StudentHome() {
         no: i + 1,
         title: titleLink(c.courseBoardId, shortenTitle(c.title, 20), `/lms/s/cboard`),
         writer: academic.find((a) => a.academic.academicId === c.academicId).user.userName,
-        regDate: new Date(c.regDate).toISOString().split('T')[0],
+        regDate: new Date(c.regDate).toLocaleDateString("fr-CA"),
         hits: c.hits
       }
     ));

@@ -165,7 +165,7 @@ export function StudentHWReview() {
             submit.feedback &&
             <CommentBox>
             <CommentWriter>
-              <Text>{academic.find((a) => a.academic.academicId === submit.feedback.academicId).user.userName} | {new Date(submit.feedback.feedbackRegDate).toISOString().split('T')[0]}</Text>
+              <Text>{academic.find((a) => a.academic.academicId === submit.feedback.academicId).user.userName} | {new Date(submit.feedback.feedbackRegDate).toLocaleDateString("fr-CA")}</Text>
             </CommentWriter>
             <Comment>
               <Text>{submit.feedback.hwComment}</Text>

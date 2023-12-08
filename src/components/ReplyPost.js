@@ -32,7 +32,7 @@ export function ReplyPost({ question, academic }) {
       (academic) &&
       <CommentBox>
         <CommentWriter>
-          <Text>{academic.user.userName} | {new Date(question.answer.answerRegDate).toISOString().split('T')[0]}</Text>
+          <Text>{academic.user.userName} | {new Date(question.answer.answerRegDate).toLocaleDateString("fr-CA")}</Text>
         </CommentWriter>
         <Comment>
           <Text>{question.answer.answerContent}</Text>

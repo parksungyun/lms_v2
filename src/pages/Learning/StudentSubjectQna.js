@@ -190,7 +190,7 @@ export function StudentSubjectQna() {
         no: i + 1,
         title: titleLink(s.question.subjectQuestionId, shortenTitle(s.question.title, 35)),
         writer: students.find((w) => w.student.studentId === s.question.studentId).user.userName,
-        regDate: new Date(s.question.regDate).toISOString().split('T')[0],
+        regDate: new Date(s.question.regDate).toLocaleDateString("fr-CA"),
         Hits: s.question.hits,
         replyState: changeReply(s)
       }
