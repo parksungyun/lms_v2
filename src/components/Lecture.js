@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { BiPlay, BiStop } from "react-icons/bi";
 import { VideoModal } from "./VideoModal";
+import axios from "axios";
 
 const ProgressBar = styled.div`
   width: 100%;
@@ -87,13 +88,31 @@ const P = styled.p`
       observedVideoElement.addEventListener("timeupdate", function() {
         setCurrentTime(Math.floor(observedVideoElement.currentTime));
       });
-      setNowPlaying(true)
+      setNowPlaying(true);
     }
   };
 
   useEffect(() => {
     addTimeUpdate();
   }, []);
+
+  // 강의 영상 재생 후 테스트 해봐야함
+  useEffect(() => {
+    const data = {
+      lectureId: id,
+      studentId: sessionStorage.getItem("id"),
+      progressTime: currentTime,
+    };
+    console.log(data);
+    axios
+    .post("/api/subject/study", data)
+    .then((res) => {
+
+    })
+    .catch((err) => {
+      console.log(`${err} : 실패`);
+    });
+  }, [currentTime]);
 
   // play icon 클릭했을떄 실행되는 함수
   const onPlayIconClick = () => {

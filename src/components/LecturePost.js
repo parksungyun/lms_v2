@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import { academics, lectures, userList } from "../assets/TempData";
 import { BsFillEyeFill, BsDownload } from "react-icons/bs";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Lecture } from "./Lecture";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -168,7 +167,7 @@ export function LecturePost() {
           <Box>
             <P>{academic.find((a) => a.academic.academicId === lecture.academicId).user.userName}</P>
             <P>|</P>
-            <P>{new Date(lecture.regDate).toISOString().split('T')[0]}</P>
+            <P>{new Date(lecture.regDate).toLocaleDateString("fr-CA")}</P>
             <P>|</P>
             <IconBox>
               <BsFillEyeFill />

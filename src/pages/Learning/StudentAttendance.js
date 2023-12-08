@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Table } from "../../components/Table";
-import { userList, students, courses, attendances, absence_code, academics } from "../../assets/TempData";
 import { Pagination } from "../../components/Pagination";
-import { getAllManagers, getCourseById, getStudentAttendanceByStudentId, getStudentByStudentId } from "../Api";
+import { getAllAbsenceCode, getAllManagers, getCourseByStudentId, getStudentAttendanceByStudentId, getStudentAttendanceByStudentIdAndAbsenceCode, getStudentAttendanceByStudentIdAndAbsenceCodeAndPeriod, getStudentAttendanceByStudentIdAndPeriod } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -150,8 +149,12 @@ const headers = [
 
 
 
-export function StudentAttendance({course, academic, attendance}) {
-  // const absence = attendance.filter(data => data.absence_id > 0);
+export function StudentAttendance() {
+  const id = sessionStorage.getItem("id"); // studentId
+  const [course, setCourse] = useState(null);
+  const [academic, setAcademic] = useState(null);
+  const [attendance, setAttendance] = useState(null);
+  const [code, setCode] = useState(null);
   const [searchCode, setSearchCode] = useState();
   const [searchStartDate, setSearchStartDate] = useState();
   const [searchEndDate, setSearchEndDate] = useState();
@@ -159,45 +162,144 @@ export function StudentAttendance({course, academic, attendance}) {
   const limit = 10;
   const offset = (page - 1) * limit;
   let items;
+  let absenceDays = 0;
 
-  items = attendance.map((a, i) => (
-    {
-      no: i + 1,
-      date: a.attendDate,
-      attendTime: a.attendTime,
-      leaveTime: a.leaveTime,
-      attend: changeCode(a.absenceId),
-      codeId: a.absenceId,
-      state: changeState(a.attendanceId, a.absenceId),
+  useEffect(() => {
+    if(!course) {
+      const promise = getCourseByStudentId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setCourse(data);
+        });
+      };
+      getData();
     }
-  ))
+    if(!academic) {
+      const promise = getAllManagers();
+      const getData = () => {
+        promise.then((data) => {
+          setAcademic(data);
+        });
+      };
+      getData();
+    }
+    if(!attendance) {
+      const promise = getStudentAttendanceByStudentId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setAttendance(data);
+        });
+      };
+      getData();
+    }
+    if(!code) {
+      const promise = getAllAbsenceCode();
+      const getData = () => {
+        promise.then((data) => {
+          setCode(data);
+        });
+      };
+      getData();
+    }
+  })
+
+  if(attendance) {
+    items = attendance.map((a, i) => (
+      {
+        no: i + 1,
+        date: new Date(a.attendDate).toLocaleDateString("fr-CA"),
+        attendTime: timeConvert(a.attendTime),
+        leaveTime: timeConvert(a.leaveTime),
+        attend: changeCode(a.absenceId),
+        codeId: a.absenceId,
+        state: changeState(a.absenceId),
+      }
+    ))
+  }
 
   const postsData = (posts) => {
     if(posts) {
       let result = posts.slice(offset, offset + limit);
       return result;
     }
-  };
-
-  function changeCode(code) {
-    if(code === 0) {return(<BadgePrimary>출석</BadgePrimary>)}
-    else if(code === 99) {return(<BadgeDanger>결석</BadgeDanger>)}
-    else {return(<BadgeWarning>결석</BadgeWarning>)};
-  };
-
-  function changeState(id, state) {
-    if(state === 99) {return(<BadgeSecondary>대기</BadgeSecondary>)}
-    else {return(<BadgeSuccess>승인</BadgeSuccess>)};
-  };
-
-  function onSearch() {
-
   }
 
-  return <>
-    {
-      (academic && course && items) &&
-      <Container>
+  function timeConvert(time) {
+    if(!time) {
+      return "";
+    }
+    const temp = new Date(time);
+    return temp.toLocaleDateString("fr-CA") + " " + temp.toLocaleTimeString("af-ZA");
+  }
+
+  function changeCode(code) {
+    if(code === 0) {
+      return(<BadgePrimary>출석</BadgePrimary>)
+    }
+    else if(code === 99) {
+      absenceDays++;
+      return(<BadgeDanger>결석</BadgeDanger>)
+    }
+    else {
+      return(<BadgeWarning>결석</BadgeWarning>)
+    }
+  }
+
+  function changeState(state) {
+    if(state === 99) {
+      return(<BadgeSecondary>대기</BadgeSecondary>)
+    }
+    else {
+      return(<BadgeSuccess>승인</BadgeSuccess>)
+    }
+  }
+
+  function onSearch() {
+    console.log(searchCode);
+    console.log(searchStartDate);
+    console.log(searchEndDate);
+    if((searchCode >= 0 && searchCode <= 99) && searchStartDate && searchEndDate) {
+      const promise = getStudentAttendanceByStudentIdAndAbsenceCodeAndPeriod(id, searchCode, searchStartDate, searchEndDate);
+      const getData = () => {
+        promise.then((data) => {
+          setAttendance(data);
+        });
+      };
+      getData();
+    }
+    else if(searchCode >= 0 && searchCode <= 99) {
+      const promise = getStudentAttendanceByStudentIdAndAbsenceCode(id, searchCode);
+      const getData = () => {
+        promise.then((data) => {
+          setAttendance(data);
+        });
+      };
+      getData();
+    }
+    else if(searchStartDate && searchEndDate) {
+      const promise = getStudentAttendanceByStudentIdAndPeriod(id, searchStartDate, searchEndDate);
+      const getData = () => {
+        promise.then((data) => {
+          setAttendance(data);
+        });
+      };
+      getData();
+    }
+    else {
+      const promise = getStudentAttendanceByStudentId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setAttendance(data);
+        });
+      };
+      getData();
+    }
+  }
+
+  return<>
+    <Container>
+      {
+        (course && academic && attendance) &&
         <Box>
           <ContentBox className="col-3">
             <Bold>과정명</Bold>
@@ -205,7 +307,7 @@ export function StudentAttendance({course, academic, attendance}) {
           </ContentBox>
           <ContentBox className="col-2">
             <Bold>담당 매니저</Bold>
-            <p>{academic.find((a) => a.academic.academicId === course.academicId)}</p>
+            <p>{academic.find((a) => a.academic.academicId === course.academicId).user.userName}</p>
           </ContentBox>
           <ContentBox className="col-3">
             <Bold>훈련기간</Bold>
@@ -213,41 +315,47 @@ export function StudentAttendance({course, academic, attendance}) {
           </ContentBox>
           <ContentBox className="col-2">
             <Bold>출석일수</Bold>
-            {/* <p>{attendance.length - absence.length}</p> */}
+            <p>{attendance.length - absenceDays}</p>
           </ContentBox>
           <ContentBox className="col-2">
             <Bold>결석일수</Bold>
-            {/* <p>{absence.length}</p> */}
+            <p>{absenceDays}</p>
           </ContentBox>
         </Box>
-        <Search>
-          <Detail>
-            <Label>출결코드</Label>
-            {/* <Select name="searchCode" id="searchCode" onChange={(e) => setSearchCode(e.target.value)} value={searchCode}>
-              {
-                absence_code.map((data) => (
-                  <option value={data.absence_id} key={data.absence_id}>
-                    {data.absence_id}: {data.absence_name}
-                  </option>
-                ))
-              }
-            </Select> */}
-          </Detail>
-          <Detail>
-            <Label>기간</Label>
-            <InputDate type="date" name="start_date" id="start_date"  value={searchStartDate} onChange={(e) => {setSearchStartDate(e.target.value)}} />
-            ~
-            <InputDate type="date" name="end_date" id="end_date"  value={searchEndDate} onChange={(e) => {setSearchEndDate(e.target.value)}} />
-          </Detail>
-          <PrimaryButton onClick={onSearch}><p>검색</p></PrimaryButton>
-        </Search>
-        <Table 
-          headers={headers}
-          items={postsData(items)}
-          selectable={false}
-        />
-        <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
-      </Container>
-    }
+      }
+      <Search>
+        <Detail>
+          <Label>출결코드</Label>
+          <Select name="searchCode" id="searchCode" onChange={(e) => setSearchCode(e.target.value)} value={searchCode}>
+            <option>출결코드 선택</option>
+            {
+              code &&
+              code.map((data) => (
+                <option value={data.absenceId} key={data.absenceId}>
+                  {data.absenceId}: {data.absenceName}
+                </option>
+              ))
+            }
+          </Select>
+        </Detail>
+        <Detail>
+          <Label>기간</Label>
+          <InputDate type="date" name="start_date" id="start_date"  value={searchStartDate} onChange={(e) => {setSearchStartDate(e.target.value)}} />
+          ~
+          <InputDate type="date" name="end_date" id="end_date"  value={searchEndDate} onChange={(e) => {setSearchEndDate(e.target.value)}} />
+        </Detail>
+        <PrimaryButton onClick={() => onSearch()}><p>검색</p></PrimaryButton>
+      </Search>
+      {
+        items && <>        
+          <Table 
+            headers={headers}
+            items={postsData(items)}
+            selectable={false}
+          />
+          <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+        </>
+      }
+    </Container>
   </>
 }

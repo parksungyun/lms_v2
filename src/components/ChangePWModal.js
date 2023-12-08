@@ -63,7 +63,7 @@ export function ChangePWModal({userId}) {
         navigate("/login");
       })
       .catch((err) => {
-        console.log(`${err} : ChabgePW 실패`);
+        console.log(`${err} : ChangePW 실패`);
       });
     }
   }

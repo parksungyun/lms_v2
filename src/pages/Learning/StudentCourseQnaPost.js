@@ -145,7 +145,7 @@ export function StudentCourseQnaPost() {
           <Box>
             <P>{user.user.userName}</P>
             <P>|</P>
-            <P>{new Date(question.question.regDate).toISOString().split('T')[0]}</P>
+            <P>{new Date(question.question.regDate).toLocaleDateString("fr-CA")}</P>
           </Box>
           <Hr />
           <Content>{question.question.content}</Content>

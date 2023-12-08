@@ -742,6 +742,45 @@ export const getStudentAttendanceByStudentId = async (id) => {
   return attendance;
 }
 
+export const getStudentAttendanceByStudentIdAndAbsenceCode = async (id, code) => {
+  let attendance;
+  await axios
+  .get(`/api/user/student/${id}/attendance/code/${code}`)
+  .then((res) => {
+    attendance = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생 출결 불러오기 실패`);
+  });
+  return attendance;
+}
+
+export const getStudentAttendanceByStudentIdAndPeriod = async (id, start, end) => {
+  let attendance;
+  await axios
+  .get(`/api/user/student/${id}/attendance/period/${start}/${end}`)
+  .then((res) => {
+    attendance = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생 출결 불러오기 실패`);
+  });
+  return attendance;
+}
+
+export const getStudentAttendanceByStudentIdAndAbsenceCodeAndPeriod = async (id, code, start, end) => {
+  let attendance;
+  await axios
+  .get(`/api/user/student/${id}/attendance/code/${code}/period/${start}/${end}`)
+  .then((res) => {
+    attendance = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생 출결 불러오기 실패`);
+  });
+  return attendance;
+}
+
 export const getAllStudents = async () => {
   let students;
   await axios
@@ -792,4 +831,69 @@ export const getAllMyRepliesByStudentId = async (id) => {
     console.log(`${err} : 사원이 작성한 답글 불러오기 실패`);
   });
   return replies;
+}
+
+export const getScoreByStudentId = async (id) => {
+  let score;
+  await axios
+  .get(`/api/user/score/student/${id}`)
+  .then((res) => {
+    score = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생 성적 불러오기 실패`);
+  });
+  return score;
+}
+
+export const getCourseByStudentId = async (id) => {
+  let course;
+  await axios
+  .get(`/api/course/student/${id}`)
+  .then((res) => {
+    course = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생의 과정 정보 불러오기 실패`);
+  });
+  return course;
+}
+
+export const getAllDept = async () => {
+  let dept;
+  await axios
+  .get(`/api/info/dept`)
+  .then((res) => {
+    dept = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 부서 정보 불러오기 실패`);
+  });
+  return dept;
+}
+
+export const getAllPositions = async () => {
+  let positions;
+  await axios
+  .get(`/api/info/positions`)
+  .then((res) => {
+    positions = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 포지션 정보 불러오기 실패`);
+  });
+  return positions;
+}
+
+export const getAllAbsenceCode = async () => {
+  let code;
+  await axios
+  .get(`/api/info/absence`)
+  .then((res) => {
+    code = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 출결 코드 정보 불러오기 실패`);
+  });
+  return code;
 }

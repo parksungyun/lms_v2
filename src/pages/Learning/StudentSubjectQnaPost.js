@@ -153,7 +153,7 @@ export function StudentSubjectQnaPost() {
           <Box>
             <P>{students.find((s) => s.student.studentId === question.question.studentId).user.userName}</P>
             <P>|</P>
-            <P>{new Date(question.question.regDate).toISOString().split('T')[0]}</P>
+            <P>{new Date(question.question.regDate).toLocaleDateString("fr-CA")}</P>
             <P>|</P>
             <IconBox>
               <BsFillEyeFill />

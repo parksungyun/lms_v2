@@ -346,7 +346,7 @@ export function StudentSubject() {
         no: i + 1,
         title: titleLink(b.subjectBoardId, shortenTitle(b.title, 11), `/lms/s/${id}/sboard`),
         writer: academic.find((a) => a.academic.academicId === b.academicId).user.userName,
-        regDate: new Date(b.regDate).toISOString().split('T')[0],
+        regDate: new Date(b.regDate).toLocaleDateString("fr-CA"),
         hits: b.hits
       }
     ));
@@ -380,7 +380,7 @@ export function StudentSubject() {
         no: i + 1,
         title: titleLink(q.question.subjectQuestionId, shortenTitle(q.question.title, 11), `/lms/s/${id}/sqna`),
         writer: (students.find((a) => a.student.studentId === q.question.studentId)).user.userName,
-        regDate: new Date(q.question.regDate).toISOString().split('T')[0],
+        regDate: new Date(q.question.regDate).toLocaleDateString("fr-CA"),
         state: changeReplyQNA(q)
       }
     ));

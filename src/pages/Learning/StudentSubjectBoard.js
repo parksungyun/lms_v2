@@ -122,7 +122,7 @@ export function StudentSubjectBoard() {
         no: i + 1,
         title: titleLink(b.subjectBoardId, shortenTitle(b.title, 35)),
         writer: academic.find((a) => a.academic.academicId === b.academicId).user.userName,
-        regDate: new Date(b.regDate).toISOString().split('T')[0],
+        regDate: new Date(b.regDate).toLocaleDateString("fr-CA"),
         hits: b.hits
       }
     ));
