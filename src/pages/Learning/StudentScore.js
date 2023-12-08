@@ -55,7 +55,7 @@ const headers = [
 ];
 
 export function StudentScore() {
-  const id = 1;
+  const id = sessionStorage.getItem("id"); // studentId
   const student = students.find((s) => s.student_id == id);
   const user = userList.find((u) => u.uid == student.uid);
   const course = courses.find((c) => c.course_id == student.course_id);

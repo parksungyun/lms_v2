@@ -754,3 +754,42 @@ export const getAllStudents = async () => {
   });
   return students;
 }
+
+export const getAllMyPostsByStudentId = async (id) => {
+  let posts;
+  await axios
+  .get(`/api/user/posts/student/${id}`)
+  .then((res) => {
+    posts = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 학생이 작성한 게시글 불러오기 실패`);
+  });
+  return posts;
+}
+
+export const getAllMyPostsByAcademicId = async (id) => {
+  let posts;
+  await axios
+  .get(`/api/user/posts/academic/${id}`)
+  .then((res) => {
+    posts = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 사원이 작성한 게시글 불러오기 실패`);
+  });
+  return posts;
+}
+
+export const getAllMyRepliesByStudentId = async (id) => {
+  let replies;
+  await axios
+  .get(`/api/user/replies/academic/${id}`)
+  .then((res) => {
+    replies = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 사원이 작성한 답글 불러오기 실패`);
+  });
+  return replies;
+}

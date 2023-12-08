@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Pagination } from "./Pagination";
 import { useEffect } from "react";
+import { getAllMyPostsByAcademicId, getAllMyPostsByStudentId } from "../pages/Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -48,26 +49,32 @@ export function MyPost() {
   const [page, setPage] = useState(1);
   const limit = 10;
   const offset = (page - 1) * limit;
-  const type = sessionStorage.getItem("userType");
   const id = sessionStorage.getItem("id"); // studentId OR academicId
   const [data, setData] = useState(null);
+  const userType = sessionStorage.getItem("userType");
+  let items;
 
   useEffect(() => {
-    if(type === "s") {
+    if(userType === "s") {
       if(!data) {
-        
+        const promise = getAllMyPostsByStudentId(id);
+        const getData = () => {
+          promise.then((data) => {
+            setData(data);
+          });
+        };
+        getData();
       }
     }
-
-    if(type === "t") {
+    else {
       if(!data) {
-        
-      }
-    }
-
-    if(type === "m") {
-      if(!data) {
-        
+        const promise = getAllMyPostsByAcademicId(id);
+        const getData = () => {
+          promise.then((data) => {
+            setData(data);
+          });
+        };
+        getData();
       }
     }
   })
@@ -83,7 +90,7 @@ export function MyPost() {
   };
 
   function titleLink(id, title, type) {
-    return (<p onClick={() => navigate(`/lms/${type}/${id}`)}>{title}</p>);
+    return (<p onClick={() => navigate(`/lms/${userType}/${type}/${id}`)}>{title}</p>);
   }
 
   const postsData = (posts) => {
@@ -93,100 +100,31 @@ export function MyPost() {
     }
   };
 
-  if(type == 's') {
-    const courseQuestion = course_questions.filter(c => c.student_id == id);
-    const subjectQuextion = subject_questions.filter(s => s.student_id == id);
-    let tempCourseQuestion;
-    let tempSubjectQuestion;
-
-    tempCourseQuestion = courseQuestion.map((c,i) => (
+  if(data) {
+    items = data.map((d, i) => (
       {
         no: i + 1,
-        title: titleLink(c.c_question_id, shortenTitle(c.c_question_title, 20), `s/cqna`),
-        content: shortenTitle(c.c_question_content, 45),
-        regDate: c.c_question_reg_date
+        title: titleLink(d.id, shortenTitle(d.title, 20), d.type),
+        content: shortenTitle(d.content, 45),
+        regDate: new Date(d.regDate).toISOString().split('T')[0],
       }
     ));
-
-    tempSubjectQuestion = subjectQuextion.map((s,i) => (
-      {
-        no: i + 1,
-        title: titleLink(s.s_question_id, shortenTitle(s.s_question_title, 20), `s/${s.subject_id}/sqna`),
-        content: shortenTitle(s.s_question_content, 45),
-        regDate: s.s_question_reg_date
-      }
-    ));
-
-    tempCourseQuestion.push(...tempSubjectQuestion);
-    data = tempCourseQuestion;
-    data.sort((a, b) => a.regDate.localeCompare(b.regDate));
-
-  } else {
-    const academic = academics.find(a => a.academic_id == id);
-      if(academic.dept == 0) {
-        const courseBoard = course_board.filter(c => c.academic_id == id);
-        console.log(courseBoard)
-        data = courseBoard.map((c,i) => (
-          {
-            no: i + 1,
-            title: titleLink(c.course_board_id, shortenTitle(c.c_post_title, 20), `m/${c.cousre_id}/board/`),
-            content: shortenTitle(c.c_post_content, 45),
-            regDate: c.c_post_reg_date,
-          }
-        ));
-          data.sort((a, b) => a.regDate.localeCompare(b.regDate));
-      } else {
-        const subjectBoard = subject_board.filter(s => s.academic_id == id);
-        const lecture = lectures.filter(l => l.academic_id == id);
-        const homework = homeworks.filter(h => h.academic_id == id);
-        let tempSubjectBoard;
-        let tempLecture;
-        let tempHomework;
-
-        tempSubjectBoard = subjectBoard.map((s,i) => (
-          {
-            no: i + 1,
-            title: titleLink(s.subject_board_id, shortenTitle(s.s_post_title, 20), `t/${s.subject_id}/board`),
-            content: shortenTitle(s.s_post_content, 45),
-            regDate: s.s_post_reg_date,
-          }
-        ));
-
-        tempLecture = lecture.map((l,i) => (
-          {
-            no: i + 1,
-            title: titleLink(l.lecture_id, shortenTitle(l.lecture_title, 20), `t/${l.subject_id}/lecture`),
-            content: shortenTitle(l.lecture_content, 45),
-            regDate: l.lecture_reg_date,
-          }
-        ));
-
-        tempHomework = homework.map((h,i) => (
-          {
-            no: i + 1,
-            title: titleLink(h.homework_id, shortenTitle(h.hw_title, 20), `t/${h.subject_id}/homework`),
-            content: shortenTitle(h.hw_content, 45),
-            regDate: h.hw_reg_date,
-          }
-        ));
-
-        tempSubjectBoard.push(...tempLecture, ...tempHomework);
-        data = tempSubjectBoard;
-        data.sort((a, b) => a.regDate.localeCompare(b.regDate));
-        }
-  };
+  }
 
   return<>
-    <Container>
-      <div>
-        <H2>내가 작성한 게시글 수 : {data.length}</H2>
-        <Table 
-          headers={header}
-          items={postsData(data.reverse())}
-          selectable={false}
-        />
-      </div>
-      <Pagination limit={limit} page={page} totalPosts={data.length} setPage={setPage} />
-    </Container>
+    {
+      items &&
+      <Container>
+        <div>
+          <H2>내가 작성한 게시글 수 : {items.length}</H2>
+          <Table 
+            headers={header}
+            items={postsData(items)}
+            selectable={false}
+          />
+        </div>
+        <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+      </Container>
+    }
   </>
 }

@@ -368,7 +368,7 @@ export function StudentSubject() {
     lectureItems = lecture.map((l, i) => (
       {
         no: i + 1,
-        title: l.title,
+        title: titleLink(l.lectureId, shortenTitle(l.title, 11), `/lms/s/${id}/lecture`),
         state: changeReplyLecture(l.lectureId)
       }
     ));

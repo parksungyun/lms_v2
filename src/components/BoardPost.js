@@ -95,7 +95,8 @@ const SecondaryButton = styled.button`
 
 export function BoardPost() {
   const { id } = useParams();
-  const { state } = useLocation();
+  const pathName = useLocation().pathname;
+  const path = pathName.split("/");
   const navigate = useNavigate();
   const userType = sessionStorage.getItem("userType");
   const [post, setPost] = useState(null);
@@ -104,7 +105,7 @@ export function BoardPost() {
 
   useEffect(() => {
     if(!post) {
-      if(userType === "t" || state == "sboard") {
+      if(userType === "t" || path[4] === "sboard") {
         const promise = getSubjectBoardBySubjectBoardId(id);
         const getData = () => {
           promise.then((data) => {
@@ -113,7 +114,7 @@ export function BoardPost() {
         };
         getData();
       }
-      if(userType === "m" || state == "cboard") {
+      if(userType === "m" || path[3] === "cboard") {
         const promise = getCourseBoardByCourseBoardId(id);
         const getData = () => {
           promise.then((data) => {
@@ -124,7 +125,7 @@ export function BoardPost() {
       }
     }
     if(!academic) {
-      if(userType === "t" || state == "sboard") {
+      if(userType === "t" || path[4] === "sboard") {
         const promise = getAllTrainers();
         const getData = () => {
           promise.then((data) => {
@@ -133,7 +134,7 @@ export function BoardPost() {
         };
         getData();
       }
-      if(userType === "m" || state == "cboard") {
+      if(userType === "m" || path[3] === "cboard") {
         const promise = getAllManagers();
         const getData = () => {
           promise.then((data) => {
@@ -146,8 +147,8 @@ export function BoardPost() {
   });
 
   if(post) {
-    if(state == "cboard") navlink = `/lms/${userType}/cboard`;
-    else if(state == "sboard") navlink = `/lms/${userType}/${post.subjectId}/sboard`;
+    if(path[3] === "cboard") navlink = `/lms/${userType}/cboard`;
+    else if(path[4] === "sboard") navlink = `/lms/${userType}/${post.subjectId}/sboard`;
     else if(userType === "m") navlink = `/lms/${userType}/${post.courseId}/board`;
     else navlink = `/lms/${userType}/${post.subjectId}/board`;
   }
@@ -176,7 +177,7 @@ export function BoardPost() {
           <div><A href={post.fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
         </AttachedBox>
         <Box className="button">
-          { userType === "s" ? null : <PrimaryButton onClick={() => navigate("mod", { state : [id, state] })}><p>수정</p></PrimaryButton>}
+          { (userType != "s" && (post.academicId === sessionStorage.getItem("id"))) && <PrimaryButton onClick={() => navigate("mod", { state : [id, path] })}><p>수정</p></PrimaryButton>}
           <SecondaryButton onClick={() => navigate(navlink)}><p>목록</p></SecondaryButton>
         </Box>
       </TableBox>

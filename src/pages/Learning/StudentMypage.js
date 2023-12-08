@@ -42,7 +42,7 @@ const Btn = styled.button`
 
 
 export function StudentMypage() {
-  const [page, setPage] = useState(<StudentAttendance />);
+  const [page, setPage] = useState(<StudentReview />);
   const [active, setActive] = useState(['active', '', '', '', '']);
   const id = sessionStorage.getItem("id"); // studentId
   const [user, setUser] = useState(null);
@@ -101,15 +101,15 @@ export function StudentMypage() {
   }
   return<>
     {
-      (user && academic && course && attendance) &&
+      // (user && academic && course && attendance) &&
       <Container>
         <TableBox>
-          <Btn className={active[0]} onClick={()=>{setPage(<StudentAttendance course={course} academic={academic} attendance={attendance} />); changeActive(0)}}><p>출결관리</p></Btn>
-          <Btn className={active[1]} onClick={()=>{setPage(<StudentReview />); changeActive(1)}}><p>강의평가</p></Btn>
+          <Btn className={active[0]} onClick={()=>{setPage(<StudentReview />); changeActive(0)}}><p>강의평가</p></Btn>
+          <Btn className={active[1]} onClick={()=>{setPage(<StudentAttendance />); changeActive(1)}}><p>출결관리</p></Btn>
           <Btn className={active[2]} onClick={()=>{setPage(<StudentScore />); changeActive(2)}}><p>성적조회</p></Btn>
           <Btn className={active[3]} onClick={()=>{setPage(<MyPost />); changeActive(3)}}><p>내 게시글 관리</p></Btn>
-          <Btn className={active[5]} onClick={()=>{setPage(<StudentDetailForm />); changeActive(4)}}><p>개인정보수정</p></Btn>
-          <Btn className={active[6]} onClick={()=>{setPage(<ChangePW />); changeActive(5)}}><p>비밀번호수정</p></Btn>
+          <Btn className={active[4]} onClick={()=>{setPage(<StudentDetailForm />); changeActive(4)}}><p>개인정보수정</p></Btn>
+          <Btn className={active[5]} onClick={()=>{setPage(<ChangePW />); changeActive(5)}}><p>비밀번호수정</p></Btn>
           <div>
             {page}
           </div>

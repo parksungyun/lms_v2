@@ -112,7 +112,6 @@ export function StudentHome() {
   let cBoardItems;
   let hwItems;
 
-  
   useEffect(() => {
     if(!user) {
       const promise = getUserByUid(id);
@@ -197,8 +196,8 @@ export function StudentHome() {
     cBoardItems = board.map((c, i) => (
       {
         no: i + 1,
-        title: titleLink(c.courseBoardId, shortenTitle(c.title, 20, "cboard")),
-        writer: academic.find((a) => a.academic.academicId == c.academicId).user.userName,
+        title: titleLink(c.courseBoardId, shortenTitle(c.title, 20), `/lms/s/cboard`),
+        writer: academic.find((a) => a.academic.academicId === c.academicId).user.userName,
         regDate: new Date(c.regDate).toISOString().split('T')[0],
         hits: c.hits
       }
@@ -209,7 +208,7 @@ export function StudentHome() {
     hwItems = homework.map((h, i) => (
       {
         subject: shortenTitle(subject.find((s) => s.subject.subjectId === h.subjectId).subject.subjectName, 11),
-        title: titleLink(h.homeworkId, shortenTitle(h.title), 20, "homework"),
+        title: titleLink(h.homeworkId, shortenTitle(h.title, 20), `/lms/s/${h.subjectId}/homework`),
         startDate: h.startDate,
         endDate: h.endDate,
       }
@@ -217,9 +216,9 @@ export function StudentHome() {
   }
 
   return <>
-  {
-    (subject && cBoardItems && hwItems) &&
-    <Container>
+  <Container>
+    {
+      subject &&
       <Content>
         <div>
           <H2 className='title'>내 과정</H2>
@@ -227,8 +226,11 @@ export function StudentHome() {
         </div>
         <PrimaryButton onClick={() => attendCheck()}><p>출석 체크</p></PrimaryButton>
       </Content>
-      <Row>
-        <Col>
+    }
+    <Row>
+      <Col>
+      {
+        cBoardItems &&
         <TableBox>
           <H2 onClick={()=> navigate("cboard")} className="pointer">공지 사항</H2>
           <Table 
@@ -237,8 +239,11 @@ export function StudentHome() {
             selectable={false}
           />
         </TableBox>
-        </Col>
-        <Col>
+      }
+      </Col>
+      <Col>
+      {
+        hwItems &&
         <TableBox>
           <H2>과제</H2>
           <Table 
@@ -247,8 +252,11 @@ export function StudentHome() {
             selectable={false}
           />
         </TableBox>
-        </Col>
-      </Row>
+      }
+      </Col>
+    </Row>
+    {
+      (subject && study) &&
       <Box>
         <H2>내 진도관리</H2>
         {
@@ -262,7 +270,7 @@ export function StudentHome() {
           ))
         }
       </Box>
+    }
     </Container>
-  }
   </>
 }

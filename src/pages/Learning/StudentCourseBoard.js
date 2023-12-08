@@ -97,7 +97,7 @@ export function StudentCourseBoard() {
   }, [user]);
   
   function titleLink(link, title) {
-    return (<p onClick={() => navigate(`${link}`, { state : ["cboard"] })}>{title}</p>);
+    return (<p onClick={() => navigate(`${link}`)}>{title}</p>);
   }
 
   const shortenTitle = (str, length) => {
