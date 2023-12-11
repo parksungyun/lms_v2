@@ -28,7 +28,7 @@ const Hr = styled.hr`
 
 const ButtonBox = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: end;
   margin-top: 2rem;
   margin-right: 1.4rem;
 `;

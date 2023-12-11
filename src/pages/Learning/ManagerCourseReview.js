@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { CourseReview } from "../../components/CourseReview";
 import { useState } from "react";
-import { course_reviews, students, subjects, userList } from "../../assets/TempData";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
+import { getAllTrainers, getStudentsByCourseId, getSubjectByCourseId, getSubjectReviewByCourseId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -49,28 +49,75 @@ const Btn = styled.button`
 
 export function ManagerCourseReview() {
   const { id } = useParams();
-  const subject = subjects.filter(s => s.course_id == id);
-  const [index, setIndex] = useState(1);
-  let temp = new Array(subject.length);
-  console.log(subject);
-  
-  useEffect(() => {
-    temp.map((t) => t = "");  
-    temp[0] = "active";
-  }, []);
-  
-  const [active, setActive] = useState(temp);
-  let review;
-  review = course_reviews.filter((r) => r.subject_id == subject[index - 1].subject_id);
+  const [subject, setSubject] = useState(null);
+  const [review, setReview] = useState(null);
+  const [students, setStudents] = useState(null);
+  const [academics, setAcademics] = useState(null);
+  const [index, setIndex] = useState(0);
+  const [active, setActive] = useState();
   let items;
 
-  if(review) {
-    items = review.map((c, i) => (
+  useEffect(() => {
+    setSubject(null);
+    setReview(null);
+    setStudents(null);
+  }, [id]);
+
+  useEffect(() => {
+    if(!subject) {
+      const promise = getSubjectByCourseId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setSubject(data);
+        });
+      };
+      getData();
+    }
+    if(!review) {
+      const promise = getSubjectReviewByCourseId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setReview(data);
+        });
+      };
+      getData();
+    }
+    if(!students) {
+      const promise = getStudentsByCourseId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setStudents(data);
+        });
+      };
+      getData();
+    }
+    if(!academics) {
+      const promise = getAllTrainers(id);
+      const getData = () => {
+        promise.then((data) => {
+          setAcademics(data);
+        });
+      };
+      getData();
+    }
+  })
+  
+  useEffect(() => {
+    if(subject) {
+      let temp = new Array(subject.length);
+      temp.map((t) => t = "");  
+      temp[0] = "active";
+      setActive(temp);
+    }
+  }, [subject]);
+
+  if(subject && review && students) {
+    items = (review.filter((c) => c.subjectId === subject[index - 1].subject.subjectId)).map((c, i) => (
       {
         no: i + 1,
-        writer: userList.find(u => u.uid == students.find(s => s.student_id == c.student_id).uid).user_name,
-        score: c.review_score,
-        content: c.review_comment
+        writer: students.find((s) => s.student.studentId === c.studentId).user.userName,
+        score: c.reviewScore,
+        content: c.reviewComment
       }
     ));
   }
@@ -91,14 +138,16 @@ export function ManagerCourseReview() {
         <H2>강의평가</H2>
         <Hr />
         {
-          subject.map((s, i) => (
-            <>            
-            <Btn className={active[i]} onClick={()=>{setIndex(i+1); changeActive(i+1)}}><p>{s.subject_name}</p></Btn>
-            </>
+          (active) &&
+          subject.map((s, i) => (         
+            <Btn className={active[i]} onClick={()=>{setIndex(i+1); changeActive(i+1)}}><p>{s.subject.subjectName}</p></Btn>
           ))
         }
         <div>
-          <CourseReview items={items} info={review} index={subject[index - 1].subject_id} />
+          {
+            (items && subject && students && academics) &&
+            <CourseReview items={items} subject={subject[index - 1]} student={students} academic={academics} />
+          }
         </div>
       </TableBox>
     </Container>

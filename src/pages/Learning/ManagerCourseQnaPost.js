@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import { BsDownload } from "react-icons/bs";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { course_answers, course_questions, students, userList } from "../../assets/TempData";
 import { ReplyPost } from "../../components/ReplyPost";
 import { ReplyWrite } from "../../components/ReplyWrite";
 import { useEffect } from "react";
+import { getAllManagers, getAllStudents, getCourseQnaByCourseQuestionId, getStudentByStudentId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -98,44 +99,79 @@ export function ManagerCourseQnaPost() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isReply, setIsReply] = useState();
-  const question = course_questions.find((q) => q.c_question_id == id);
-  const student = userList.find(data => data.uid == (students.find(d => d.student_id == question.student_id)).uid);
-  let answer;
-
-  if(course_answers.find(data => data.c_question_id == question.c_question_id)){
-    answer = course_answers.find(data => data.c_question_id == question.c_question_id);
-  }
+  const [question, setQuestion] = useState(null);
+  const [students, setStudents] = useState(null);
+  const [academics, setAcademics] = useState(null);
+  const pathName = useLocation().pathname;
+  const link = pathName.substring(0, pathName.lastIndexOf("/"));
 
   useEffect(() => {
-    if(answer) setIsReply(1);
-  }, [answer])
+    if(!question) {
+      const promise = getCourseQnaByCourseQuestionId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setQuestion(data);
+        });
+      };
+      getData();
+    }
+    if(!students) {
+      const promise = getAllStudents();
+      const getData = () => {
+        promise.then((data) => {
+          setStudents(data);
+        });
+      };
+      getData();
+    }
+    if(!academics) {
+      const promise = getAllManagers();
+      const getData = () => {
+        promise.then((data) => {
+          setAcademics(data);
+        });
+      };
+      getData();
+    }
+  });
+
+  useEffect(() => {
+    if(question) {
+      if(question.answer) {
+        setIsReply(1);
+      }
+    }
+  }, [question]);
 
   return<>
     <Container>
-      <TableBox>
-        <H2>{question.c_question_title}</H2>
-        <Box>
-          <P>{student.user_name}</P>
-          <P>|</P>
-          <P>{question.c_question_reg_date}</P>
-        </Box>
-        <Hr />
-        <Content>{question.c_question_content}</Content>
-        <AttachedBox>
-          <Attached><p className="fw-bold">첨부파일</p></Attached>
-          <div><A href={question.c_question_fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
-        </AttachedBox>
-        <Hr />
-        {
-          isReply == 1 ? <>
-            <ReplyPost id={question.c_question_id} type={"c"} />
-            <Box className="button">
-              <PrimaryButton onClick={()=>setIsReply(0)}><p>수정</p></PrimaryButton>
-              <SecondaryButton onClick={()=>navigate("/lms/m/qna")}><p>목록</p></SecondaryButton>
-            </Box>
-          </> : <ReplyWrite id={question.c_question_id} type={"m/qna"} />
-        }
-      </TableBox>
+      {
+        (question && students && academics) &&
+        <TableBox>
+          <H2>{question.question.title}</H2>
+          <Box>
+            <P>{students.find((s) => s.student.studentId === question.question.studentId).user.userName}</P>
+            <P>|</P>
+            <P>{new Date(question.question.regDate).toLocaleDateString("fr-CA")}</P>
+          </Box>
+          <Hr />
+          <Content>{question.question.content}</Content>
+          <AttachedBox>
+            <Attached><p className="fw-bold">첨부파일</p></Attached>
+            <div><A href={question.question.fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
+          </AttachedBox>
+          <Hr />
+          {
+            isReply === 1 ? <>
+              <ReplyPost question={question} academic={academics.find((a) => a.academic.academicId === question.answer.academicId)} />
+              <Box className="button">
+                <PrimaryButton onClick={()=>setIsReply(0)}><p>수정</p></PrimaryButton>
+                <SecondaryButton onClick={()=>navigate(link)}><p>목록</p></SecondaryButton>
+              </Box>
+            </> : <ReplyWrite question={question} />
+          }
+        </TableBox>
+      }
     </Container>
   </>
 }

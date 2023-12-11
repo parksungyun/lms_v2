@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
 import { Pagination } from "../../components/Pagination";
-import { course_answers, course_questions, students, userList } from "../../assets/TempData";
+import { getCourseQnaByCourseId, getCourseQnaBySearch, getStudentsByCourseId } from "../Api";
 
 const BadgeSuccess = styled.span`
   background-color: green;
@@ -103,8 +103,35 @@ export function ManagerCourseQna() {
   const limit = 10;
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
-  const questions = course_questions.filter((q) => q.course_id == id)
-  const answer = course_answers.filter((a) => questions.map((q) => q.c_question_id == a.c_question_id));
+  const [questions, setQuestions] = useState(null);
+  const [students, setStudents] = useState(null);
+  let items;
+
+  useEffect(() => {
+    setQuestions(null);
+    setStudents(null);
+  }, [id]);
+
+  useEffect(() => {
+    if(!questions) {
+      const promise = getCourseQnaByCourseId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setQuestions(data);
+        });
+      };
+      getData();
+    }
+    if(!students) {
+      const promise = getStudentsByCourseId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setStudents(data);
+        });
+      };
+      getData();
+    }
+  });
 
   const shortenTitle = (str, length) => {
     let result = '';
@@ -116,28 +143,28 @@ export function ManagerCourseQna() {
     return result;
   };
   
-  const items = questions.map((c, i) => (
-    {
-      no: i + 1,
-      title: titleLink(c.c_question_id, shortenTitle(c.c_question_title, 35)),
-      writer: userList.find((u) => u.uid == (students.find((s) => s.student_id == c.student_id).uid)).user_name,
-      regDate: c.c_question_reg_date,
-      replyDate: findReplyDate(c.c_question_id),
-      replyState: changeReply(c.c_question_id)
-    }
-  ));
+  if(questions && students) {
+    items = questions.map((c, i) => (
+      {
+        no: i + 1,
+        title: titleLink(c.question.courseQuestionId, shortenTitle(c.question.title, 35)),
+        writer: students.find((s) => s.student.studentId === c.question.studentId).user.userName,
+        regDate: new Date(c.question.regDate).toLocaleDateString("fr-CA"),
+        replyDate: findReplyDate(c),
+        replyState: changeReply(c)
+      }
+    ));
+  }
 
-  function findReplyDate(id) {
-    let temp;
-    if(answer.find((a) => a.c_question_id == id)){
-      temp = answer.find((a) => a.c_question_id == id);
-      return temp.c_answer_mod_date;
+  function findReplyDate(question) {
+    if(question.answer){
+      return new Date(question.answer.answerModDate).toLocaleDateString("fr-CA");
     }
     else return "";
   }
     
-  function changeReply(id) {
-    if(answer.find((a) => a.c_question_id == id)){
+  function changeReply(question) {
+    if(question.answer){
       return(<BadgeSuccess>답변완료</BadgeSuccess>)
     }
     else {
@@ -156,32 +183,52 @@ export function ManagerCourseQna() {
     }
   };
 
-  function onSearch(e) {
-    e.preventDefault();
+  function onSearch() {
+    if(search.trim().length > 0) {
+      const promise = getCourseQnaBySearch(search, searchOption, id);
+      const getData = () => {
+        promise.then((data) => {
+          setQuestions(data);
+        });
+      };
+      getData();
+    }
+    else {
+      setQuestions(null);
+    }
+    setSearch("");
+    setSearchOption("all");
   };
 
   return<>
     <Container>
       <TableBox>
         <H2>1:1 문의</H2>
-        <Table 
-          headers={headers}
-          items={postsData(items)}
-          selectable={false}
-        />
+        {
+          items &&
+          <Table 
+            headers={headers}
+            items={postsData(items)}
+            selectable={false}
+          />
+        }
       </TableBox>
       <ButtonBox>
         <SearchBox>
           <select className="searchSelect" onChange={(e) => setSearchOption(e.target.value)}>
             <option key="all" value="all">전체</option>
             <option key="title" value="title">제목</option>
+            <option key="content" value="content">내용</option>
             <option key="writer" value="writer">작성자</option>
           </select>
           <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={onSearch}><p>검색</p></button>
+          <button onClick={() => onSearch()}><p>검색</p></button>
         </SearchBox>
       </ButtonBox>
-      <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+      {
+        items &&
+        <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+      }
     </Container>
   </>
 }

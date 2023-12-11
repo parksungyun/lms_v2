@@ -42,25 +42,22 @@ const headers = [
   },
 ];
 
-export function CourseReview({items, info, index}) {
-  const subject = subjects.find(s => s.subject_id == index);
-  const course = courses.find(c => c.course_id == subject.course_id);
-  const student = students.filter(s => s.course_id == course.course_id);
+export function CourseReview({items, subject, student, academic}) {
 
   let sum = 0;
   let average = 0;
-  if(info.length > 0) {
-    info.map((i) => {
-      sum += i.review_score;
+  if(items.length > 0) {
+    items.map((i) => {
+      sum += i.reviewScore;
     });
-    average = sum / info.length;
+    average = sum / items.length;
   }
 
   return<>
     <Box>
       <ContentBox className='col-2'>
         <Bold>강사</Bold>
-        <p>{userList.find(u => u.uid == academics.find(a => a.academic_id == subject.academic_id).uid).user_name}</p>
+        <p>{academic.find((a) => a.academic.academicId === subject.subject.academicId).user.userName}</p>
       </ContentBox>
       <ContentBox className='col-3'>
         <Bold>전체</Bold>
@@ -68,11 +65,11 @@ export function CourseReview({items, info, index}) {
       </ContentBox>
       <ContentBox className='col-3'>
         <Bold>제출</Bold>
-        <p>{info.length}</p>
+        <p>{items.length}</p>
       </ContentBox>
       <ContentBox className='col-3'>
         <Bold>미제출</Bold>
-        <p>{student.length - info.length}</p>
+        <p>{student.length - items.length}</p>
       </ContentBox>
       <ContentBox className='col-1'>
         <Bold>평균</Bold>

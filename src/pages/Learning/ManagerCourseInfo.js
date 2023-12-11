@@ -3,6 +3,8 @@ import { Table } from "../../components/Table";
 import { userList, students, courses } from "../../assets/TempData";
 import '../../styles/trainer_subject_table.css';
 import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getCourseById, getStudentsByCourseId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -92,20 +94,48 @@ const courseInfo = [
 export function ManagerCourseInfo(){
   const navigate = useNavigate();
   const { id } = useParams();
-  
-  const course = courses.find((c) => c.course_id == id);
-  const student = students.filter((s) => s.course_id == course.course_id);
+  const [course, setCourse] = useState(null);
+  const [students, setStudents] = useState(null);
+  let items;
 
-  const items = student.map((s, i) => (
-    {
-      no: i + 1,
-      name: userList.find((u) => u.uid == s.uid).user_name,
-      birth: userList.find((u) => u.uid == s.uid).user_birth,
-      phone: userList.find((u) => u.uid == s.uid).user_phone,
-      attendance: <PrimaryButton onClick={() => onAttend(s.student_id)}><p>출결관리</p></PrimaryButton>,
-      info: <SecondaryButton onClick={() => onDetail(s.student_id)}><p>상세정보</p></SecondaryButton>
+  useEffect(() => {
+    setCourse(null);
+    setStudents(null);
+  }, [id]);
+
+  useEffect(() => {
+    if(!course) {
+      const promise = getCourseById(id);
+      const getData = () => {
+        promise.then((data) => {
+          setCourse(data);
+        });
+      };
+      getData();
     }
-  ))
+    if(!students) {
+      const promise = getStudentsByCourseId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setStudents(data);
+        });
+      };
+      getData();
+    }
+  });
+
+  if(students) {
+    items = students.map((s, i) => (
+      {
+        no: i + 1,
+        name: s.user.userName,
+        birth: s.user.userBirth,
+        phone: s.user.userPhone,
+        attendance: <PrimaryButton onClick={() => onAttend(s.student.studentId)}><p>출결관리</p></PrimaryButton>,
+        info: <SecondaryButton onClick={() => onDetail(s.student.studentId)}><p>상세정보</p></SecondaryButton>
+      }
+    ))
+  }
 
   function onDetail(id) {
     navigate(`detail/${id}`);
@@ -119,29 +149,35 @@ export function ManagerCourseInfo(){
     <Container>
       <TableBox>
         <H2>과정 정보</H2>
-        <Box>
-          <ContentBox className="col-3">
-            <Bold>과정명</Bold>
-            <p>{course.course_name}</p>
-          </ContentBox>
-          <ContentBox className="col-3">
-            <Bold>과목수</Bold>
-            <p>{course.subject_no}</p>
-          </ContentBox>
-          <ContentBox className="col-3">
-            <Bold>기간</Bold>
-            <p>{course.start_date} ~ {course.end_date}</p>
-          </ContentBox>
-          <ContentBox className="col-3">
-            <Bold>학생수</Bold>
-            <p>{student.length} 명</p>
-          </ContentBox>
-        </Box>
-        <Table 
-          headers={courseInfo}
-          items={items}
-          selectable={false}
-        />
+        {
+          (course && students) &&
+          <Box>
+            <ContentBox className="col-3">
+              <Bold>과정명</Bold>
+              <p>{course.courseName}</p>
+            </ContentBox>
+            <ContentBox className="col-3">
+              <Bold>과목수</Bold>
+              <p>{course.subjectNo}</p>
+            </ContentBox>
+            <ContentBox className="col-3">
+              <Bold>기간</Bold>
+              <p>{course.startDate} ~ {course.endDate}</p>
+            </ContentBox>
+            <ContentBox className="col-3">
+              <Bold>학생수</Bold>
+              <p>{students.length} 명</p>
+            </ContentBox>
+          </Box>
+        }
+        {
+          items &&
+          <Table 
+            headers={courseInfo}
+            items={items}
+            selectable={false}
+          />
+        }
       </TableBox>
     </Container>
   </>

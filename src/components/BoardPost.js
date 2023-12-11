@@ -176,7 +176,7 @@ export function BoardPost() {
           <div><A href={post.fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
         </AttachedBox>
         <Box className="button">
-          { (userType != "s" && (post.academicId === sessionStorage.getItem("id"))) && <PrimaryButton onClick={() => navigate("mod", { state : [id, path] })}><p>수정</p></PrimaryButton>}
+          { (userType != "s" && (post.academicId == sessionStorage.getItem("id"))) && <PrimaryButton onClick={() => navigate("mod")}><p>수정</p></PrimaryButton>}
           <SecondaryButton onClick={() => navigate(navlink)}><p>목록</p></SecondaryButton>
         </Box>
       </TableBox>

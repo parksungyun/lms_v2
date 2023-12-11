@@ -1,7 +1,6 @@
 import styled from "styled-components"
 import { RiUserSettingsLine } from "react-icons/ri";
 import { LmsHomeButtonWrapper } from "../../components/LmsHomeButtonWrapper";
-import { courses } from "../../assets/TempData";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -70,13 +69,15 @@ export function ManagerHome() {
 
   useEffect(() => {
     if(user) {
-      const promise = getCourseByAcademicId(user.academic.academicId);
-      const getData = () => {
-        promise.then((data) => {
-          setCourse(data);
-        });
-      };
-      getData();
+      if(!course) {
+        const promise = getCourseByAcademicId(user.academic.academicId);
+        const getData = () => {
+          promise.then((data) => {
+            setCourse(data);
+          });
+        };
+        getData();
+      }
     }
   }, [user]);
 

@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { Board } from "../../components/Board";
-import { academics, course_board, userList } from "../../assets/TempData";
 import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getAllManagers, getCourseBoardByCourseId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -35,8 +36,35 @@ const headers = [
 
 export function ManagerCourseBoard() {
 const { id } = useParams();
-const course = course_board.filter(c => c.cousre_id == id);
+const [board, setBoard] = useState(null);
+const [academics, setAcademics] = useState(null);
 const navigate = useNavigate();
+let items;
+
+useEffect(() => {
+  setBoard(null);
+}, [id]);
+
+useEffect(() => {
+  if(!board) {
+    const promise = getCourseBoardByCourseId(id);
+    const getData = () => {
+      promise.then((data) => {
+        setBoard(data);
+      });
+    };
+    getData();
+  }
+  if(!academics) {
+    const promise = getAllManagers();
+    const getData = () => {
+      promise.then((data) => {
+        setAcademics(data);
+      });
+    };
+    getData();
+  }
+});
 
 const shortenTitle = (str, length) => {
   let result = '';
@@ -49,22 +77,27 @@ const shortenTitle = (str, length) => {
 };
 
 function titleLink(link, title) {
-  return (<p onClick={() => navigate(`${link}`, { state : ["m", id, "board"] })}>{title}</p>);
+  return (<p onClick={() => navigate(`${link}`)}>{title}</p>);
 }
-  
-const items = course.map((c, i) => (
-  {
-    no: i + 1,
-    title: titleLink(c.course_board_id, shortenTitle(c.c_post_title, 35)),
-    writer: userList.find(u => u.uid == academics.find(a => a.academic_id == c.academic_id).uid).user_name,
-    regDate: c.c_post_reg_date,
-    hits: c.c_post_hits
-  }
-));
+
+if(board && academics) {
+  items = board.map((c, i) => (
+    {
+      no: i + 1,
+      title: titleLink(c.courseBoardId, shortenTitle(c.title, 35)),
+      writer: academics.find((a) => a.academic.academicId === c.academicId).user.userName,
+      regDate: new Date(c.regDate).toLocaleDateString("fr-CA"),
+      hits: c.hits
+    }
+  ));
+}
 
   return<>
     <Container>
-      <Board board={headers} item={items.reverse()} write={true} type={["m", id, "board"]} />
+      {
+        items &&
+        <Board board={headers} item={items} />
+      }
     </Container>
   </>
 }

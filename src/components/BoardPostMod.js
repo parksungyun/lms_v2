@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { course_board, subject_board } from "../assets/TempData";
 import { DeleteModal } from "./DeleteModal";
+import { getCourseBoardByCourseBoardId, getSubjectBoardBySubjectBoardId } from "../pages/Api";
+import axios from "axios";
 
 const TableBox = styled.div`
   padding: 2rem;
@@ -75,49 +76,121 @@ const ContentInput = styled.textarea`
   resize: none;
 `;
 
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 1rem 0 0 0;
+  text-align: center;
+`;
+
 export function BoardPostMod() {
   const navigate = useNavigate();
-  const { state } = useLocation();
+  const { id } = useParams();
+  const pathName = useLocation().pathname;
+  const userType = sessionStorage.getItem("userType");
+  const [post, setPost] = useState(null);
   const [boardTitle, setBoardTitle] = useState();
   const [boardContent, setBoardContent] = useState();
-  let post;
-  let link;
-
-  if(state[1] === "t") {
-    post = subject_board.find((s) => s.subject_board_id == state[0]);
-    link = `/lms/t/${post.subject_id}/board`
-  }
-  else { 
-    post = course_board.find((c) => c.course_board_id == state[0]);
-    link = `/lms/m/${post.cousre_id}/board`
-  }
+  const [errorCheck, setErrorCheck] = useState();
+  const link = pathName.substring(0, pathName.lastIndexOf("/"));
+  const linkId = pathName.split('/')[3];
 
   useEffect(() => {
-    if(state[1] === "t") {
-      setBoardTitle(post.s_post_title);
-      setBoardContent(post.s_post_content);
-
+    if(!post) {
+      if(userType === "t") {
+        const promise = getSubjectBoardBySubjectBoardId(id);
+        const getData = () => {
+          promise.then((data) => {
+            setPost(data);
+          });
+        };
+        getData();
+      }
+      else {
+        const promise = getCourseBoardByCourseBoardId(id);
+        const getData = () => {
+          promise.then((data) => {
+            setPost(data);
+          });
+        };
+        getData();
+      }
     }
-    else {
-      setBoardTitle(post.c_post_title);
-      setBoardContent(post.c_post_content);
+  });
+
+  useEffect(() => {
+    if(post) {
+      setBoardTitle(post.title);
+      setBoardContent(post.content);
     }
   }, [post]);
+
+  function onSubmit() {
+    if(!boardTitle) {
+      setErrorCheck(1);
+    }
+    else if(!boardContent) {
+      setErrorCheck(2);
+    }
+    else {
+      if(userType === "t") {
+        const data = {
+          academicId: sessionStorage.getItem("id"),
+          subjectId: linkId,
+          title: boardTitle,
+          content: boardContent
+        };
+        console.log(data);
+        axios
+        .post(`/api/subject/board/${id}/mod`, data)
+        .then((res) => {
+          navigate(link);
+        })
+        .catch((err) => {
+          console.log(`${err} : 과목 공지 게시글 수정 실패`);
+        });
+      }
+      else {
+        const data = {
+          academicId: sessionStorage.getItem("id"),
+          courseId: linkId,
+          title: boardTitle,
+          content: boardContent
+        };
+        console.log(data);
+        axios
+        .post(`/api/course/board/${id}/mod`, data)
+        .then((res) => {
+          navigate(link);
+        })
+        .catch((err) => {
+          console.log(`${err} : 과정 공지 게시글 수정 실패`);
+        });
+      }
+    }
+  }
 
   return<>
     <TableBox>
       <H2>공지 수정</H2>
-      {/* <form action="" method="POST"> */}
-        <Input type="text" name="board_title" id="board_title" value={boardTitle} onChange={(e)=>setBoardTitle(e.target.value)}/>
+      <form>
+        <Input type="text" name="boardTitle" id="boardTitle" value={boardTitle} onChange={(e)=>setBoardTitle(e.target.value)}/>
         <Hr />
-        <ContentInput type="text" name="board_content" id="board_content" value={boardContent}  onChange={(e)=>setBoardContent(e.target.value)}/>
-        <Input type="file" name="board_file" id="board_file" accept="" />
-        <Box>
-          <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
-          <DeleteModal name={"삭제"}></DeleteModal>
-          <SecondaryButton onClick={() => navigate(link)}><p>목록</p></SecondaryButton>
-        </Box>
-      {/* </form> */}
+        <ContentInput type="text" name="boardContent" id="boardContent" value={boardContent}  onChange={(e)=>setBoardContent(e.target.value)}/>
+        <Input type="file" name="boardFile" id="boardFile" accept="" />
+      </form>
+      {
+        errorCheck === 1 && <ErrorMsg>제목을 입력해주세요</ErrorMsg>
+      }
+      {
+        errorCheck === 2 && <ErrorMsg>내용을 입력해주세요</ErrorMsg>
+      }
+      <Box>
+        <PrimaryButton onClick={() => onSubmit()}><p>수정</p></PrimaryButton>
+        <DeleteModal name={"삭제"}></DeleteModal>
+        <SecondaryButton onClick={() => navigate(link.substring(0, link.lastIndexOf("/")))}><p>목록</p></SecondaryButton>
+      </Box>
     </TableBox>
   </>
 }

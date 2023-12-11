@@ -677,6 +677,19 @@ export const getCourseBoardBySearch = async (keyword, type, id) => {
   return posts;
 }
 
+export const getCourseQnaBySearch = async (keyword, type, id) => {
+  let posts;
+  await axios
+  .get(`/api/course/${id}/qna/search/${type}/${keyword}`)
+  .then((res) => {
+    posts = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 검색된 과정 QnA 불러오기 실패`);
+  });
+  return posts;
+}
+
 export const getSubmitByStudentIdAndHomeworkId = async (studentId, homeworkId) => {
   let submit;
   await axios

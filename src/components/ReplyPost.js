@@ -1,7 +1,4 @@
 import styled from "styled-components"
-import { useState } from "react";
-import { useEffect } from "react";
-import { getAdmissionPostById, getAllManagers, getAllTrainers, getCourseQnaByCourseQuestionId, getSubjectQnaBySubjectQuestionId } from "../pages/Api";
 
 const CommentBox = styled.div`
   margin-top: 2rem;
