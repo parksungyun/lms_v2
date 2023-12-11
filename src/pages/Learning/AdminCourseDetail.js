@@ -212,6 +212,7 @@ export function AdminCourseDetail() {
         promise.then((data) => {
           setCourses(data);
           setDel(data.subjectNo);
+          setSubjectNo(data.subjectNo);
         })
       };
       getData();
@@ -268,7 +269,6 @@ export function AdminCourseDetail() {
       setCapacity(courses.capacity);
       setCoursePhoto(courses.coursePhoto);
       setCourseInfo(courses.courseInfo);
-      setSubjectNo(courses.subjectNo);
       setImage("/upload/" + courses.coursePhoto.substring(courses.coursePhoto.lastIndexOf("\\") + 1));
     }
   }, [courses, subjects]);
@@ -286,7 +286,8 @@ export function AdminCourseDetail() {
     }
   },[subjectName, subjectSelected, trainers]);
 
-  console.log(subjects)
+  console.log(subjects);
+  console.log(courses);
 
   function onDeleteSubject(i) {
     setSubjects(subjects.filter(s => s.count !== subjects[i].count));
@@ -327,6 +328,8 @@ export function AdminCourseDetail() {
     });
   };
 
+  console.log(subjectNo)
+
   function onSubmit() {
     const data = {
       academicId: selected,
@@ -366,6 +369,7 @@ export function AdminCourseDetail() {
     if (date >= startDate) {
       check = 1;
     } else { check = 0; };
+    console.log(check)
     axios
     .post(`/api/subject/mod/${id}/${check}`, subjects)
     .then((res) => {
@@ -376,18 +380,18 @@ export function AdminCourseDetail() {
       setError(3);
     })
 
-    fetch(`/api/file/upload/course/${id}`, {
-      method: 'POST',
-      body: fd
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('File upload success:', data);
-    })
-    .catch(error => {
-        console.error('File upload failed:', error);
-        setError(3);
-    });
+    // fetch(`/api/file/upload/course/${id}`, {
+    //   method: 'POST',
+    //   body: fd
+    // })
+    // .then(response => response.json())
+    // .then(data => {
+    //     console.log('File upload success:', data);
+    // })
+    // .catch(error => {
+    //     console.error('File upload failed:', error);
+    //     setError(3);
+    // });
   };    
   
   return <>
@@ -471,7 +475,7 @@ export function AdminCourseDetail() {
                     courses.available == 1 ? <DangerButton><p>비활성화</p></DangerButton> : <PrimaryButton><p>활성화</p></PrimaryButton>
                   }
                 </Detail> */}
-                  {error == 2 && window.location.reload()}
+                  {/* {error == 2 && window.location.reload()} */}
                   {error == 3 && <ErrorMsg>등록이 실패하였습니다.</ErrorMsg>}
                 <ButtonBox>
                   <PrimaryButton type="submit" onClick={() => onSubmit()}><p>수정</p></PrimaryButton>

@@ -80,11 +80,22 @@ const P = styled.p`
 
 export function TrainerLectureWrite() {
   const navigate = useNavigate();
+  // lecture id
   const { state } = useLocation();
   const [lectureTitle, setLectureTitle] = useState();
   const [lectureContent, setLectureContent] = useState();
   const [lectureVideo, setLectureVideo] = useState();
   const [lectureFile, setLectureFile] = useState();
+  const [videoUrl, setVideoUrl] = useState();
+
+  function onSubmit() {
+
+  }
+  console.log(lectureVideo);
+  console.log(videoUrl);
+
+  const time = videoUrl.duration;
+
 
   return<>
     <Container>
@@ -95,14 +106,14 @@ export function TrainerLectureWrite() {
           <Hr />
           <ContentInput type="text" name="lecture_content" id="lecture_content" value={lectureContent} onChange={(e)=>setLectureContent(e.target.value)} placeholder="내용을 입력해주세요"/>
           <P>영상 강의</P>
-          <Input type="file" name="lecture_video" id="lecture_video" value={lectureVideo} onChange={(e)=>setLectureVideo(e.target.value)}/>
+          <Input type="file" name="lecture_video" id="lecture_video" accept="video/*" onChange={(e)=>{setLectureVideo(e.target.files[0]); setVideoUrl(e.target.value)}}/>
           <P>강의 자료</P>
           <Input type="file" name="lecture_file" id="lecture_file" value={lectureFile} onChange={(e)=>setLectureFile(e.target.value)}/>
+        </form>
           <Box>
-            <PrimaryButton type="submit"><p>등록</p></PrimaryButton>
+            <PrimaryButton onClick={()=>onSubmit()}><p>등록</p></PrimaryButton>
             <SecondaryButton onClick={() => navigate(`/lms/t/${state}/lecture`)}><p>목록</p></SecondaryButton>
           </Box>
-        </form>
       </TableBox>
     </Container>
   </>

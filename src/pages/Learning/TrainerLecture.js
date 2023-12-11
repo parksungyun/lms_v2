@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
 import { Pagination } from "../../components/Pagination";
 import { academics, lectures, userList } from "../../assets/TempData";
+import { getAllTrainers, getLecturesBySubjectId, getSubjectById } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -85,12 +86,38 @@ export function TrainerLecture() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [searchOption, setSearchOption] = useState("all");
+  const [lectures, setLectures] = useState(null);
+  const [trainers, setTrainers] = useState(null);
   const limit = 10;
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
+  let items;
 
   const { id } = useParams();
-  const lecture = lectures.filter(l => l.subject_id == id);
+
+  useEffect(()=>{
+    if(!lectures) {
+      const promise = getLecturesBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setLectures(data);
+        });
+      };
+      getData();
+    };
+    if(!trainers) {
+      const promise = getAllTrainers();
+      const getData = () => {
+        promise.then((data) => {
+          setTrainers(data);
+        });
+      };
+      getData();
+    }
+  })
+
+  console.log(lectures)
+  console.log(trainers)
 
   const shortenTitle = (str, length) => {
     let result = '';
@@ -102,15 +129,17 @@ export function TrainerLecture() {
     return result;
   };
   
-  const items = lecture.map((l,i) => (
-    {
-      no: i+1,
-      title: titleLink(l.lecture_id, shortenTitle(l.lecture_title, 35)),
-      writer: userList.find(u => u.uid == academics.find(a => a.academic_id == l.academic_id).uid).user_name,
-      regDate: l.lecture_reg_date,
-      Hits: l.lecture_hits
-    }
-  ));
+  if (lectures, trainers) {
+    items = lectures.map((l,i) => (
+      {
+        no: i+1,
+        title: titleLink(l.lectureId, shortenTitle(l.title, 35)),
+        writer: trainers.find(t => t.academic.academicId == l.academicId).user.userName,
+        regDate: l.regDate,
+        Hits: l.hits
+      }
+    ));
+  }
 
   function titleLink(id, title) {
     return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
@@ -128,28 +157,31 @@ export function TrainerLecture() {
   };
 
   return<>
-    <Container>
-      <TableBox>
-        <H2>강의</H2>
-        <Table 
-          headers={headers}
-          items={postsData(items)}
-          selectable={false}
-        />
-      </TableBox>
-      <ButtonBox>
-        <SearchBox>
-          <select className="searchSelect" onChange={(e) => setSearchOption(e.target.value)}>
-            <option key="all" value="all">전체</option>
-            <option key="title" value="title">제목</option>
-            <option key="writer" value="writer">작성자</option>
-          </select>
-          <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={onSearch}><p>검색</p></button>
-        </SearchBox>
-        <PrimaryButton onClick={() => navigate("write", { state : id })}><p>작성</p></PrimaryButton>
-      </ButtonBox>
-      <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
-    </Container>
+    {
+      items && 
+        <Container>
+          <TableBox>
+            <H2>강의</H2>
+            <Table 
+              headers={headers}
+              items={postsData(items)}
+              selectable={false}
+            />
+          </TableBox>
+          <ButtonBox>
+            <SearchBox>
+              <select className="searchSelect" onChange={(e) => setSearchOption(e.target.value)}>
+                <option key="all" value="all">전체</option>
+                <option key="title" value="title">제목</option>
+                <option key="writer" value="writer">작성자</option>
+              </select>
+              <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
+              <button onClick={onSearch}><p>검색</p></button>
+            </SearchBox>
+            <PrimaryButton onClick={() => navigate("write", { state : id })}><p>작성</p></PrimaryButton>
+          </ButtonBox>
+          <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+        </Container>
+    }
   </>
 }
