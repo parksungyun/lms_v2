@@ -75,11 +75,12 @@ export function MemberCard({id}) {
 
   console.log(member);
 
+  // courses.coursePhoto.substring(courses.coursePhoto.lastIndexOf("\\") + 1)
   return <>
     {
       member &&  
       <Card>
-        <Img src={member.academic.userPhoto} alt={member.user.userName} />
+        <Img src={"/upload/" + `${member.academic.userPhoto.substring(member.academic.userPhoto.lastIndexOf("\\") + 1)}`} alt={member.user.userName} />
         <Content>
           <Name>{member.user.userName}</Name>
           <Position>{member.position}</Position>

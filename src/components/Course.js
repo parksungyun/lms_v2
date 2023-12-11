@@ -65,12 +65,12 @@ export function Course({id}) {
   function onDetail(id) {
     navigate(`/course/${id}`);
   }
-
+  
   return <>
     <Container>
       {
         course && <Box>
-          <Img src={course.coursePhoto} alt={course.courseName} onClick={() => onDetail(course.courseId)}/>
+          <Img src={"/upload/" + `${course.coursePhoto.substring(courses.coursePhoto.lastIndexOf("\\") + 1)}`} alt={course.courseName} onClick={() => onDetail(course.courseId)}/>
           <Content>
             <Title onClick={() => onDetail(course.courseId)}>{course.courseName}</Title>
             <Capacity>
