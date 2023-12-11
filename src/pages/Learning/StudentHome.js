@@ -6,6 +6,7 @@ import { academics, course_board, courses, homeworks, lectures, students, studie
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getAcademicByAcademicId, getAllManagers, getCourseBoardByCourseId, getHomeworksByCourseId, getProgressByStudentId, getSubjectByCourseId, getUserByUid } from "../Api";
+import axios from "axios";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -43,6 +44,10 @@ const PrimaryButton = styled.button`
   background-color: #5f7dcf;
   padding: 0.8rem 1.4rem;
   color: white;
+  &.disabled {
+    cursor: default;
+    background-color: gray;
+  }
 `;
 
 const Content = styled.div`
@@ -102,15 +107,22 @@ const hw = [
 
 export function StudentHome() {
   const id = sessionStorage.getItem("uid");
+  const studentId = sessionStorage.getItem("id");
   const [user, setUser] = useState(null);
   const [subject, setSubject] = useState(null);
   const [homework, setHomework] = useState(null);
   const [study, setStudy] = useState(null);
   const [board, setBoard] = useState(null);
   const [academic, setAcademic] = useState(null);
+  const [disabled, setDisabled] = useState();
   const navigate = useNavigate();
   let cBoardItems;
   let hwItems;
+  let now = new Date();
+  const attendStart = new Date().setHours(8, 0, 0);
+  const attendEnd = new Date().setHours(9, 0, 0);
+  const leaveStart = new Date().setHours(17, 0, 0);
+  const leaveEnd = new Date().setHours(18, 0, 0);
 
   useEffect(() => {
     if(!user) {
@@ -130,6 +142,17 @@ export function StudentHome() {
         });
       };
       getData();
+    }
+
+    // 출석체크 버튼 (오전 8~9시, 오후 5~6시만 활성화)
+    if(now >= attendStart && now <= attendEnd) {
+      setDisabled();
+    }
+    else if(now >= leaveStart && now <= leaveEnd) {
+      setDisabled();
+    }
+    else {
+      setDisabled("disabled");
     }
   });
 
@@ -189,7 +212,14 @@ export function StudentHome() {
   }
 
   function attendCheck() {
-
+    axios
+    .get(`/api/user/student/${studentId}/attend`)
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(`${err} : 출석체크 실패`);
+    });
   }
 
   if(board && academic) {
@@ -215,6 +245,8 @@ export function StudentHome() {
     ));
   }
 
+  
+
   return <>
   <Container>
     {
@@ -224,7 +256,7 @@ export function StudentHome() {
           <H2 className='title'>내 과정</H2>
           <p>{subject[0].course.courseName}</p>
         </div>
-        <PrimaryButton onClick={() => attendCheck()}><p>출석 체크</p></PrimaryButton>
+        <PrimaryButton onClick={() => attendCheck()} className={disabled} disabled={disabled}><p>출석 체크</p></PrimaryButton>
       </Content>
     }
     <Row>
