@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { Board } from "../../components/Board";
-import { academics, subject_board, subjects, userList } from "../../assets/TempData";
 import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getAllTrainers, getSubjectBoardBySubjectId } from "../Api";
 
 const headers = [
   {
@@ -35,8 +36,35 @@ const headers = [
 
 export function TrainerSubjectBoard() {
   const { id } = useParams();
-  const posts = subject_board.filter((s) => s.subject_id == id);
+  const [board, setBoard] = useState(null);
+  const [academics, setAcademics] = useState(null);
   const navigate = useNavigate();
+  let items;
+
+  useEffect(() => {
+    setBoard(null);
+  }, [id]);
+  
+  useEffect(() => {
+    if(!board) {
+      const promise = getSubjectBoardBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setBoard(data);
+        });
+      };
+      getData();
+    }
+    if(!academics) {
+      const promise = getAllTrainers();
+      const getData = () => {
+        promise.then((data) => {
+          setAcademics(data);
+        });
+      };
+      getData();
+    }
+  });
   
   const shortenTitle = (str, length) => {
     let result = '';
@@ -49,22 +77,27 @@ export function TrainerSubjectBoard() {
   };
 
   function titleLink(link, title) {
-    return (<p onClick={() => navigate(`${link}`, { state : ["t", id, "board"]})}>{title}</p>);
+    return (<p onClick={() => navigate(`${link}`)}>{title}</p>);
   }
 
-  const items = posts.map((d, i)=>(
-    {
-      no: i + 1,
-      title: titleLink(d.subject_board_id, shortenTitle(d.s_post_title, 35)),
-      writer: userList.find(u => u.uid == academics.find(a=> a.academic_id == d.academic_id).uid).user_name,
-      regDate: d.s_post_reg_date,
-      hits: d.s_post_hits
-    }
-  ));
+  if(board && academics) {
+    items = board.map((d, i)=>(
+      {
+        no: i + 1,
+        title: titleLink(d.subjectBoardId, shortenTitle(d.title, 35)),
+        writer: academics.find((a) => a.academic.academicId === d.academicId).user.userName,
+        regDate: new Date(d.regDate).toLocaleDateString("fr-CA"),
+        hits: d.hits
+      }
+    ));
+  }
 
   return<>
     <Container>
-      <Board board={headers} item={items.reverse()} write={true} type={["t", id, "board"]} />
+      {
+        items &&
+        <Board board={headers} item={items} />
+      }
     </Container>
   </>
 }

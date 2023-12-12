@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { Table } from "./Table";
 import { courses, subjects } from "../assets/TempData";
 import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { getSubjectByAcademicId } from "../pages/Api";
 
 const header = [
   {
@@ -62,16 +64,25 @@ const PrimaryButton = styled.button`
   border: 0;
 `;
 
-export function TrainerCourseHistory({id}) {
+export function TrainerCourseHistory() {
   const navigate = useNavigate();
-
-  const subject = subjects.filter(data => data.academic_id == id);
-  const course = subject.map((s) => courses.find(data => data.course_id == s.course_id));
-  console.log(subject);
-  console.log(course);
-
+  const id = sessionStorage.getItem("id"); // academicId
+  const [subjects, setSubjects] = useState(null);
   const newDate = new Date();
   const date =  newDate.getTime();
+  let items;
+
+  useEffect(() => {
+    if(!subjects) {
+      const promise = getSubjectByAcademicId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setSubjects(data);
+        });
+      };
+      getData();
+    }
+  })
   
   function changeReply(end) {
     end = new Date(end);
@@ -80,23 +91,28 @@ export function TrainerCourseHistory({id}) {
     else {return(<BadgeSecondary>진행끝</BadgeSecondary>)};
   };
 
-  const item = course.map((c,i) => (  
-    {
-      no: i+1,
-      courseName: c.course_name,
-      subjectName: subject[i].subject_name,
-      startDate: c.start_date,
-      endDate: c.end_date,
-      state: changeReply(c.end_date),
-      link: <PrimaryButton onClick={()=>navigate(`/lms/t/${c.course_id}/subject`)}><p>바로가기</p></PrimaryButton>,
-    }
-  ));
+  if(subjects) {
+    items = subjects.map((s, i) => (  
+      {
+        no: i + 1,
+        courseName: s.course.courseName,
+        subjectName: s.subject.subjectName,
+        startDate: s.course.startDate,
+        endDate: s.course.endDate,
+        state: changeReply(s.course.endDate),
+        link: <PrimaryButton onClick={()=>navigate(`/lms/t/${s.subject.subjectId}/subject`)}><p>바로가기</p></PrimaryButton>,
+      }
+    ));
+  }
 
   return<>
-    <Table 
-      headers={header}
-      items={item}
-      selectable={false}
-    />
+    {
+      items &&
+      <Table 
+        headers={header}
+        items={items}
+        selectable={false}
+      />
+    }
   </>
 }

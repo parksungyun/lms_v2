@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
 import { Pagination } from "../../components/Pagination";
-import { academics, feedbacks, homeworks, submits, userList } from "../../assets/TempData";
+import { getAllTrainers, getHomeworksBySubjectId, getSubmitsBySubjectId } from "../Api";
 
 const SuccessButton = styled.button`
   background-color: green;
@@ -46,21 +46,6 @@ const H2 = styled.p`
   font-weight: bold;
   margin-top: 10px;
   margin-bottom: 0;
-`;
-
-const SearchBox = styled.div`
-  display: flex;
-  gap: 0.2rem;
-  input {
-    padding: 0.3rem;
-  }
-  button {
-    border: 0;
-    border-radius: 5px;
-    color: white;
-    padding: 5px 15px;
-    background-color: #5f7dcf;
-  }
 `;
 
 const ButtonBox = styled.div`
@@ -114,9 +99,46 @@ export function TrainerHW() {
   const limit = 10;
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
-
   const { id } = useParams();
-  const homework = homeworks.filter(h => h.subject_id == id);
+  const [homework, setHomework] = useState(null);
+  const [submit, setSubmit] = useState(null);
+  const [academics, setAcademics] = useState(null);
+  let items;
+
+  useEffect(() => {
+    setHomework(null);
+    setSubmit(null);
+  }, [id]);
+
+  useEffect(() => {
+    if(!academics) {
+      const promise = getAllTrainers();
+      const getData = () => {
+        promise.then((data) => {
+          setAcademics(data);
+        });
+      };
+      getData();
+    }
+    if(!homework) {
+      const promise = getHomeworksBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setHomework(data);
+        });
+      };
+      getData();
+    }
+    if(!submit) {
+      const promise = getSubmitsBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setSubmit(data);
+        });
+      };
+      getData();
+    }
+  });
 
   const shortenTitle = (str, length) => {
     let result = '';
@@ -128,21 +150,23 @@ export function TrainerHW() {
     return result;
   };
 
-  const items = homework.map((h,i) => (
-    {
-      no: i+1,
-      title: titleLink(h.homework_id, shortenTitle(h.hw_title, 35)),
-      writer: userList.find(u => u.uid == academics.find(a => a.academic_id == h.academic_id).uid).user_name,
-      startDate: h.hw_start_date,
-      endDate: h.hw_end_date,
-      submitCount: getSubmitCount(h.homework_id),
-      submitScore: changeButton(h.homework_id)
-    }
-  ));
+  if(homework && academics && submit) {
+    items = homework.map((h, i) => (
+      {
+        no: i + 1,
+        title: titleLink(h.homeworkId, shortenTitle(h.title, 35)),
+        writer: academics.find((a) => a.academic.academicId === h.academicId).user.userName,
+        startDate: h.startDate,
+        endDate: h.endDate,
+        submitCount: getSubmitCount(h.homeworkId),
+        submitScore: changeButton(h.homeworkId, h.endDate)
+      }
+    ));
+  }
 
   function getSubmitCount(id) {
-    const submit = submits.filter((s) => s.homework_id == id);
-    return submit.length;
+    const temp = submit.filter((s) => s.submit.homeworkId === id);
+    return temp.length;
   }
 
   function titleLink(id, title) {
@@ -156,36 +180,50 @@ export function TrainerHW() {
     }
   };
 
-  function changeButton(id) {
-    const submit = submits.filter((s) => s.homework_id == id);
-    const feedback = feedbacks.filter((h) => submit.find((s) => s.submit_id == h.submit_id));
+  function changeButton(id, endDate) {
+    const tempSubmit = submit.filter((s) => s.submit.homeworkId === id);
+    let feedbackLength = 0;
 
-    if(submit.length == feedback.length) {
-      return(<SuccessButton onClick={()=>navigate(`${id}/feedback`, { state : id })}><p>채점완료</p></SuccessButton>)
+    const end = new Date(endDate);
+    const diff = (end.getTime() - new Date().getTime()) / 1000 / 24 / 60 / 60;
+
+    tempSubmit.map((s) => {
+      if(s.feedback) {
+        feedbackLength++;
+      }
+    })
+
+    if(diff >= 0) {
+      return(<SecondaryButton onClick={() => navigate(`${id}/feedback`)}><p>제출현황</p></SecondaryButton>);
+    }
+    else if((tempSubmit.length > 0) && (feedbackLength > 0) && (tempSubmit.length === feedbackLength)) {
+      return(<SuccessButton onClick={() => navigate(`${id}/feedback`)}><p>채점완료</p></SuccessButton>);
     }
     else {
-      return(<SecondaryButton onClick={()=>navigate(`${id}/feedback`, { state : id })}><p>채점하기</p></SecondaryButton>)
+      return(<SecondaryButton onClick={() => navigate(`${id}/feedback`)}><p>채점하기</p></SecondaryButton>);
     };
-  };
-
-  function onSearch(e) {
-    e.preventDefault();
   };
 
   return<>
     <Container>
       <TableBox>
         <H2>과제</H2>
-        <Table 
-          headers={headers}
-          items={postsData(items)}
-          selectable={false}
-        />
+        {
+          items &&
+          <Table 
+            headers={headers}
+            items={postsData(items)}
+            selectable={false}
+          />
+        }
       </TableBox>
       <ButtonBox>
-        <PrimaryButton onClick={() => navigate("write", { state : id })}><p>작성</p></PrimaryButton>
+        <PrimaryButton onClick={() => navigate("write")}><p>작성</p></PrimaryButton>
       </ButtonBox>
-      <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+      {
+        items &&
+        <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+      }
     </Container>
   </>
 }

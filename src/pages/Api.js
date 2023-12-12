@@ -910,3 +910,42 @@ export const getAllAbsenceCode = async () => {
   });
   return code;
 }
+
+export const getStudyBySubjectId = async (id) => {
+  let study;
+  await axios
+  .get(`/api/subject/${id}/study`)
+  .then((res) => {
+    study = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과목으로 강의학습 정보 불러오기 실패`);
+  });
+  return study;
+}
+
+export const getStudyByLectureId = async (id) => {
+  let study;
+  await axios
+  .get(`/api/subject/study/${id}`)
+  .then((res) => {
+    study = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 강의로 학습 정보 불러오기 실패`);
+  });
+  return study;
+}
+
+export const getSubmitsBySubjectId = async (id) => {
+  let submit;
+  await axios
+  .get(`/api/subject/${id}/submits`)
+  .then((res) => {
+    submit = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 과목으로 과제 제출 정보 불러오기 실패`);
+  });
+  return submit;
+}

@@ -1,8 +1,10 @@
 import styled from "styled-components";
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { homeworks } from "../../assets/TempData";
 import { DeleteModal } from "../../components/DeleteModal";
+import { getHomeworkByHomeworkId } from "../Api";
+import axios from "axios";
 
 const TableBox = styled.div`
   padding: 2rem;
@@ -92,19 +94,83 @@ const ContentInput = styled.textarea`
   resize: none;
 `;
 
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 1rem 0 0 0;
+  text-align: center;
+`;
+
 export function TrainerHWPostMod() {
-  const { state } = useLocation();
-  const post = homeworks.find((h) => h.homework_id == state);
-  const [hwTitle, setHwTitle] = useState(post.hw_title);
-  const [hwContent, setHwContent] = useState(post.Content);
-  const [hwStartDate, setHwStartDate] = useState(post.hw_start_date);
-  const [hwEndDate, setHwEndDate] = useState(post.hw_end_date);
+  const { id } = useParams();
+  const pathName = useLocation().pathname;
+  const link = pathName.substring(0, pathName.lastIndexOf("/"));
+  const subjectId = pathName.split("/")[3];
+  const [post, setPost] = useState(null);
+  const [hwTitle, setHwTitle] = useState();
+  const [hwContent, setHwContent] = useState();
+  const [hwStartDate, setHwStartDate] = useState();
+  const [hwEndDate, setHwEndDate] = useState();
+  const [errorCheck, setErrorCheck] = useState();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if(!post) {
+      const promise = getHomeworkByHomeworkId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setPost(data);
+        });
+      };
+      getData();
+    }
+  });
+
+  useEffect(() => {
+    if(post) {
+      setHwTitle(post.title);
+      setHwContent(post.content);
+      setHwStartDate(post.startDate);
+      setHwEndDate(post.endDate);
+    }
+  }, [post]);
+
+  function onSubmit() {
+    if(!hwTitle) {
+      setErrorCheck(1);
+    }
+    else if(!hwStartDate) {
+      setErrorCheck(2);
+    }
+    else if(!hwEndDate) {
+      setErrorCheck(3);
+    }
+    else {
+      const data = {
+        academicId: sessionStorage.getItem("id"),
+        subjectId: subjectId,
+        title: hwTitle,
+        content: hwContent,
+        startDate: hwStartDate,
+        endDate: hwEndDate,
+      };
+      console.log(data);
+      axios
+      .post(`/api/subject/homework/${id}/mod`, data)
+      .then((res) => {
+        navigate(link);
+      })
+      .catch((err) => {
+        console.log(`${err} : 과목 과제 게시글 수정 실패`);
+      });
+    }
+  }
 
   return<>
     <TableBox>
       <H2>과제 수정</H2>
-      {/* <form action="" method="POST"> */}
+      <form method="POST">
         <Input type="text" name="hw_title" id="hw_title" value={hwTitle} onChange={(e)=>setHwTitle(e.target.value)} />
         <Hr />
         <Content>
@@ -119,12 +185,21 @@ export function TrainerHWPostMod() {
           <ContentInput type="text" name="hw_content" id="hw_content" value={hwContent}  onChange={(e)=>setHwContent(e.target.value)}/>
         </Content>
         <Input type="file" name="hw_file" id="hw_file" accept="" />
-        <Box className="button">
-          <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
-          <DeleteModal name={"삭제"}></DeleteModal>
-          <SecondaryButton onClick={()=>navigate(`/lms/t/${post.subject_id}/homework/${post.homework_id}`)}><p>취소</p></SecondaryButton>
-        </Box>
-      {/* </form> */}
+      </form>
+      {
+        errorCheck === 1 && <ErrorMsg>제목을 입력해주세요</ErrorMsg>
+      }
+      {
+        errorCheck === 2 && <ErrorMsg>시작일을 입력해주세요</ErrorMsg>
+      }
+      {
+        errorCheck === 3 && <ErrorMsg>종료일을 입력해주세요</ErrorMsg>
+      }
+      <Box className="button">
+        <PrimaryButton onClick={() => onSubmit()}><p>수정</p></PrimaryButton>
+        <DeleteModal name={"삭제"}></DeleteModal>
+        <SecondaryButton onClick={() => navigate(link)}><p>취소</p></SecondaryButton>
+      </Box>
     </TableBox>
   </>
 }

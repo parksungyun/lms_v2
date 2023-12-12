@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const TableBox = styled.div`
   padding: 2rem;
@@ -82,17 +83,60 @@ const ContentInput = styled.textarea`
   resize: none;
 `;
 
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 1rem 0 0 0;
+  text-align: center;
+`;
+
 export function TrainerHWPostWrite() {
   const navigate = useNavigate();
-  const { state } = useLocation();
+  const pathName = useLocation().pathname;
+  const link = pathName.substring(0, pathName.lastIndexOf("/"));
+  const subjectId = pathName.split("/")[3];
   const [hwTitle, setHwTitle] = useState("");
   const [hwContent, setHwContent] = useState("");
   const [hwStartDate, setHwStartDate] = useState("");
   const [hwEndDate, setHwEndDate] = useState("");
+  const [errorCheck, setErrorCheck] = useState();
+
+  function onSubmit() {
+    if(!hwTitle) {
+      setErrorCheck(1);
+    }
+    else if(!hwStartDate) {
+      setErrorCheck(2);
+    }
+    else if(!hwEndDate) {
+      setErrorCheck(3);
+    }
+    else {
+      const data = {
+        academicId: sessionStorage.getItem("id"),
+        subjectId: subjectId,
+        title: hwTitle,
+        content: hwContent,
+        startDate: hwStartDate,
+        endDate: hwEndDate,
+      };
+      console.log(data);
+      axios
+      .post(`/api/subject/homework/write`, data)
+      .then((res) => {
+        navigate(link);
+      })
+      .catch((err) => {
+        console.log(`${err} : 과목 과제 게시글 작성 실패`);
+      });
+    }
+  }
+
   return<>
     <TableBox>
       <H2>과제 등록</H2>
-      <form action="" method="POST">
+      <form>
         <Input type="text" name="hw_title" id="hw_title" value={hwTitle} onChange={(e)=>setHwTitle(e.target.value)} placeholder="제목을 입력해주세요"/>
         <Hr />
         <Content>
@@ -107,11 +151,20 @@ export function TrainerHWPostWrite() {
           <ContentInput type="text" name="hw_content" id="hw_content" value={hwContent}  onChange={(e)=>setHwContent(e.target.value)} placeholder="내용을 입력해주세요"/>
         </Content>
         <Input type="file" name="hw_file" id="hw_file" accept="" />
-        <Box className="button">
-          <PrimaryButton type="submit"><p>등록</p></PrimaryButton>
-          <SecondaryButton onClick={()=>navigate(`/lms/t/${state}/homework`)}><p>목록</p></SecondaryButton>
-        </Box>
       </form>
+      {
+        errorCheck === 1 && <ErrorMsg>제목을 입력해주세요</ErrorMsg>
+      }
+      {
+        errorCheck === 2 && <ErrorMsg>시작일을 입력해주세요</ErrorMsg>
+      }
+      {
+        errorCheck === 3 && <ErrorMsg>종료일을 입력해주세요</ErrorMsg>
+      }
+      <Box className="button">
+        <PrimaryButton onClick={() => onSubmit()}><p>등록</p></PrimaryButton>
+        <SecondaryButton onClick={()=>navigate(link)}><p>목록</p></SecondaryButton>
+      </Box>
     </TableBox>
   </>
 }

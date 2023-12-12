@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
 import { Pagination } from "../../components/Pagination";
-import { subject_questions, subject_answers, students, userList } from "../../assets/TempData";
+import { getStudentsBySubjectId, getSubjectQnaBySearch, getSubjectQnaBySubjectId } from "../Api";
 
 const BadgeSuccess = styled.span`
   background-color: green;
@@ -96,30 +96,48 @@ const headers = [
 ];
 
 export function TrainerSubjectQna() {
+  const { id } = useParams();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [searchOption, setSearchOption] = useState("all");
   const limit = 10;
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
-  
-  const { id } = useParams();
-  const question = subject_questions.filter(s => s.subject_id == id);
+  const [questions, setQuestions] = useState(null);
+  const [students, setStudents] = useState(null);
+  let items;
+
+  useEffect(() => {
+    setQuestions(null);
+    setStudents(null);
+  }, [id]);
+
+  useEffect(() => {
+    if(!questions) {
+      const promise = getSubjectQnaBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setQuestions(data);
+        });
+      };
+      getData();
+    }
+    if(!students) {
+      const promise = getStudentsBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setStudents(data);
+        });
+      };
+      getData();
+    }
+  });
 
   const postsData = (posts) => {
     if(posts) {
       let result = posts.slice(offset, offset + limit);
       return result;
     }
-  };
-
-  function changeReply(reply) {
-    if(subject_answers.find(d=> d.s_question_id == reply)) {return(<BadgeSuccess>답변완료</BadgeSuccess>)}
-    else {return(<BadgeSecondary>답변대기</BadgeSecondary>)};
-  };
-
-  function onSearch(e) {
-    e.preventDefault();
   };
 
   const shortenTitle = (str, length) => {
@@ -132,17 +150,44 @@ export function TrainerSubjectQna() {
     return result;
   };
 
-  
-  const items = question.map((q,i) => (
-    {
-      no: i+1,
-      title: titleLink(q.s_question_id, shortenTitle(q.s_question_title, 35)),
-      writer: userList.find(d => d.uid == students.find(d => d.student_id == q.student_id).uid).user_name,
-      regDate: q.s_question_reg_date,
-      Hits: q.s_question_hits,
-      replyState: changeReply(q.s_question_id)
+  if(questions && students) {
+    items = questions.map((q, i) => (
+      {
+        no: i + 1,
+        title: titleLink(q.question.subjectQuestionId, shortenTitle(q.question.title, 35)),
+        writer: students.find((s) => s.student.studentId === q.question.studentId).user.userName,
+        regDate: new Date(q.question.regDate).toLocaleDateString("fr-CA"),
+        Hits: q.question.hits,
+        replyState: changeReply(q)
+      }
+    ));
+  }
+
+  function changeReply(reply) {
+    if(reply.answer) {
+      return(<BadgeSuccess>답변완료</BadgeSuccess>)
     }
-  ));
+    else {
+      return(<BadgeSecondary>답변대기</BadgeSecondary>)
+    };
+  };
+
+  function onSearch() {
+    if(search.trim().length > 0) {
+      const promise = getSubjectQnaBySearch(search, searchOption, id);
+      const getData = () => {
+        promise.then((data) => {
+          setQuestions(data);
+        });
+      };
+      getData();
+    }
+    else {
+      setQuestions(null);
+    }
+    setSearch("");
+    setSearchOption("all");
+  };
 
   function titleLink(id, title) {
     return (<p onClick={() => navigate(`${id}`)}>{title}</p>);
@@ -152,11 +197,14 @@ export function TrainerSubjectQna() {
     <Container>
       <TableBox>
         <H2>Q&A</H2>
-        <Table 
-          headers={headers}
-          items={postsData(items)}
-          selectable={false}
-        />
+        {
+          items &&
+          <Table 
+            headers={headers}
+            items={postsData(items)}
+            selectable={false}
+          />
+        }
       </TableBox>
       <ButtonBox>
         <SearchBox>
@@ -166,10 +214,13 @@ export function TrainerSubjectQna() {
             <option key="writer" value="writer">작성자</option>
           </select>
           <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <button onClick={onSearch}><p>검색</p></button>
+          <button onClick={() => onSearch()}><p>검색</p></button>
         </SearchBox>
       </ButtonBox>
-      <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+      {
+        items &&
+        <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+      }
     </Container>
   </>
 }

@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import '../../styles/trainer_subject_table.css';
-import { courses, homeworks, lectures, students, studies, subject_answers, subject_board, subject_questions, subjects, submits, userList } from "../../assets/TempData";
 import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getHomeworksBySubjectId, getLecturesBySubjectId, getStudentsBySubjectId, getStudyBySubjectId, getSubjectBoardBySubjectId, getSubjectById, getSubjectQnaBySubjectId, getSubmitsBySubjectId } from "../Api"
 
 const headers = [
   {
@@ -75,67 +76,179 @@ const Bold = styled.p`
 
 export function TrainerSubject() {
   const { id } = useParams();
-  const subject = subjects.find(s => s.subject_id == id);
-  const course = courses.find(c => c.course_id == subject.course_id);
-  const student = students.filter(s => s.course_id == course.course_id);
-  const homework = homeworks.filter(h => h.subject_id == id);
-  const question = subject_questions.filter(s => s.subject_id == subject.subject_id);
-  const lecture = lectures.filter((l) => l.subject_id == subject.subject_id);
-  const subjectStudy = studies.filter((s) => lecture.find((l) => l.lecture_id == s.lecture_id));
+  const [subject, setSubject] = useState(null);
+  const [students, setStudents] = useState(null);
+  const [homeworks, setHomeworks] = useState(null);
+  const [board, setBoard] = useState(null);
+  const [lectures, setLectures] = useState(null);
+  const [question, setQuestion] = useState(null);
+  const [study, setStudy] = useState(null);
+  const [submit, setSubmit] = useState(null);
+  let items;
+  let wait = 0;
 
-  // console.log(lecture);
-  console.log(subjectStudy);
+  useEffect(() => {
+    setSubject(null);
+    setStudents(null);
+    setHomeworks(null);
+    setBoard(null);
+    setLectures(null);
+    setQuestion(null);
+    setStudy(null);
+    setSubmit(null);
+  }, [id]);
 
-  const items = courses.map((d,i)=>(
-    {
-      no: i+1,
-      name: userList.find(u => u.uid == student[i].uid).user_name,
-      birth: userList.find(u => u.uid == student[i].uid).user_birth,
-      phone: userList.find(u => u.uid == student[i].uid).user_phone,
-      lectureCount: subjectStudy.filter(s => s.student_id == student[i].student_id).filter(i => i.is_study == 2).length,
-      HWCount: homework.filter((h) => (submits.filter(s => s.student_id == student[i].student_id).find((t) => t.homework_id == h.homework_id))).length
+  useEffect(() => {
+    if(!subject){
+      const promise = getSubjectById(id);
+      const getData = () => {
+        promise.then((data) => {
+          setSubject(data);
+        });
+      };
+      getData();
     }
-  ));
+    if(!students){
+      const promise = getStudentsBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setStudents(data);
+        });
+      };
+      getData();
+    }
+    if(!homeworks){
+      const promise = getHomeworksBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setHomeworks(data);
+        });
+      };
+      getData();
+    }
+    if(!board){
+      const promise = getSubjectBoardBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setBoard(data);
+        });
+      };
+      getData();
+    }
+    if(!lectures){
+      const promise = getLecturesBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setLectures(data);
+        });
+      };
+      getData();
+    }
+    if(!question){
+      const promise = getSubjectQnaBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setQuestion(data);
+        });
+      };
+      getData();
+    }
+    if(!study){
+      const promise = getStudyBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setStudy(data);
+        });
+      };
+      getData();
+    }
+    if(!submit){
+      const promise = getSubmitsBySubjectId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setSubmit(data);
+        });
+      };
+      getData();
+    }
+  });
+
+  if(students && study && submit) {
+    items = students.map((d, i)=>(
+      {
+        no: i + 1,
+        name: d.user.userName,
+        birth: d.user.userBirth,
+        phone: d.user.userPhone,
+        lectureCount: study.filter((s) => s.studentId === d.student.studentId).length,
+        HWCount: submit.filter((s) => s.submit.studentId === d.student.studentId).length
+      }
+    ));
+  }
+
+  if(submit) {
+    submit.map((s) => {
+      if(!submit.answer) wait++;
+    })
+  }
 
   return<>
     <Container>
       <TableBox>
         <H2>과목 정보</H2>
+        {
+          subject &&
+          <Box>
+              <ContentBox className="col-3">
+                <Bold>과정명</Bold>
+                <p>{subject.course.courseName}</p>
+              </ContentBox>
+            <ContentBox className="col-3">
+              <Bold>과목명</Bold>
+              <p>{subject.subject.subjectName}</p>
+            </ContentBox>
+            <ContentBox className="col-3">
+              <Bold>기간</Bold>
+              <p>{subject.course.startDate} ~ {subject.course.endDate}</p>
+            </ContentBox>
+            {
+              students &&
+              <ContentBox className="col-3">
+                <Bold>학생수</Bold>
+                <p>{students.length}명</p>
+              </ContentBox>
+            }
+          </Box>
+        }
         <Box>
-          <ContentBox className="col-3">
-            <Bold>과정명</Bold>
-            <p>{course.course_name}</p>
-          </ContentBox>
-          <ContentBox className="col-3">
-            <Bold>과목명</Bold>
-            <p>{subject.subject_name}</p>
-          </ContentBox>
-          <ContentBox className="col-3">
-            <Bold>기간</Bold>
-            <p>{course.start_date} ~ {course.end_date}</p>
-          </ContentBox>
-          <ContentBox className="col-3">
-            <Bold>학생수</Bold>
-            <p>{student.length}명</p>
-          </ContentBox>
-        </Box>
-        <Box>
-          <ContentBox className="col-3">
-            <Bold>등록한 공지</Bold>
-            <p>{subject_board.filter(s => s.subject_id == subject.subject_id).length}</p>
-          </ContentBox>
-          <ContentBox className="col-3">
-            <Bold>등록한 강의</Bold>
-            <p>{lecture.length}</p>
-          </ContentBox>
-          <ContentBox className="col-3">
-            <Bold>등록한 과제</Bold>
-            <p>{homework.length}</p>
-          </ContentBox>
-          <ContentBox className="col-3">
-            <Bold>답변 대기 질문</Bold>
-            <p>{question.length - subject_answers.filter(s => question.find(q => q.s_question_id == s.s_question_id)).length}</p>
-          </ContentBox>
+          {
+            board &&
+            <ContentBox className="col-3">
+              <Bold>등록한 공지</Bold>
+              <p>{board.length}</p>
+            </ContentBox>
+          }
+          {
+            lectures &&
+            <ContentBox className="col-3">
+              <Bold>등록한 강의</Bold>
+              <p>{lectures.length}</p>
+            </ContentBox>
+          }
+          {
+            homeworks &&
+            <ContentBox className="col-3">
+              <Bold>등록한 과제</Bold>
+              <p>{homeworks.length}</p>
+            </ContentBox>
+          }
+          {
+            submit &&
+            <ContentBox className="col-3">
+              <Bold>답변 대기 질문</Bold>
+              <p>{wait}</p>
+            </ContentBox>
+          }
         </Box>
         <Table 
           headers={headers}

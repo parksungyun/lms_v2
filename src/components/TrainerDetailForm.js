@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { academics, userList, department, trainerPosition } from "../assets/TempData";
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getAcademicByAcademicId } from "../pages/Api";
+import axios from "axios";
 
 const Content = styled.div`
   padding: 2rem 0;
@@ -13,6 +15,7 @@ const Content = styled.div`
   justify-content: center;
   align-items: center;
   gap: 3rem;
+  flex-direction: column;
 `;
 
 const PrimaryButton = styled.button`
@@ -62,29 +65,95 @@ const Select = styled.select`
   border-radius: 0.5rem;
 `;
 
-export function TrainerDetailForm({id}) {
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 1rem 0 0 0;
+  text-align: center;
+  &.success {
+    color: blue;
+  }
+`;
+
+export function TrainerDetailForm() {
   const navigate = useNavigate();
-  const academic = academics.find((a) => a.academic_id == id);
-  const user = userList.find((u) => u.uid == academic.uid);
-  const dept = department.find((d) => d.dept_id == academic.dept);
-  
-  const [userName, setUserName] = useState(user.user_name);
-  const [userId, setUserId] = useState(user.user_id);
-  const [userBirth, setUserBirth] = useState(user.user_birth);
-  const [userDept, setUserDept] = useState(academic.dept);
-  const [userPosition, setUserPosition] = useState(academic.position);
-  const [userPhone, setUserPhone] = useState(user.user_phone);
-  const [userAddr, setUserAddr] = useState(user.user_addr);
-  const [userEmail, setUserEmail] = useState(user.user_email);
-  const [Remark, setRemark] = useState(academic.remark);
+  const id = sessionStorage.getItem("id"); // academicId
+  const [user, setUser] = useState(null);
+  const [userName, setUserName] = useState();
+  const [userId, setUserId] = useState();
+  const [userBirth, setUserBirth] = useState();
+  const [userDept, setUserDept] = useState();
+  const [userPosition, setUserPosition] = useState();
+  const [userPhone, setUserPhone] = useState();
+  const [userAddr, setUserAddr] = useState();
+  const [userEmail, setUserEmail] = useState();
+  const [remark, setRemark] = useState();
+  const [errorCheck, setErrorCheck] = useState();
+
+  useEffect(() => {
+    if(!user) {
+      const promise = getAcademicByAcademicId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setUser(data);
+        });
+      };
+      getData();
+    }
+  });
+
+  useEffect(() => {
+    if(user) {
+      setUserName(user.user.userName);
+      setUserId(user.user.userId);
+      setUserBirth(user.user.userBirth);
+      setUserPhone(user.user.userPhone);
+      setUserAddr(user.user.userAddr);
+      setUserEmail(user.user.userEmail);
+      setUserDept(user.academic.dept);
+      setUserPosition(user.position);
+      setRemark(user.academic.remark);
+    }
+  }, [user]);
+
 
   function onSubmit() {
-
+    if(!userPhone) {
+      setErrorCheck(1);
+    }
+    else if(!userAddr) {
+      setErrorCheck(2);
+    }
+    else if(!userEmail) {
+      setErrorCheck(3);
+    }
+    else if(!remark) {
+      setErrorCheck(6);
+    }
+    else {
+      const data = {
+        userPhone: userPhone,
+        userAddr: userAddr,
+        userEmail: userEmail,
+        userRemark: remark,
+      };
+      console.log(data);
+      axios
+      .post(`/api/user/academic/${user.user.uid}/update`, data)
+      .then((res) => {
+        setErrorCheck(4);
+      })
+      .catch((err) => {
+        setErrorCheck(5);
+        console.log(`${err} : 사원 개인정보 수정 실패`);
+      });
+    }
   }
 
   return <>
     <Content>
-      <Details action="" method="POST">
+      <Details>
         <Detail>
           <Label>이름</Label>
           <Input type="text" name="user_name" id="user_name" value={userName} onChange={(e) => {setUserName(e.target.value)}} disabled/>
@@ -101,28 +170,17 @@ export function TrainerDetailForm({id}) {
           <Label>부서</Label>
           <Select name="user_dept" id="user_dept" onChange={(e) => setUserDept(e.target.value)} value={userDept} disabled>
             {
-              department.map((data) => (
-                <option value={data.dept_id} key={data.dept_id}>
-                  {
-                    data.dept_name
-                  }
-                </option>
-              ))
+              userDept === 0 && <option>행정팀</option>
+            }
+            {
+              userDept === 1 && <option>교육팀</option>
             }
           </Select>
         </Detail>
         <Detail>
           <Label>포지션</Label>
           <Select name="user_position" id="user_position" onChange={(e) => setUserPosition(e.target.value)} value={userPosition} disabled>
-            {
-              trainerPosition.map((data) => (
-                <option value={data.position_id} key={data.position_id}>
-                  {
-                    data.position_name
-                  }
-                </option>
-              ))
-            }
+            <option>{userPosition}</option>
           </Select>
         </Detail>
         <Detail>
@@ -139,12 +197,30 @@ export function TrainerDetailForm({id}) {
         </Detail>
         <Detail>
           <Label>나의 한마디</Label>
-          <Input type="text" name="remark" id="remark" value={Remark} onChange={(e) => {setRemark(e.target.value)}} />
+          <Input type="text" name="remark" id="remark" value={remark} onChange={(e) => {setRemark(e.target.value)}} />
         </Detail>
-        <ButtonBox>
-          <PrimaryButton type="submit" onClick={onSubmit}><p>수정</p></PrimaryButton>
-        </ButtonBox>
       </Details>
+      {
+        errorCheck === 1 && <ErrorMsg>연락처를 입력해주세요</ErrorMsg>
+      }
+      {
+        errorCheck === 2 && <ErrorMsg>주소를 입력해주세요</ErrorMsg>
+      }
+      {
+        errorCheck === 3 && <ErrorMsg>이메일을 입력해주세요</ErrorMsg>
+      }
+      {
+        errorCheck === 6 && <ErrorMsg>나의 한마디를 입력해주세요</ErrorMsg>
+      }
+      {
+        errorCheck === 4 && <ErrorMsg className="success">수정이 완료되었습니다</ErrorMsg>
+      }
+      {
+        errorCheck === 5 && <ErrorMsg>수정이 실패하였습니다</ErrorMsg>
+      }
+      <ButtonBox>
+        <PrimaryButton onClick={() => onSubmit()}><p>수정</p></PrimaryButton>
+      </ButtonBox>
     </Content>
   </>
 }

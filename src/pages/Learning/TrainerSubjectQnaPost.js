@@ -1,12 +1,12 @@
 import styled from "styled-components";
 import { BsDownload } from "react-icons/bs";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { BsFillEyeFill } from "react-icons/bs";
 import { useState } from "react";
-import { students, subject_answers, subject_questions, userList } from "../../assets/TempData";
 import { ReplyPost } from "../../components/ReplyPost";
 import { ReplyWrite } from "../../components/ReplyWrite";
 import { useEffect } from "react";
+import { getAllStudents, getAllTrainers, getSubjectQnaBySubjectQuestionId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -105,49 +105,84 @@ export function TrainerSubjectQnaPost() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [isReply, setIsReply] = useState();
-  const question = subject_questions.find(data => data.s_question_id == id);
-  const student = userList.find(data => data.uid == (students.find(d => d.student_id == question.student_id)).uid);
-  let answer;
-
-  if(subject_answers.find(data => data.s_question_id == question.s_question_id)){
-    answer = subject_answers.find(data => data.s_question_id == question.s_question_id);
-  }
+  const [question, setQuestion] = useState(null);
+  const [students, setStudents] = useState(null);
+  const [academics, setAcademics] = useState(null);
+  const pathName = useLocation().pathname;
+  const link = pathName.substring(0, pathName.lastIndexOf("/"));
 
   useEffect(() => {
-    if(answer) setIsReply(1);
-  }, [answer])
-  
+    if(!question) {
+      const promise = getSubjectQnaBySubjectQuestionId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setQuestion(data);
+        });
+      };
+      getData();
+    }
+    if(!students) {
+      const promise = getAllStudents();
+      const getData = () => {
+        promise.then((data) => {
+          setStudents(data);
+        });
+      };
+      getData();
+    }
+    if(!academics) {
+      const promise = getAllTrainers();
+      const getData = () => {
+        promise.then((data) => {
+          setAcademics(data);
+        });
+      };
+      getData();
+    }
+  });
+
+  useEffect(() => {
+    if(question) {
+      if(question.answer) {
+        setIsReply(1);
+      }
+    }
+  }, [question]);
+
   return<>
     <Container>
-      <TableBox>
-        <H2>{question.s_question_title}</H2>
-        <Box>
-          <P>{student.user_name}</P>
-          <P>|</P>
-          <P>{question.s_question_reg_date}</P>
-          <P>|</P>
-          <IconBox>
-            <BsFillEyeFill />
-            <P>{question.s_question_hits}</P>
-          </IconBox>
-        </Box>
-        <Hr />
-        <Content>{question.s_question_content}</Content>
-        <AttachedBox>
-          <Attached><p className="fw-bold">첨부파일</p></Attached>
-          <div><A href={question.s_question_fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
-        </AttachedBox>
-        <Hr />
       {
-        isReply == 1 ? <>
-        <ReplyPost id={id} type={"s"} />
-        <Box className="button">
-          <PrimaryButton onClick={()=>setIsReply(0)}><p>수정</p></PrimaryButton>
-          <SecondaryButton onClick={()=>navigate(`/lms/t/${question.subject_id}/qna`)}><p>목록</p></SecondaryButton>
-        </Box>
-        </> : <ReplyWrite id={id} type={`t/${question.subject_id}/qna`} />
+        (question && students && academics) &&
+        <TableBox>
+          <H2>{question.question.title}</H2>
+          <Box>
+            <P>{students.find((s) => s.student.studentId === question.question.studentId).user.userName}</P>
+            <P>|</P>
+            <P>{new Date(question.question.regDate).toLocaleDateString("fr-CA")}</P>
+            <P>|</P>
+            <IconBox>
+              <BsFillEyeFill />
+              <P>{question.question.hits}</P>
+            </IconBox>
+          </Box>
+          <Hr />
+          <Content>{question.question.content}</Content>
+          <AttachedBox>
+            <Attached><p className="fw-bold">첨부파일</p></Attached>
+            <div><A href={question.question.fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
+          </AttachedBox>
+          <Hr />
+        {
+          isReply === 1 ? <>
+          <ReplyPost question={question} academic={academics.find((a) => a.academic.academicId === question.answer.academicId)} />
+          <Box className="button">
+            <PrimaryButton onClick={() => setIsReply(0)}><p>수정</p></PrimaryButton>
+            <SecondaryButton onClick={() => navigate(link)}><p>목록</p></SecondaryButton>
+          </Box>
+          </> : <ReplyWrite question={question} />
+        }
+        </TableBox>
       }
-      </TableBox>
     </Container>
   </>
 }

@@ -1,8 +1,9 @@
 import styled from "styled-components"
 import { Table } from "../../components/Table";
-import { useLocation, useNavigate } from "react-router-dom";
-import { courses, feedbacks, homeworks, students, subjects, submits, userList } from "../../assets/TempData";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FeedbackModal } from "../../components/FeedbackModal";
+import { useEffect, useState } from "react";
+import { getHomeworkByHomeworkId, getStudentsBySubjectId, getSubmitsByHomeworkId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -53,6 +54,21 @@ const P = styled.p`
   }
 `;
 
+const ButtonBox = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-right: 1.4rem;
+`;
+
+const SecondaryButton = styled.button`
+  border: 0;
+  border-radius: 5px;
+  background-color: gray;
+  padding: 0.6rem 1.4rem;
+  color: white;
+`;
+
 const headers = [
   {
     text: 'No.',
@@ -81,38 +97,67 @@ const headers = [
 ];
 
 export function TrainerHWFeedback() {
-  const { state } = useLocation();
+  const { id } = useParams();
   const navigate = useNavigate();
-  const homework = homeworks.find((h) => h.homework_id == state);
-  const submit = submits.filter((s) => s.homework_id == homework.homework_id);
-  const course = courses.find((c) => c.course_id == subjects.find((s) => s.subject_id == homework.subject_id).course_id);
-  const studentNum = students.filter((s) => s.course_id == course.course_id).length;
-  const submitNum = submit.length;
-  let feedback;
-  let feedbackNum = submitNum;
+  const pathName = useLocation().pathname;
+  const link = pathName.substring(0, pathName.lastIndexOf("/"));
+  const subjectId = pathName.split("/")[3];
+  const [homework, setHomework] = useState(null);
+  const [submit, setSubmit] = useState(null);
+  const [students, setStudents] = useState(null);
+  let items;
+  let wait = 0;
 
-  if(feedbacks.filter((h) => submit.find((s) => s.submit_id == h.submit_id))) {
-    feedback = feedbacks.filter((h) => submit.find((s) => s.submit_id == h.submit_id));
-    feedbackNum = submitNum - feedback.length;
+  useEffect(() => {
+    if(!homework) {
+      const promise = getHomeworkByHomeworkId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setHomework(data);
+        });
+      };
+      getData();
+    }
+    if(!submit) {
+      const promise = getSubmitsByHomeworkId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setSubmit(data);
+        });
+      };
+      getData();
+    }
+    if(!students) {
+      const promise = getStudentsBySubjectId(subjectId);
+      const getData = () => {
+        promise.then((data) => {
+          setStudents(data);
+        });
+      };
+      getData();
+    }
+  });
+
+  if(homework && submit && students) {
+    items = submit.map((s, i) => (
+      {
+        no: i + 1,
+        student: students.find((u) => u.student.studentId === s.submit.studentId).user.userName,
+        content: s.submit.submitContent,
+        attached: s.submit.submitFileURL,
+        submitTime: changeColor(homework.endDate, s.submit.submitModDate),
+        submitState: changeButton(s),
+      }
+    ))
   }
 
-  const items = submit.map((s, i) => (
-    {
-      no: i + 1,
-      student: userList.find((u) => u.uid == students.find((t) => t.student_id == s.student_id).uid).user_name,
-      content: s.submit_content,
-      attached: s.submit_fileURL,
-      submitTime: changeColor(homework.hw_end_date, s.submit_mod_date),
-      submitState: changeButton(s.submit_id),
-    }
-  ))
-
-  function changeButton(id) {
-    if(feedbacks.find((f) => f.submit_id == id)) {
-      return <FeedbackModal name={"채점완료"} feedbackid={id}></FeedbackModal>
+  function changeButton(reply) {
+    if(reply.feedback) {
+      return <FeedbackModal name={"채점완료"} submit={reply}></FeedbackModal>
     }
     else {
-      return <FeedbackModal name={"채점대기"} feedbackid={id}></FeedbackModal>
+      wait++;
+      return <FeedbackModal name={"채점대기"} submit={reply}></FeedbackModal>
     }
   };
 
@@ -121,40 +166,58 @@ export function TrainerHWFeedback() {
     const endDate = new Date(end);
     const diff = (endDate.getTime() - currentDate.getTime()) / 1000 / 24 / 60 / 60;
     if(diff < 0){
-      return(<P className="active">{submitDate}</P>)
+      return(<P className="active">{currentDate.toLocaleDateString("fr-CA") + " " + currentDate.toLocaleTimeString("af-ZA")}</P>);
     } else {
-      return (<P>{submitDate}</P>)
+      return (<P>{currentDate.toLocaleDateString("fr-CA") + " " + currentDate.toLocaleTimeString("af-ZA")}</P>);
     }
-  };
+  }
 
   return <>
     <Container>
       <TableBox>
-        <H2>{homework.hw_title}</H2>
+        {
+          homework &&
+          <H2>{homework.title}</H2>
+        }
         <Box>
-          <ContentBox className="col-3">
-            <Bold>전체</Bold>
-            <p>{studentNum}</p>
-          </ContentBox>
-          <ContentBox className="col-3">
-            <Bold>제출</Bold>
-            <p>{submitNum}</p>
-          </ContentBox>
-          <ContentBox className="col-3">
-            <Bold>미제출</Bold>
-            <p>{studentNum - submitNum}</p>
-          </ContentBox>
+          {
+            students &&
+            <ContentBox className="col-3">
+              <Bold>전체</Bold>
+              <p>{students.length}</p>
+            </ContentBox>
+          }
+          {
+            submit &&
+            <ContentBox className="col-3">
+              <Bold>제출</Bold>
+              <p>{submit.length}</p>
+            </ContentBox>
+          }
+          {
+            (students && submit) &&
+            <ContentBox className="col-3">
+              <Bold>미제출</Bold>
+              <p>{students.length - submit.length}</p>
+            </ContentBox>
+          }
           <ContentBox className="col-3">
             <Bold>채점대기</Bold>
-            <p>{feedbackNum}</p>
+            <p>{wait}</p>
           </ContentBox>
         </Box>
-        <Table 
-            headers={headers}
-            items={items}
-            selectable={false}
+        {
+          items &&
+          <Table 
+              headers={headers}
+              items={items}
+              selectable={false}
           />
+        }
       </TableBox>
+      <ButtonBox>
+        <SecondaryButton onClick={()=>navigate(link.substring(0, link.lastIndexOf("/")))}><p>목록</p></SecondaryButton>
+      </ButtonBox>
     </Container>
   </>
 }

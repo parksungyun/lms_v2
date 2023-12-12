@@ -3,6 +3,7 @@ import { useState } from "react";
 import styled from "styled-components"
 import { feedbacks, submits } from "../assets/TempData";
 import  Modal  from "react-bootstrap/Modal";
+import axios from "axios";
 
 const H2 = styled.p`
   font-size: 1.7rem;
@@ -79,47 +80,81 @@ const SecondaryButton = styled.button`
   cursor: pointer;
 `;
 
-export function FeedbackModal({name, feedbackid}){
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 1rem 0 0 0;
+  text-align: center;
+`;
+
+export function FeedbackModal({name, submit}){
   const [score, setScore] = useState("");
   const [content, setContent] = useState("");
   const [isScore, setIsScore] = useState(0);
   const [show, setShow] = useState(false);
+  const [errorCheck, setErrorCheck] = useState();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   useEffect(() => {
-    const submit = submits.find(s => s.submit_id == feedbackid);
-    if(feedbacks.find(f => f.submit_id == submit.submit_id)) {
-      const feedback = feedbacks.find(f => f.submit_id == submit.submit_id);
-      setScore(feedback.hw_score);
-      setContent(feedback.hw_comment);
+    if(submit.feedback) {
+      setScore(submit.feedback.hwScore);
+      setContent(submit.feedback.hwComment);
       setIsScore(1);
     }
-  }, [])
+  }, []);
+
+  function onSubmit() {
+    if(!score) {
+      setErrorCheck(1);
+    }
+    else {
+      const data = {
+        academicId: sessionStorage.getItem("id"),
+        hwScore: score,
+        hwComment: content,
+      };
+      console.log(data);
+      axios
+      .post(`/api/subject/${submit.submit.submitId}/feedback`, data)
+      .then((res) => {
+        handleClose();
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(`${err} : 과목 과제 피드백 작성 실패`);
+      });
+    }
+  }
+
   return<>
     {
-      isScore == 1 ? <SuccessButton onClick={handleShow}><p>{name}</p></SuccessButton> : <SecondaryButton onClick={handleShow}><p>{name}</p></SecondaryButton>
+      isScore === 1 ? <SuccessButton onClick={handleShow}><p>{name}</p></SuccessButton> : <SecondaryButton onClick={handleShow}><p>{name}</p></SecondaryButton>
     }
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <H2>채점</H2>
         </Modal.Header>
-        <form action="" method="POST">
+        <form>
           <Modal.Body>
             <Input type="text" name="feedback_score" id="feedback_score" value={score} onChange={(e)=>setScore(e.target.value)} placeholder="점수를 입력해주세요"/>
             <ContentInput type="text" name="feedback_content" id="feedback_content" value={content} onChange={(e)=>setContent(e.target.value)} placeholder="내용을 입력해주세요"/>
           </Modal.Body>
-            <Box className="button">
-            {
-              isScore == 1 ? <>
-                <PrimaryButton type="submit"><p>수정</p></PrimaryButton>
-                <DangerButton><p>삭제</p></DangerButton>
-              </> : <PrimaryButton type="submit"><p>등록</p></PrimaryButton>
-            }
-            </Box>
         </form>
+        {
+          errorCheck === 1 && <ErrorMsg>점수를 입력해주세요</ErrorMsg>
+        }
+        <Box className="button">
+        {
+          isScore === 1 ? <>
+            <PrimaryButton onClick={() => onSubmit()}><p>수정</p></PrimaryButton>
+            <DangerButton><p>삭제</p></DangerButton>
+          </> : <PrimaryButton onClick={() => onSubmit()}><p>등록</p></PrimaryButton>
+        }
+        </Box>
       </Modal>
   </>
 }
