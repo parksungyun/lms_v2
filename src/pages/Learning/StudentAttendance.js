@@ -255,9 +255,6 @@ export function StudentAttendance() {
   }
 
   function onSearch() {
-    console.log(searchCode);
-    console.log(searchStartDate);
-    console.log(searchEndDate);
     if((searchCode >= 0 && searchCode <= 99) && searchStartDate && searchEndDate) {
       const promise = getStudentAttendanceByStudentIdAndAbsenceCodeAndPeriod(id, searchCode, searchStartDate, searchEndDate);
       const getData = () => {
