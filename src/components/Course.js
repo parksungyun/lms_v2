@@ -69,7 +69,6 @@ export function Course({id}) {
     <Container>
       {
         course && <Box>
-          {console.log(courses.coursePhoto)}
           <Img src={"/upload/" + `${course.coursePhoto.substring(course.coursePhoto.lastIndexOf("\\") + 1)}`} alt={course.courseName} onClick={() => onDetail(course.courseId)}/>
           <Content>
             <Title onClick={() => onDetail(course.courseId)}>{course.courseName}</Title>
