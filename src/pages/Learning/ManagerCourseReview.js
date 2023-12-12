@@ -55,6 +55,9 @@ export function ManagerCourseReview() {
   const [academics, setAcademics] = useState(null);
   const [index, setIndex] = useState(0);
   const [active, setActive] = useState();
+  let reviews;
+  let sum;
+  let average;
   let items;
 
   useEffect(() => {
@@ -111,8 +114,18 @@ export function ManagerCourseReview() {
     }
   }, [subject]);
 
-  if(subject && review && students) {
-    items = (review.filter((c) => c.subjectId === subject[index - 1].subject.subjectId)).map((c, i) => (
+  if(subject && review) {
+    reviews = review.filter((r) => r.subjectId === subject[index].subject.subjectId);
+
+    sum = 0;
+    reviews.map((c) => {
+      sum += c.reviewScore;
+    })
+    average = sum / reviews.length;
+  }
+
+  if(reviews && students) {
+    items = reviews.map((c, i) => (
       {
         no: i + 1,
         writer: students.find((s) => s.student.studentId === c.studentId).user.userName,
@@ -121,7 +134,7 @@ export function ManagerCourseReview() {
       }
     ));
   }
-  else {
+  else if(!reviews) {
     items = {};
   }
   
@@ -138,15 +151,15 @@ export function ManagerCourseReview() {
         <H2>강의평가</H2>
         <Hr />
         {
-          (active) &&
+          (active && subject) &&
           subject.map((s, i) => (         
-            <Btn className={active[i]} onClick={()=>{setIndex(i+1); changeActive(i+1)}}><p>{s.subject.subjectName}</p></Btn>
+            <Btn className={active[i]} onClick={()=>{setIndex(i); changeActive(i+1)}}><p>{s.subject.subjectName}</p></Btn>
           ))
         }
         <div>
           {
             (items && subject && students && academics) &&
-            <CourseReview items={items} subject={subject[index - 1]} student={students} academic={academics} />
+            <CourseReview items={items} subject={subject[index]} student={students} academic={academics} average={average} />
           }
         </div>
       </TableBox>

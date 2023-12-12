@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Table } from "./Table";
-import { courses, academics } from "../assets/TempData";
 import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { getCourseByAcademicId } from "../pages/Api";
 
 const header = [
   {
@@ -58,14 +59,25 @@ const PrimaryButton = styled.button`
   border: 0;
 `;
 
-export function ManagerCourseHistory({id}) {
+export function ManagerCourseHistory() {
   const navigate = useNavigate();
-
-  const course = courses.filter(c => c.academic_id == id);
-  console.log(course)
-
+  const id = sessionStorage.getItem("id"); // academicId
+  const [courses, setCourses] = useState(null);
   const newDate = new Date();
   const date =  newDate.getTime();
+  let items;
+
+  useEffect(() => {
+    if(!courses) {
+      const promise = getCourseByAcademicId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setCourses(data);
+        });
+      };
+      getData();
+    }
+  })
   
   function changeReply(end) {
     end = new Date(end);
@@ -74,22 +86,27 @@ export function ManagerCourseHistory({id}) {
     else {return(<BadgeSecondary>진행끝</BadgeSecondary>)};
   };
 
-  const item = course.map((c,i) => (
-    {
-      no: i + 1,
-      courseName: c.course_name,
-      startDate: c.start_date,
-      endDate: c.end_date,
-      state: changeReply(c.end_date),
-      link: <PrimaryButton onClick={()=>navigate(`/lms/m/${c.course_id}/info`)}><p>바로가기</p></PrimaryButton>
-    }
-  ));
+  if(courses) {
+    items = courses.map((c,i) => (
+      {
+        no: i + 1,
+        courseName: c.courseName,
+        startDate: c.startDate,
+        endDate: c.endDate,
+        state: changeReply(c.endDate),
+        link: <PrimaryButton onClick={()=>navigate(`/lms/m/${c.courseId}/info`)}><p>바로가기</p></PrimaryButton>
+      }
+    ));
+  }
 
   return<>
-    <Table 
-      headers={header}
-      items={item}
-      selectable={false}
-    />
+    {
+      items &&
+      <Table 
+        headers={header}
+        items={items}
+        selectable={false}
+      />
+    }
   </>
 }

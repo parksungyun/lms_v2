@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Table } from "../../components/Table";
-import { userList, students, courses, attendances, absence_code } from "../../assets/TempData";
 import { Pagination } from "../../components/Pagination";
+import { getAllAbsenceCode, getCourseById, getStudentAttendanceByStudentId, getStudentAttendanceByStudentIdAndAbsenceCode, getStudentAttendanceByStudentIdAndAbsenceCodeAndPeriod, getStudentAttendanceByStudentIdAndPeriod, getStudentsByCourseId } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -119,6 +119,7 @@ const BadgeSuccess = styled.span`
   font-weight: 500;
   font-size: 0.8rem;
   border-radius: 5px;
+  cursor: pointer;
 `;
 
 const BadgeSecondary = styled.span`
@@ -128,6 +129,7 @@ const BadgeSecondary = styled.span`
   font-weight: 500;
   font-size: 0.8rem;
   border-radius: 5px;
+  cursor: pointer;
 `;
 
 const BadgeWarning = styled.span`
@@ -184,48 +186,114 @@ const headers = [
 export function ManagerCourseStudentAttendance() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const student = students.find((s) => s.student_id == id);
-  const user = userList.find((u) => u.uid == student.uid);
-  const course = courses.find((c) => c.course_id == student.course_id);
-  const attendance = attendances.filter(data => data.student_id == student.student_id);
-  const absence = attendance.filter(data => data.absence_id > 0);
-  const wait = absence.filter(data => data.absence_id == 99);
+  const pathName = useLocation().pathname;
+  const link = pathName.substring(0, pathName.lastIndexOf("/"));
+  const courseId = pathName.split("/")[3];
+  const [students, setStudents] = useState(null);
+  const [course, setCourse] = useState(null);
+  const [attendance, setAttendance] = useState(null);
+  const [code, setCode] = useState(null);
   const [searchCode, setSearchCode] = useState();
   const [searchStartDate, setSearchStartDate] = useState();
   const [searchEndDate, setSearchEndDate] = useState();
   const [page, setPage] = useState(1);
   const limit = 10;
   const offset = (page - 1) * limit;
-  
-  const items = attendance.map((a, i) => (
-    {
-      no: i + 1,
-      date: a.attend_date,
-      attendTime: a.attend_time,
-      leaveTime: a.leave_time,
-      attend: changeCode(a.absence_id),
-      codeId: a.absence_id,
-      state: changeState(a.attendance_id, a.absence_id),
+  let items;
+  let absence = 0;
+  let wait = 0;
+
+  useEffect(() => {
+    if(!course) {
+      const promise = getCourseById(courseId);
+      const getData = () => {
+        promise.then((data) => {
+          setCourse(data);
+        });
+      };
+      getData();
     }
-  ))
+    if(!students) {
+      const promise = getStudentsByCourseId(courseId);
+      const getData = () => {
+        promise.then((data) => {
+          setStudents(data);
+        });
+      };
+      getData();
+    }
+    if(!attendance) {
+      const promise = getStudentAttendanceByStudentId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setAttendance(data);
+        });
+      };
+      getData();
+    }
+    if(!code) {
+      const promise = getAllAbsenceCode();
+      const getData = () => {
+        promise.then((data) => {
+          setCode(data);
+        });
+      };
+      getData();
+    }
+  })
+  
+  if(attendance) {
+    items = attendance.map((a, i) => (
+      {
+        no: i + 1,
+        date: a.attendDate,
+        attendTime: timeConvert(a.attendTime),
+        leaveTime: timeConvert(a.leaveTime),
+        attend: changeCode(a.absenceId),
+        codeId: a.absenceId,
+        state: changeState(a.attendanceId, a.absenceId),
+      }
+    ))
+  }
 
   const postsData = (posts) => {
     if(posts) {
       let result = posts.slice(offset, offset + limit);
       return result;
     }
-  };
+  }
+
+  function timeConvert(time) {
+    if(!time) {
+      return "";
+    }
+    const temp = new Date(time);
+    return temp.toLocaleDateString("fr-CA") + " " + temp.toLocaleTimeString("af-ZA");
+  }
 
   function changeCode(code) {
-    if(code === 0) {return(<BadgePrimary>출석</BadgePrimary>)}
-    else if(code === 99) {return(<BadgeDanger>결석</BadgeDanger>)}
-    else {return(<BadgeWarning>결석</BadgeWarning>)};
-  };
+    if(code === 0) {
+      return(<BadgePrimary>출석</BadgePrimary>)
+    }
+    else if(code === 99) {
+      absence++;
+      wait++;
+      return(<BadgeDanger>결석</BadgeDanger>)
+    }
+    else {
+      absence++;
+      return(<BadgeWarning>결석</BadgeWarning>)
+    };
+  }
 
   function changeState(id, state) {
-    if(state === 99) {return(<BadgeSecondary onClick={attendConfirm(id)}>대기</BadgeSecondary>)}
-    else {return(<BadgeSuccess onClick={attendMod(id)}>승인</BadgeSuccess>)};
-  };
+    if(state === 99){
+      return(<BadgeSecondary onClick={() => attendConfirm(id)}>대기</BadgeSecondary>)
+    }
+    else {
+      return(<BadgeSuccess onClick={() => attendMod(id)}>승인</BadgeSuccess>)
+    }
+  }
 
   function attendConfirm(id) {
 
@@ -236,7 +304,42 @@ export function ManagerCourseStudentAttendance() {
   }
 
   function onSearch() {
-
+    if((searchCode >= 0 && searchCode <= 99) && searchStartDate && searchEndDate) {
+      const promise = getStudentAttendanceByStudentIdAndAbsenceCodeAndPeriod(id, searchCode, searchStartDate, searchEndDate);
+      const getData = () => {
+        promise.then((data) => {
+          setAttendance(data);
+        });
+      };
+      getData();
+    }
+    else if(searchCode >= 0 && searchCode <= 99) {
+      const promise = getStudentAttendanceByStudentIdAndAbsenceCode(id, searchCode);
+      const getData = () => {
+        promise.then((data) => {
+          setAttendance(data);
+        });
+      };
+      getData();
+    }
+    else if(searchStartDate && searchEndDate) {
+      const promise = getStudentAttendanceByStudentIdAndPeriod(id, searchStartDate, searchEndDate);
+      const getData = () => {
+        promise.then((data) => {
+          setAttendance(data);
+        });
+      };
+      getData();
+    }
+    else {
+      const promise = getStudentAttendanceByStudentId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setAttendance(data);
+        });
+      };
+      getData();
+    }
   }
 
   return <>
@@ -244,35 +347,45 @@ export function ManagerCourseStudentAttendance() {
     <H2>학생 출결 관리</H2>
       <Content>
         <Box>
-          <ContentBox className="col-3">
-            <Bold>학생이름</Bold>
-            <p>{user.user_name}</p>
-          </ContentBox>
-          <ContentBox className="col-3">
-            <Bold>훈련기간</Bold>
-            <p>{course.start_date} ~ {course.end_date}</p>
-          </ContentBox>
-          <ContentBox className="col-2">
-            <Bold>출석일수</Bold>
-            <p>{attendance.length - absence.length}</p>
-          </ContentBox>
+          {
+            students &&
+            <ContentBox className="col-3">
+              <Bold>학생이름</Bold>
+              <p>{students.find((s) => s.student.studentId == id).user.userName}</p>
+            </ContentBox>
+          }
+          {
+            course &&
+            <ContentBox className="col-3">
+              <Bold>훈련기간</Bold>
+              <p>{course.startDate} ~ {course && course.endDate}</p>
+            </ContentBox>
+          }
+          {
+            attendance &&
+            <ContentBox className="col-2">
+              <Bold>출석일수</Bold>
+              <p>{attendance.length - absence}</p>
+            </ContentBox>
+          }
           <ContentBox className="col-2">
             <Bold>결석일수</Bold>
-            <p>{absence.length}</p>
+            <p>{absence}</p>
           </ContentBox>
           <ContentBox className="col-2">
             <Bold>출결 승인대기</Bold>
-            <p>{wait.length}</p>
+            <p>{wait}</p>
           </ContentBox>
         </Box>
         <Search>
           <Detail>
             <Label>출결코드</Label>
             <Select name="searchCode" id="searchCode" onChange={(e) => setSearchCode(e.target.value)} value={searchCode}>
+              <option>출결코드 선택</option>
               {
-                absence_code.map((data) => (
-                  <option value={data.absence_id} key={data.absence_id}>
-                    {data.absence_id}: {data.absence_name}
+                code && code.map((data) => (
+                  <option value={data.absenceId} key={data.absenceId}>
+                    {data.absenceId}: {data.absenceName}
                   </option>
                 ))
               }
@@ -280,20 +393,25 @@ export function ManagerCourseStudentAttendance() {
           </Detail>
           <Detail>
             <Label>기간</Label>
-            <InputDate type="date" name="start_date" id="start_date"  value={searchStartDate} onChange={(e) => {setSearchStartDate(e.target.value)}} />
+            <InputDate type="date" name="startDate" id="startDate"  value={searchStartDate} onChange={(e) => {setSearchStartDate(e.target.value)}} />
             ~
-            <InputDate type="date" name="end_date" id="end_date"  value={searchEndDate} onChange={(e) => {setSearchEndDate(e.target.value)}} />
+            <InputDate type="date" name="endDate" id="endDate"  value={searchEndDate} onChange={(e) => {setSearchEndDate(e.target.value)}} />
           </Detail>
-          <PrimaryButton onClick={onSearch}><p>검색</p></PrimaryButton>
+          <PrimaryButton onClick={() => onSearch()}><p>검색</p></PrimaryButton>
         </Search>
-        <Table 
-          headers={headers}
-          items={postsData(items)}
-          selectable={false}
-        />
-        <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+        {
+          items &&
+          <>
+          <Table 
+            headers={headers}
+            items={postsData(items)}
+            selectable={false}
+          />
+          <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+          </>
+        }
         <ButtonBox>
-          <SecondaryButton onClick={() => navigate(`/lms/m/${course.course_id}/info`)}><p>목록</p></SecondaryButton>
+          <SecondaryButton onClick={() => navigate(link.substring(0, link.lastIndexOf("/")))}><p>목록</p></SecondaryButton>
         </ButtonBox>
       </Content>
     </Container>

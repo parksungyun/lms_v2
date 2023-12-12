@@ -833,7 +833,7 @@ export const getAllMyPostsByAcademicId = async (id) => {
   return posts;
 }
 
-export const getAllMyRepliesByStudentId = async (id) => {
+export const getAllMyRepliesByAcademicId = async (id) => {
   let replies;
   await axios
   .get(`/api/user/replies/academic/${id}`)

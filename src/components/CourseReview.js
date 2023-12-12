@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { Table } from "./Table";
-import { academics, courses, students, subjects, userList } from "../assets/TempData";
 
 const Box = styled.div`
   border-bottom: 2px solid #ddd;
@@ -42,16 +41,7 @@ const headers = [
   },
 ];
 
-export function CourseReview({items, subject, student, academic}) {
-
-  let sum = 0;
-  let average = 0;
-  if(items.length > 0) {
-    items.map((i) => {
-      sum += i.reviewScore;
-    });
-    average = sum / items.length;
-  }
+export function CourseReview({items, subject, student, academic, average}) {
 
   return<>
     <Box>

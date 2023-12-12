@@ -37,8 +37,7 @@ const Btn = styled.button`
 `;
 
 export function ManagerMypage() {
-  const id = 1 // 임시 academicid
-  const [page, setPage] = useState(<ManagerCourseHistory id={id}/>);
+  const [page, setPage] = useState(<ManagerCourseHistory />);
   const [active, setActive] = useState(['active', '', '']);
   
   function changeActive(i) {
@@ -49,10 +48,10 @@ export function ManagerMypage() {
   return<>
     <Container>
       <TableBox>
-        <Btn className={active[0]} onClick={()=>{setPage(<ManagerCourseHistory id={id}/>); changeActive(1)}}><p>과정 이력</p></Btn>
-        <Btn className={active[1]} onClick={()=>{setPage(<MyPost type={'a'} id={id}/>); changeActive(2)}}><p>내 게시글 관리</p></Btn>
+        <Btn className={active[0]} onClick={()=>{setPage(<ManagerCourseHistory />); changeActive(1)}}><p>과정 이력</p></Btn>
+        <Btn className={active[1]} onClick={()=>{setPage(<MyPost />); changeActive(2)}}><p>내 게시글 관리</p></Btn>
         <Btn className={active[2]} onClick={()=>{setPage(<MyReply />); changeActive(3)}}><p>내 답변 관리</p></Btn>
-        <Btn className={active[3]} onClick={()=>{setPage(<ManagerDetailForm id={id}/>); changeActive(4)}}><p>개인정보수정</p></Btn>
+        <Btn className={active[3]} onClick={()=>{setPage(<ManagerDetailForm />); changeActive(4)}}><p>개인정보수정</p></Btn>
         <Btn className={active[4]} onClick={()=>{setPage(<ChangePW />); changeActive(5)}}><p>비밀번호수정</p></Btn>
         <div>
           {page}

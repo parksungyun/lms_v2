@@ -1,7 +1,8 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { userList, students } from "../../assets/TempData";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getStudentByStudentId } from "../Api";
+import axios from "axios";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -20,6 +21,7 @@ const Content = styled.div`
   justify-content: center;
   align-items: center;
   gap: 3rem;
+  flex-direction: column;
 `;
 
 const H2 = styled.p`
@@ -88,28 +90,115 @@ const ButtonBox = styled.div`
   gap: 0.5rem;
 `;
 
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 0;
+`;
+
+const SuccessMsg = styled.p`
+  font-size: 1rem;
+  color: blue;
+  margin: 0;
+  padding: 0;
+`;
+
 export function ManagerCourseStudentDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const student = students.find((s) => s.student_id == id);
-  const user = userList.find((u) => u.uid == student.uid);
-  
-  const [userName, setUserName] = useState(user.user_name);
-  const [userId, setUserId] = useState(user.user_id);
-  const [userBirth, setUserBirth] = useState(user.user_birth);
-  const [userPhone, setUserPhone] = useState(user.user_phone);
-  const [userAddr, setUserAddr] = useState(user.user_addr);
-  const [userEmail, setUserEmail] = useState(user.user_email);
+  const pathName = useLocation().pathname;
+  const link = pathName.substring(0, pathName.lastIndexOf("/"));
+  const [student, setStudent] = useState(null);
+  const [userName, setUserName] = useState();
+  const [userId, setUserId] = useState();
+  const [userBirth, setUserBirth] = useState();
+  const [userPhone, setUserPhone] = useState();
+  const [userAddr, setUserAddr] = useState();
+  const [userEmail, setUserEmail] = useState();
+  const [userAvailable, setUserAvailable] = useState();
+  const [errorCheck, setErrorCheck] = useState(0);
+
+  useEffect(() => {
+    if(!student) {
+      const promise = getStudentByStudentId(id);
+      const getData = () => {
+        promise.then((data) => {
+          setStudent(data);
+        });
+      };
+      getData();
+    }
+  })
+
+  useEffect(() => {
+    if(student) {
+      setUserName(student.user.userName);
+      setUserId(student.user.userId);
+      setUserBirth(student.user.userBirth);
+      setUserPhone(student.user.userPhone);
+      setUserAddr(student.user.userAddr);
+      setUserEmail(student.user.userEmail);
+      setUserAvailable(student.student.available);
+    }
+  }, [student]);
 
   function onSubmit() {
+    if (!userName) {
+      setErrorCheck(1);
+    }
+    else {
+      const data = {
+        uid: student.user.uid,
+        userName: userName,
+        userBirth: userBirth,
+        userPhone: userPhone,
+        userAddr: userAddr,
+        userEmail: userEmail,
+      }
+      axios
+      .post("/api/user/student/mod", data)
+      .then((res) => {
+        console.log(res.data.data);
+        setErrorCheck(2);
+      })
+      .catch((err) => {
+        console.log(`${err} : Mod 실패`);
+        setErrorCheck(3);
+      });
+    }
+  }
 
+  function resetPw() {
+    axios
+    .post(`/api/auth/${student.user.uid}/resetPW`)
+    .then((res) => {
+      console.log(res.data.data);
+      setErrorCheck(4);
+    })      
+    .catch((err) => {
+      console.log(`${err} : ResetPW 실패`);
+      setErrorCheck(5);
+    });
+  }
+
+  function changeAvailable() {
+    axios
+    .post(`/api/user/${student.user.uid}/changeAvailable/${userAvailable}`)
+    .then((res) => {
+      console.log(res.data.data);
+    })
+    .catch((err) => {
+      console.log(`${err} : changeAvailable 실패`);
+    });
+    window.location.reload();
   };
 
   return <>
     <Container>
       <H2>학생 상세 정보</H2>
       <Content>
-        <Details action="" method="POST">
+        <Details>
           <Detail>
             <Label>이름</Label>
             <Input type="text" name="user_name" id="user_name" value={userName} onChange={(e) => {setUserName(e.target.value)}} />
@@ -120,7 +209,7 @@ export function ManagerCourseStudentDetail() {
           </Detail>
           <Detail>
             <Label>비밀번호</Label>
-            <PrimaryButton><p>비밀번호 초기화</p></PrimaryButton>
+            <PrimaryButton onClick={() => resetPw()}><p>비밀번호 초기화</p></PrimaryButton>
           </Detail>
           <Detail>
             <Label>생년월일</Label>
@@ -141,14 +230,29 @@ export function ManagerCourseStudentDetail() {
           <Detail>
             <Label>활성화</Label>
             {
-              student.available == 1 ? <DangerButton><p>비활성화</p></DangerButton> : <PrimaryButton><p>활성화</p></PrimaryButton>
+              userAvailable === 1 ? <DangerButton onClick={() => changeAvailable()}><p>비활성화</p></DangerButton> : <PrimaryButton onClick={() => changeAvailable()}><p>활성화</p></PrimaryButton>
             }
           </Detail>
-          <ButtonBox>
-            <PrimaryButton type="submit" onClick={onSubmit}><p>수정</p></PrimaryButton>
-            <SecondaryButton onClick={() => navigate(`/lms/m/${student.course_id}/info`)}><p>목록</p></SecondaryButton>
-          </ButtonBox>
         </Details>
+        {
+          errorCheck === 1 && <ErrorMsg>이름을 입력해주세요.</ErrorMsg>
+        }
+        {
+          errorCheck === 2 && <SuccessMsg>수정이 성공하였습니다.</SuccessMsg>
+        }
+        {
+          errorCheck === 3 && <ErrorMsg>수정이 실패하였습니다.</ErrorMsg>
+        }
+        {
+          errorCheck === 4 && <SuccessMsg>비밀번호 초기화가 성공하였습니다.</SuccessMsg>
+        }
+        {
+          errorCheck === 5 && <ErrorMsg>비밀번호 초기화가 실패하였습니다.</ErrorMsg>
+        }
+        <ButtonBox>
+          <PrimaryButton onClick={() => onSubmit()}><p>수정</p></PrimaryButton>
+          <SecondaryButton onClick={() => navigate(link.substring(0, link.lastIndexOf("/")))}><p>목록</p></SecondaryButton>
+        </ButtonBox>
       </Content>
     </Container>
   </>

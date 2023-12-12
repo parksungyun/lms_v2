@@ -205,7 +205,7 @@ export function AdminManagerDetail() {
 
   function resetPW(){
     axios
-    .get(`/api/auth/${user.user.uid}/resetPW`)
+    .post(`/api/auth/${user.user.uid}/resetPW`)
     .then((res) => {
       console.log(res.data.data);
     })      
@@ -216,7 +216,7 @@ export function AdminManagerDetail() {
 
   function changeAvailable() {
     axios
-    .get(`/api/user/${user.user.uid}/changeAvailable/${userAvailable}`)
+    .post(`/api/user/${user.user.uid}/changeAvailable/${userAvailable}`)
     .then((res) => {
       console.log(res.data.data);
     })
