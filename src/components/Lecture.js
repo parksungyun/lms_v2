@@ -64,22 +64,20 @@ const P = styled.p`
   margin: 0;
 `;
 
- export function Lecture({src, videos, id}) {
+ export function Lecture({src, videos, id, time}) {
   const [nowPlaying, setNowPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [totalTime, setTotalTime] = useState(0);
 
   // const ref = useRef<HTMLVideoElement>(null);
   const ref = useRef();
 
-  window.onload = () => {
-    const video = document.getElementById('lectureVideo');
-    setTotalTime(Math.floor(video.duration));
-  };
-
   const videoElement = ref && ref.current;
 
   const videoSrc = src || "";
+  
+  // if(videos) {
+  //   setTotalTime(videos.find(v => v.id == id).time);
+  // }
 
   // 동영상 시간 업데이트 함수
   const addTimeUpdate = () => {
@@ -107,7 +105,7 @@ const P = styled.p`
     axios
     .post("/api/subject/study", data)
     .then((res) => {
-
+      console.log(res.data.data)
     })
     .catch((err) => {
       console.log(`${err} : 실패`);
@@ -127,20 +125,30 @@ const P = styled.p`
     }
   };
 
-  let i = (currentTime / totalTime * 100);
+  let i = (currentTime / time * 100);
   const reset = 0;
 
-  if (totalTime == 0 || currentTime == 0) {
+  if (time == 0 || currentTime == 0) {
     i = 0;
   } else if (i == 100) {
     return <VideoModal chart={videos} id={id}/>
   };
 
+  if (videoSrc) {
+    axios
+    .get(`/api/file/video/${videoSrc.substring(videoSrc.lastIndexOf("\\") + 1)}`)
+    .then((res) => {
+      console.log(res.data.data)
+    })
+    .catch((err) => {
+      console.log(`${err} : failed`)
+    })
+  }
   return (
     <>
       <Box>
       <PrimaryButton onClick={()=>onPlayIconClick()}>{ nowPlaying ? <BiPlay className="icon" /> : <BiStop className="icon" />}</PrimaryButton>
-        <P>{currentTime ? Math.floor(currentTime/ 60).toString().padStart(2, '0') + ":" + Math.floor(currentTime % 60).toString().padStart(2, '0') : '00:00'} / {Math.floor(totalTime/ 60).toString().padStart(2, '0') + ":" + Math.floor(totalTime % 60).toString().padStart(2, '0')}</P>
+        <P>{currentTime ? Math.floor(currentTime/ 60).toString().padStart(2, '0') + ":" + Math.floor(currentTime % 60).toString().padStart(2, '0') : '00:00'} / {Math.floor(time/ 60).toString().padStart(2, '0') + ":" + Math.floor(time % 60).toString().padStart(2, '0')}</P>
       </Box>
       <ProgressBar>
         <ProgressBox width = {i}/>
@@ -150,7 +158,7 @@ const P = styled.p`
         ref={ref}
         id="lectureVideo"
       >
-        <source src={videoSrc} type="video/mp4"/>
+        <source src={"/api/file/video/" + videoSrc.substring(videoSrc.lastIndexOf("\\") + 1)} type="video/mp4"/>
       </Video>
     </>
   );
