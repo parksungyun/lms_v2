@@ -5,6 +5,7 @@ import { Lecture } from "./Lecture";
 import { useState } from "react";
 import { useEffect } from "react";
 import { getAllTrainers, getLectureByLectureId, getLecturesBySubjectId } from "../pages/Api";
+import axios from "axios";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -112,7 +113,6 @@ export function LecturePost() {
   const [academic, setAcademic] = useState(null);
   const [lectures, setLectures] = useState(null);
   let videos;
-
   useEffect(() => {
     if(!lecture) {
       const promise = getLectureByLectureId(id);
@@ -147,17 +147,27 @@ export function LecturePost() {
       }
     }
   }, [lecture]);
-
+  console.log(lectures)
   if(lectures) {
     videos = lectures.map((v) => (    
       {
         subject: v.subjectId,
         id: v.lectureId,
-        videoUrl: v.videoURL
+        videoUrl: v.videoUrl
       }
     ));
   }
-  
+  if(lecture) {
+    axios
+    .get("/api/file/downloadFile", lecture.fileUrl)
+    .then((res) => {
+      console.log(res.data.data)
+    })
+    .catch((err) => {
+      console.log(`${err} : Error!`)
+    })
+  }
+console.log(lecture)
   return<>
     {
       (lecture && academic) &&
@@ -175,11 +185,11 @@ export function LecturePost() {
             </IconBox>
           </Box>
           <Hr />
-          <Lecture src={lecture.videoURL} videos={videos} id={id}/>
+          <Lecture src={lecture.videoUrl} videos={videos} id={id} time={lecture.lectureTime}/>
           <P>{lecture.content}</P>
           <AttachedBox>
           <Attached><p className="fw-bold">첨부파일</p></Attached>
-          <div><A href="">파일.pdf<Icon><BsDownload /></Icon></A></div>
+          <div><A href={`/downloadFile?fileUrl=/${lecture.fileUrl}`}>{lecture.fileName}<Icon><BsDownload /></Icon></A></div>
         </AttachedBox>
         <Box className="button">
           {userType === "s" ? null : <PrimaryButton className="button" onClick={()=>navigate("mod", { state: lecture.lectureId })}><p>수정</p></PrimaryButton>}
