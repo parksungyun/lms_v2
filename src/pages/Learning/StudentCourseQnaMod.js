@@ -98,6 +98,7 @@ export function StudentCourseQnaMod() {
   const [question, setQuestion] = useState(null);
   const [qnaTitle, setQnaTitle] = useState();
   const [qnaContent, setQnaContent] = useState();
+  const [qnaFile, setQnaFile] = useState();
   const [errorCheck, setErrorCheck] = useState();
   const navigate = useNavigate();
   const pathName = useLocation().pathname;
@@ -139,11 +140,31 @@ export function StudentCourseQnaMod() {
       axios
       .post(`/api/course/qna/${state}/mod`, data)
       .then((res) => {
-        navigate(link);
+        setErrorCheck(0);
       })
       .catch((err) => {
         console.log(`${err} : 과정 QnA 게시글 수정 실패`);
+        setErrorCheck(3);
       });
+
+      const fd = new FormData();
+      if (qnaFile) {
+        fd.append("file", qnaFile);
+        console.log(fd);
+          fetch(`/api/file/upload/course/question/${state}`, {
+            method: 'POST',
+            body: fd
+          })
+          .then(response => response.json())
+          .then(data => {
+              console.log('File upload success:', data);
+              setErrorCheck(0);
+          })
+          .catch(error => {
+              console.error('File upload failed:', error);
+              setErrorCheck(3);
+          });
+        }
     }
   }
 
@@ -157,13 +178,19 @@ export function StudentCourseQnaMod() {
             <Input type="text" name="qnaTitle" id="qnaTitle" value={qnaTitle} onChange={(e)=>setQnaTitle(e.target.value)} placeholder="제목 입력해주세요" />
             <Hr />
             <ContentInput type="text" name="qnaContent" id="qnaContent" value={qnaContent} onChange={(e)=>setQnaContent(e.target.value)} placeholder="내용 입력해주세요" />
-            <Input type="file" name="qnaFile" id="qnaFile" accept="" />
+            <Input type="file" name="qnaFile" id="qnaFile" onChange={(e) => setQnaFile(e.target.files[0])} />
           </form>
           {
             errorCheck === 1 && <ErrorMsg>제목을 입력해주세요</ErrorMsg>
           }
           {
             errorCheck === 2 && <ErrorMsg>내용을 입력해주세요</ErrorMsg>
+          }
+          {
+            errorCheck === 3 && <ErrorMsg>수정에 실패하였습니다</ErrorMsg>
+          }
+          {
+            errorCheck === 0 && navigate(link)
           }
           <Box>
             <PrimaryButton onClick={() => onSubmit()}><p>수정</p></PrimaryButton>

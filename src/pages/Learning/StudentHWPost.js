@@ -4,6 +4,7 @@ import { BsDownload } from "react-icons/bs";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getAllTrainers, getHomeworkByHomeworkId } from "../Api";
+import axios from "axios";
 
 const TableBox = styled.div`
   padding: 2rem;
@@ -130,7 +131,16 @@ export function StudentHWPost() {
       getData();
     }
   });
-
+  if(post && post.fileUrl) {
+    axios
+    .get(`/api/file/download/academic/${post.fileUrl.substring(post.fileUrl.lastIndexOf("\\") + 1)}`)
+    .then((res) => {
+      console.log(res.data.data)
+    })
+    .catch((err) => {
+      console.log(`${err} : Error!`)
+    })
+  };
   return<>
     {
       (post && academic) &&
@@ -153,7 +163,7 @@ export function StudentHWPost() {
         </Content>
         <AttachedBox>
           <Attached><p className="fw-bold">첨부파일</p></Attached>
-          <div><A href={post.fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
+          <div><A href={`/api/file/download/academic/${post.fileUrl.substring(post.fileUrl.lastIndexOf("\\") + 1)}`}>{post.fileName}<Icon><BsDownload /></Icon></A></div>
         </AttachedBox>
         <Box className="button">
           <SecondaryButton onClick={()=>navigate(`/lms/s/${post.subjectId}/homework`)}><p>목록</p></SecondaryButton>

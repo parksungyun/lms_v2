@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -100,6 +100,8 @@ export function TrainerHWPostWrite() {
   const [hwContent, setHwContent] = useState("");
   const [hwStartDate, setHwStartDate] = useState("");
   const [hwEndDate, setHwEndDate] = useState("");
+  const [hwFile, setHwFile] = useState("");
+  const [hwId, setHwId] = useState("");
   const [errorCheck, setErrorCheck] = useState();
 
   function onSubmit() {
@@ -125,13 +127,35 @@ export function TrainerHWPostWrite() {
       axios
       .post(`/api/subject/homework/write`, data)
       .then((res) => {
-        navigate(link);
+        setHwId(res.data.data.homeworkId);
       })
       .catch((err) => {
         console.log(`${err} : 과목 과제 게시글 작성 실패`);
+        setErrorCheck(4);
       });
     }
   }
+
+  useEffect(()=>{
+    const fd = new FormData();
+    if (hwFile) {
+      fd.append("file", hwFile);
+      console.log(fd);
+        fetch(`/api/file/upload/homework/${hwId}`, {
+          method: 'POST',
+          body: fd
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('File upload success:', data);
+            setErrorCheck(0);
+        })
+        .catch(error => {
+            console.error('File upload failed:', error);
+            setErrorCheck(4);
+        });
+      }
+  },[hwId])
 
   return<>
     <TableBox>
@@ -150,7 +174,7 @@ export function TrainerHWPostWrite() {
           </Box>
           <ContentInput type="text" name="hw_content" id="hw_content" value={hwContent}  onChange={(e)=>setHwContent(e.target.value)} placeholder="내용을 입력해주세요"/>
         </Content>
-        <Input type="file" name="hw_file" id="hw_file" accept="" />
+        <Input type="file" name="hw_file" id="hw_file" onChange={((e) => setHwFile(e.target.files[0]))} />
       </form>
       {
         errorCheck === 1 && <ErrorMsg>제목을 입력해주세요</ErrorMsg>
@@ -160,6 +184,12 @@ export function TrainerHWPostWrite() {
       }
       {
         errorCheck === 3 && <ErrorMsg>종료일을 입력해주세요</ErrorMsg>
+      }
+      {
+        errorCheck === 4 && <ErrorMsg>등록에 실패하였습니다</ErrorMsg>
+      }
+      {
+        errorCheck === 0 && navigate(link)
       }
       <Box className="button">
         <PrimaryButton onClick={() => onSubmit()}><p>등록</p></PrimaryButton>

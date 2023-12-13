@@ -6,6 +6,7 @@ import { ReplyPost } from "../../components/ReplyPost";
 import { useState } from "react";
 import { useEffect } from "react";
 import { getAllManagers, getCourseQnaByCourseQuestionId, getStudentByStudentId } from "../Api";
+import axios from "axios";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -136,6 +137,17 @@ export function StudentCourseQnaPost() {
     }
   }, [question]);
 
+  if(question && question.question.fileUrl) {
+    axios
+    .get(`/api/file/download/student/${question.question.fileUrl.substring(question.question.fileUrl.lastIndexOf("\\") + 1)}`)
+    .then((res) => {
+      console.log(res.data.data)
+    })
+    .catch((err) => {
+      console.log(`${err} : Error!`)
+    })
+  };
+
   return<>
     {
       (user && question && academic) &&
@@ -151,7 +163,7 @@ export function StudentCourseQnaPost() {
           <Content>{question.question.content}</Content>
           <AttachedBox>
             <Attached><p className="fw-bold">첨부파일</p></Attached>
-            <div><A href={question.question.fileURL}>휴가계.pdf<Icon><BsDownload /></Icon></A></div>
+            <div><A href={`/api/file/download/student/${question.question.fileUrl.substring(question.question.fileUrl.lastIndexOf("\\") + 1)}`}>{question.question.fileName}<Icon><BsDownload /></Icon></A></div>
           </AttachedBox>
           <Hr />
           {

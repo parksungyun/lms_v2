@@ -112,6 +112,7 @@ export function TrainerHWPostMod() {
   const [hwContent, setHwContent] = useState();
   const [hwStartDate, setHwStartDate] = useState();
   const [hwEndDate, setHwEndDate] = useState();
+  const [hwFile, setHwFile] = useState();
   const [errorCheck, setErrorCheck] = useState();
   const navigate = useNavigate();
 
@@ -135,7 +136,6 @@ export function TrainerHWPostMod() {
       setHwEndDate(post.endDate);
     }
   }, [post]);
-
   function onSubmit() {
     if(!hwTitle) {
       setErrorCheck(1);
@@ -159,11 +159,30 @@ export function TrainerHWPostMod() {
       axios
       .post(`/api/subject/homework/${id}/mod`, data)
       .then((res) => {
-        navigate(link);
+        setErrorCheck(0);
       })
       .catch((err) => {
         console.log(`${err} : 과목 과제 게시글 수정 실패`);
+        setErrorCheck(4);
       });
+
+      if(hwFile) {
+        const fd = new FormData();
+        fd.append("file", hwFile);
+        fetch(`/api/file/upload/homework/${id}`, {
+          method: 'POST',
+          body: fd
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('File upload success:', data);
+            setErrorCheck(0);
+        })
+        .catch(error => {
+            console.error('File upload failed:', error);
+            setErrorCheck(4);
+        });
+      }
     }
   }
 
@@ -184,7 +203,7 @@ export function TrainerHWPostMod() {
           </Box>
           <ContentInput type="text" name="hw_content" id="hw_content" value={hwContent}  onChange={(e)=>setHwContent(e.target.value)}/>
         </Content>
-        <Input type="file" name="hw_file" id="hw_file" accept="" />
+        <Input type="file" name="hw_file" id="hw_file" onChange={((e) => setHwFile(e.target.files[0]))} />
       </form>
       {
         errorCheck === 1 && <ErrorMsg>제목을 입력해주세요</ErrorMsg>
@@ -194,6 +213,12 @@ export function TrainerHWPostMod() {
       }
       {
         errorCheck === 3 && <ErrorMsg>종료일을 입력해주세요</ErrorMsg>
+      }
+      {
+        errorCheck === 4 && <ErrorMsg>수정에 실패하였습니다</ErrorMsg>
+      }
+      {
+        errorCheck === 0 && navigate(link)
       }
       <Box className="button">
         <PrimaryButton onClick={() => onSubmit()}><p>수정</p></PrimaryButton>

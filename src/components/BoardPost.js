@@ -5,6 +5,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 import { getAllManagers, getAllTrainers, getCourseBoardByCourseBoardId, getSubjectBoardBySubjectBoardId } from "../pages/Api";
+import axios from "axios";
 
 const TableBox = styled.div`
   padding: 2rem;
@@ -152,6 +153,17 @@ export function BoardPost() {
     else navlink = `/lms/${userType}/${post.subjectId}/board`;
   }
 
+  if(post && post.fileUrl) {
+    axios
+    .get(`/api/file/download/academic/${post.fileUrl.substring(post.fileUrl.lastIndexOf("\\") + 1)}`)
+    .then((res) => {
+      console.log(res.data.data)
+    })
+    .catch((err) => {
+      console.log(`${err} : Error!`)
+    })
+  }
+  
   return<>
     {
       (academic && post) &&
@@ -171,10 +183,13 @@ export function BoardPost() {
         <Content>
         {post.content}
         </Content>
-        <AttachedBox>
-          <Attached><p className="fw-bold">첨부파일</p></Attached>
-          <div><A href={post.fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
-        </AttachedBox>
+        {
+          post.fileUrl &&
+          <AttachedBox>
+            <Attached><p className="fw-bold">첨부파일</p></Attached>
+            <div><A href={`/api/file/download/academic/${post.fileUrl.substring(post.fileUrl.lastIndexOf("\\") + 1)}`}>{post.fileName}<Icon><BsDownload /></Icon></A></div>
+          </AttachedBox>
+        }
         <Box className="button">
           { (userType != "s" && (post.academicId == sessionStorage.getItem("id"))) && <PrimaryButton onClick={() => navigate("mod")}><p>수정</p></PrimaryButton>}
           <SecondaryButton onClick={() => navigate(navlink)}><p>목록</p></SecondaryButton>

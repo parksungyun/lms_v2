@@ -92,6 +92,7 @@ export function BoardPostMod() {
   const [post, setPost] = useState(null);
   const [boardTitle, setBoardTitle] = useState();
   const [boardContent, setBoardContent] = useState();
+  const [boardFile, setBoardFile] = useState();
   const [errorCheck, setErrorCheck] = useState();
   const link = pathName.substring(0, pathName.lastIndexOf("/"));
   const linkId = pathName.split('/')[3];
@@ -145,11 +146,29 @@ export function BoardPostMod() {
         axios
         .post(`/api/subject/board/${id}/mod`, data)
         .then((res) => {
-          navigate(link);
         })
         .catch((err) => {
           console.log(`${err} : 과목 공지 게시글 수정 실패`);
+          setErrorCheck(3);
         });
+
+        if(boardFile) {
+          const fd = new FormData();
+          fd.append("file", boardFile);
+          fetch(`/api/file/upload/subject/board/${id}`, {
+            method: 'POST',
+            body: fd
+          })
+          .then(response => response.json())
+          .then(data => {
+              console.log('File upload success:', data);
+              setErrorCheck(0);
+          })
+          .catch(error => {
+              console.error('File upload failed:', error);
+              setErrorCheck(3);
+          });
+        }
       }
       else {
         const data = {
@@ -162,11 +181,28 @@ export function BoardPostMod() {
         axios
         .post(`/api/course/board/${id}/mod`, data)
         .then((res) => {
-          navigate(link);
         })
         .catch((err) => {
           console.log(`${err} : 과정 공지 게시글 수정 실패`);
         });
+
+        if(boardFile) {
+          const fd = new FormData();
+          fd.append("file", boardFile);
+          fetch(`/api/file/upload/course/board/${id}`, {
+            method: 'POST',
+            body: fd
+          })
+          .then(response => response.json())
+          .then(data => {
+              console.log('File upload success:', data);
+              setErrorCheck(0);
+          })
+          .catch(error => {
+              console.error('File upload failed:', error);
+              setErrorCheck(3);
+          });
+        }
       }
     }
   }
@@ -178,13 +214,19 @@ export function BoardPostMod() {
         <Input type="text" name="boardTitle" id="boardTitle" value={boardTitle} onChange={(e)=>setBoardTitle(e.target.value)}/>
         <Hr />
         <ContentInput type="text" name="boardContent" id="boardContent" value={boardContent}  onChange={(e)=>setBoardContent(e.target.value)}/>
-        <Input type="file" name="boardFile" id="boardFile" accept="" />
+        <Input type="file" name="boardFile" id="boardFile" onChange={(e) => setBoardFile(e.target.files[0])} />
       </form>
       {
         errorCheck === 1 && <ErrorMsg>제목을 입력해주세요</ErrorMsg>
       }
       {
         errorCheck === 2 && <ErrorMsg>내용을 입력해주세요</ErrorMsg>
+      }
+      {
+        errorCheck === 3 && <ErrorMsg>수정에 실패하였습니다.</ErrorMsg>
+      }
+      {
+        errorCheck === 0 && navigate(link)
       }
       <Box>
         <PrimaryButton onClick={() => onSubmit()}><p>수정</p></PrimaryButton>

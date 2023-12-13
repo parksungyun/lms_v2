@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -77,6 +77,8 @@ export function BoardPostWrite() {
   const [boardTitle, setBoardTitle] = useState("");
   const [boardContent, setBoardContent] = useState("");
   const [errorCheck, setErrorCheck] = useState();
+  const [boardFile, setBoardFile] = useState();
+  const [boardId, setBoardId] = useState();
   const userType = sessionStorage.getItem("userType");
   const navigate = useNavigate();
   const pathName = useLocation().pathname;
@@ -90,7 +92,7 @@ export function BoardPostWrite() {
     else if(!boardContent) {
       setErrorCheck(2);
     }
-    else {
+    else {      
       if(userType === "t") {
         const data = {
           academicId: sessionStorage.getItem("id"),
@@ -102,10 +104,12 @@ export function BoardPostWrite() {
         axios
         .post(`/api/subject/board/write`, data)
         .then((res) => {
-          navigate(link);
+          setBoardId(res.data.data.subjectBoardId);
+          console.log(res.data.data);
         })
         .catch((err) => {
           console.log(`${err} : 과목 공지 게시글 작성 실패`);
+          setErrorCheck(3)
         });
       }
       else {
@@ -119,14 +123,54 @@ export function BoardPostWrite() {
         axios
         .post(`/api/course/board/write`, data)
         .then((res) => {
-          navigate(link);
+          setBoardId(res.data.data.courseBoardId);
         })
         .catch((err) => {
           console.log(`${err} : 과정 공지 게시글 작성 실패`);
+          setErrorCheck(3);
         });
       }
     }
   }
+
+  useEffect(()=>{
+    const fd = new FormData();
+    if (boardFile) {
+      fd.append("file", boardFile);
+      console.log(fd);
+      if (userType === "t") {
+        fetch(`/api/file/upload/subject/board/${boardId}`, {
+          method: 'POST',
+          body: fd
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('File upload success:', data);
+            setErrorCheck(0);
+        })
+        .catch(error => {
+            console.error('File upload failed:', error);
+            setErrorCheck(3);
+        });
+      } else {
+        fetch(`/api/file/upload/course/board/${boardId}`, {
+          method: 'POST',
+          body: fd
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('File upload success:', data);
+            setErrorCheck(0);
+        })
+        .catch(error => {
+            console.error('File upload failed:', error);
+            setErrorCheck(3);
+        });
+      }
+    } else {
+      console.error("No file selected.");
+    };
+  }, [boardId])
 
   return<>
     <TableBox>
@@ -135,13 +179,19 @@ export function BoardPostWrite() {
         <Input type="text" name="boardTitle" id="boardTitle" value={boardTitle} onChange={(e)=>setBoardTitle(e.target.value)} placeholder="제목을 입력해주세요"/>
         <Hr />
         <ContentInput type="text" name="boardContent" id="boardContent" value={boardContent}  onChange={(e)=>setBoardContent(e.target.value)} placeholder="내용을 입력해주세요"/>
-        <Input type="file" name="boardFile" id="boardFile" accept="" />
+        <Input type="file" name="boardFile" id="boardFile" onChange={(e) => setBoardFile(e.target.files[0])} />
       </form>
       {
         errorCheck === 1 && <ErrorMsg>제목을 입력해주세요</ErrorMsg>
       }
       {
         errorCheck === 2 && <ErrorMsg>내용을 입력해주세요</ErrorMsg>
+      }
+      {
+        errorCheck === 3 && <ErrorMsg>등록에 실패하였습니다.</ErrorMsg>
+      }
+      {
+        errorCheck === 0 && navigate(link)
       }
       <Box>
         <PrimaryButton onClick={() => onSubmit()}><p>등록</p></PrimaryButton>

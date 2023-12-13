@@ -98,6 +98,7 @@ export function StudentSubjectQnaMod() {
   const [question, setQuestion] = useState(null);
   const [qnaTitle, setQnaTitle] = useState();
   const [qnaContent, setQnaContent] = useState();
+  const [qnaFile, setQnaFile] = useState();
   const [errorCheck, setErrorCheck] = useState();
   const navigate = useNavigate();
   const pathName = useLocation().pathname;
@@ -120,7 +121,7 @@ export function StudentSubjectQnaMod() {
       setQnaTitle(question.question.title);
       setQnaContent(question.question.content);
     }
-  }, [question]);
+  },[question]);
 
   function onSubmit() {
     if(!qnaTitle) {
@@ -140,11 +141,31 @@ export function StudentSubjectQnaMod() {
       axios
       .post(`/api/subject/qna/${state}/mod`, data)
       .then((res) => {
-        navigate(link);
+        setErrorCheck(0);
       })
       .catch((err) => {
         console.log(`${err} : 과목 QnA 게시글 수정 실패`);
+        setErrorCheck(3);
       });
+
+      const fd = new FormData();
+      if (qnaFile) {
+        fd.append("file", qnaFile);
+        console.log(fd);
+          fetch(`/api/file/upload/subject/question/${state}`, {
+            method: 'POST',
+            body: fd
+          })
+          .then(response => response.json())
+          .then(data => {
+              console.log('File upload success:', data);
+              setErrorCheck(0);
+          })
+          .catch(error => {
+              console.error('File upload failed:', error);
+              setErrorCheck(3);
+          });
+        }
     }
   }
 
@@ -155,16 +176,22 @@ export function StudentSubjectQnaMod() {
         <TableBox>
           <H2>QnA 수정</H2>
           <form>
-            <Input type="text" name="qnaTitle" id="qnaTitle" value={qnaTitle} onChange={(e)=>setQuestion(e.target.value)} />
+            <Input type="text" name="qnaTitle" id="qnaTitle" value={qnaTitle} onChange={(e)=>setQnaTitle(e.target.value)} />
             <Hr />
             <ContentInput type="text" name="qnaContent" id="qnaContent" value={qnaContent}  onChange={(e)=>setQnaContent(e.target.value)} />
-            <Input type="file" name="qnaFile" id="qnaFile" accept="" />
+            <Input type="file" name="qnaFile" id="qnaFile" onChange={(e) => setQnaFile(e.target.files[0])} />
           </form>
           {
             errorCheck === 1 && <ErrorMsg>제목을 입력해주세요</ErrorMsg>
           }
           {
             errorCheck === 2 && <ErrorMsg>내용을 입력해주세요</ErrorMsg>
+          }
+          {
+            errorCheck === 3 && <ErrorMsg>수정에 실패하였습니다</ErrorMsg>
+          }
+          {
+            errorCheck === 0 && navigate(link)
           }
           <Box>
             <PrimaryButton onClick={() => onSubmit()}><p>수정</p></PrimaryButton>
