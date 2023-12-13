@@ -116,9 +116,6 @@ export function TrainerLecture() {
     }
   })
 
-  console.log(lectures)
-  console.log(trainers)
-
   const shortenTitle = (str, length) => {
     let result = '';
     if (str.length > length) {
@@ -129,7 +126,7 @@ export function TrainerLecture() {
     return result;
   };
   
-  if (lectures, trainers) {
+  if (lectures && trainers) {
     items = lectures.map((l,i) => (
       {
         no: i+1,

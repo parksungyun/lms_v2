@@ -186,7 +186,6 @@ export function TrainerLectureWrite() {
     <Container>
       <TableBox>
         <H2>강의 등록</H2>
-        <form action="" method="POST">
           <Input type="text" name="lecture_title" id="lecture_title" value={lectureTitle} onChange={(e)=>setLectureTitle(e.target.value)} placeholder="제목을 입력해주세요"/>
           <Hr />
           <ContentInput type="text" name="lecture_content" id="lecture_content" value={lectureContent} onChange={(e)=>setLectureContent(e.target.value)} placeholder="내용을 입력해주세요"/>
@@ -194,7 +193,6 @@ export function TrainerLectureWrite() {
           <Input type="file" name="lecture_video" id="lecture_video" accept="video/*" onChange={(e)=>{setLectureVideo(e.target.files[0]); change(e.target.files[0])}}/>
           <P>강의 자료</P>
           <Input type="file" name="lecture_file" id="lecture_file" onChange={(e)=>setLectureFile(e.target.files[0])}/>
-        </form>
         {error == 1 && <ErrorMsg>입력하지 않은 항목이 있습니다.</ErrorMsg>}
         {error == 2 && <ErrorMsg>등록에 실패하였습니다.</ErrorMsg>}
         <Box>

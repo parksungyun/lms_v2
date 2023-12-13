@@ -147,7 +147,7 @@ export function LecturePost() {
       }
     }
   }, [lecture]);
-  console.log(lectures)
+
   if(lectures) {
     videos = lectures.map((v) => (    
       {
@@ -157,9 +157,10 @@ export function LecturePost() {
       }
     ));
   }
-  if(lecture) {
+
+  if(lecture && lecture.fileUrl) {
     axios
-    .get("/api/file/downloadFile", lecture.fileUrl)
+    .get(`/api/file/download/${lecture.fileUrl.substring(lecture.fileUrl.lastIndexOf("\\") + 1)}`)
     .then((res) => {
       console.log(res.data.data)
     })
@@ -167,7 +168,7 @@ export function LecturePost() {
       console.log(`${err} : Error!`)
     })
   }
-console.log(lecture)
+
   return<>
     {
       (lecture && academic) &&
@@ -187,14 +188,17 @@ console.log(lecture)
           <Hr />
           <Lecture src={lecture.videoUrl} videos={videos} id={id} time={lecture.lectureTime}/>
           <P>{lecture.content}</P>
-          <AttachedBox>
-          <Attached><p className="fw-bold">첨부파일</p></Attached>
-          <div><A href={`/downloadFile?fileUrl=/${lecture.fileUrl}`}>{lecture.fileName}<Icon><BsDownload /></Icon></A></div>
-        </AttachedBox>
-        <Box className="button">
-          {userType === "s" ? null : <PrimaryButton className="button" onClick={()=>navigate("mod", { state: lecture.lectureId })}><p>수정</p></PrimaryButton>}
-          <SecondaryButton onClick={()=>navigate(`/lms/${userType}/${lecture.subjectId}/lecture`)}><p>목록</p></SecondaryButton>
-        </Box>
+          {
+            lecture.fileUrl &&
+            <AttachedBox>
+              <Attached><p className="fw-bold">첨부파일</p></Attached>
+              <div><A href={`/api/file/download/academic/${lecture.fileUrl.substring(lecture.fileUrl.lastIndexOf("\\") + 1)}`}>{lecture.fileName}<Icon><BsDownload /></Icon></A></div>
+            </AttachedBox>
+          }
+          <Box className="button">
+            {userType === "s" ? null : <PrimaryButton className="button" onClick={()=>navigate("mod", { state: lecture.lectureId })}><p>수정</p></PrimaryButton>}
+            <SecondaryButton onClick={()=>navigate(`/lms/${userType}/${lecture.subjectId}/lecture`)}><p>목록</p></SecondaryButton>
+          </Box>
         </TableBox>
       </Container>
     }

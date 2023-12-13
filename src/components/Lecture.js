@@ -68,17 +68,12 @@ const P = styled.p`
   const [nowPlaying, setNowPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
 
-  // const ref = useRef<HTMLVideoElement>(null);
   const ref = useRef();
 
   const videoElement = ref && ref.current;
 
   const videoSrc = src || "";
   
-  // if(videos) {
-  //   setTotalTime(videos.find(v => v.id == id).time);
-  // }
-
   // 동영상 시간 업데이트 함수
   const addTimeUpdate = () => {
     const observedVideoElement = ref && ref.current;
@@ -94,22 +89,26 @@ const P = styled.p`
     addTimeUpdate();
   }, []);
 
+console.log(sessionStorage)
+
   // 강의 영상 재생 후 테스트 해봐야함
   useEffect(() => {
-    const data = {
-      lectureId: id,
-      studentId: sessionStorage.getItem("id"),
-      progressTime: currentTime,
-    };
-    console.log(data);
-    axios
-    .post("/api/subject/study", data)
-    .then((res) => {
-      console.log(res.data.data)
-    })
-    .catch((err) => {
-      console.log(`${err} : 실패`);
-    });
+    if (sessionStorage.getItem("userType") == "s") {
+      const data = {
+        lectureId: id,
+        studentId: sessionStorage.getItem("id"),
+        progressTime: currentTime,
+      };
+      console.log(data);
+      axios
+      .post("/api/subject/study", data)
+      .then((res) => {
+        console.log(res.data.data)
+      })
+      .catch((err) => {
+        console.log(`${err} : 실패`);
+      });
+    }
   }, [currentTime]);
 
   // play icon 클릭했을떄 실행되는 함수
@@ -144,6 +143,7 @@ const P = styled.p`
       console.log(`${err} : failed`)
     })
   }
+
   return (
     <>
       <Box>
