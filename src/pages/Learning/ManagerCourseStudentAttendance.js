@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Table } from "../../components/Table";
 import { Pagination } from "../../components/Pagination";
 import { getAllAbsenceCode, getCourseById, getStudentAttendanceByStudentId, getStudentAttendanceByStudentIdAndAbsenceCode, getStudentAttendanceByStudentIdAndAbsenceCodeAndPeriod, getStudentAttendanceByStudentIdAndPeriod, getStudentsByCourseId } from "../Api";
+import { AttendanceModal } from "../../components/AttendanceModal";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -110,26 +111,6 @@ const BadgePrimary = styled.span`
   font-weight: 500;
   font-size: 0.8rem;
   border-radius: 5px;
-`;
-
-const BadgeSuccess = styled.span`
-  background-color: green;
-  padding: 2px 15px;
-  color: white;
-  font-weight: 500;
-  font-size: 0.8rem;
-  border-radius: 5px;
-  cursor: pointer;
-`;
-
-const BadgeSecondary = styled.span`
-  background-color: gray;
-  padding: 2px 15px;
-  color: white;
-  font-weight: 500;
-  font-size: 0.8rem;
-  border-radius: 5px;
-  cursor: pointer;
 `;
 
 const BadgeWarning = styled.span`
@@ -288,19 +269,14 @@ export function ManagerCourseStudentAttendance() {
 
   function changeState(id, state) {
     if(state === 99){
-      return(<BadgeSecondary onClick={() => attendConfirm(id)}>대기</BadgeSecondary>)
+      return(<AttendanceModal id={id} check={state}></AttendanceModal>)
+    }
+    else if(state === 0){
+      return(<BadgePrimary>승인</BadgePrimary>)
     }
     else {
-      return(<BadgeSuccess onClick={() => attendMod(id)}>승인</BadgeSuccess>)
+      return(<AttendanceModal id={id} check={state}></AttendanceModal>)
     }
-  }
-
-  function attendConfirm(id) {
-
-  }
-
-  function attendMod(id) {
-
   }
 
   function onSearch() {
