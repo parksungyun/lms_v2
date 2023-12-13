@@ -85,8 +85,6 @@ export function MyReply() {
     }
   };
 
-  console.log(data);
-
   if(data) {
     items = data.map((d, i) => (
       {

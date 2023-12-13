@@ -138,7 +138,7 @@ export function ManagerDetailForm() {
       };
       console.log(data);
       axios
-      .post(`/api/user/academic/${user.user.uid}/update`, data)
+      .put(`/api/user/academic/${user.user.uid}/update`, data)
       .then((res) => {
         setErrorCheck(4);
       })

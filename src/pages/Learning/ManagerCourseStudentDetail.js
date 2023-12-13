@@ -157,9 +157,8 @@ export function ManagerCourseStudentDetail() {
         userEmail: userEmail,
       }
       axios
-      .post("/api/user/student/mod", data)
+      .put("/api/user/student/mod", data)
       .then((res) => {
-        console.log(res.data.data);
         setErrorCheck(2);
       })
       .catch((err) => {

@@ -5,7 +5,7 @@ import { Table } from "../../components/Table";
 import '../../styles/trainer_hw_table.css';
 import { Pagination } from "../../components/Pagination";
 import { academics, lectures, userList } from "../../assets/TempData";
-import { getAllTrainers, getLecturesBySubjectId, getSubjectById } from "../Api";
+import { getAllTrainers, getLectureBySearch, getLecturesBySubjectId, getSubjectById } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -132,7 +132,7 @@ export function TrainerLecture() {
         no: i+1,
         title: titleLink(l.lectureId, shortenTitle(l.title, 35)),
         writer: trainers.find(t => t.academic.academicId == l.academicId).user.userName,
-        regDate: l.regDate,
+        regDate: new Date(l.regDate).toLocaleDateString("fr-CA"),
         Hits: l.hits
       }
     ));
@@ -149,8 +149,21 @@ export function TrainerLecture() {
     }
   };
 
-  function onSearch(e) {
-    e.preventDefault();
+  function onSearch() {
+    if(search.trim().length > 0) {
+      const promise = getLectureBySearch(search, searchOption, id);
+      const getData = () => {
+        promise.then((data) => {
+          setLectures(data);
+        });
+      };
+      getData();
+    }
+    else {
+      setLectures(null);
+    }
+    setSearch("");
+    setSearchOption("all");
   };
 
   return<>
@@ -175,7 +188,7 @@ export function TrainerLecture() {
               <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
               <button onClick={onSearch}><p>검색</p></button>
             </SearchBox>
-            <PrimaryButton onClick={() => navigate("write", { state : id })}><p>작성</p></PrimaryButton>
+            <PrimaryButton onClick={() => navigate("write")}><p>작성</p></PrimaryButton>
           </ButtonBox>
           <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
         </Container>

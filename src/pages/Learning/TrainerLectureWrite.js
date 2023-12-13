@@ -92,8 +92,8 @@ const ErrorMsg = styled.p`
 
 export function TrainerLectureWrite() {
   const navigate = useNavigate();
-  // subject id
-  const { state } = useLocation();
+  const pathName = useLocation().pathname;
+  const subjectId = pathName.split("/")[3];
   const [lectureTitle, setLectureTitle] = useState();
   const [lectureContent, setLectureContent] = useState();
   const [lectureVideo, setLectureVideo] = useState();
@@ -117,12 +117,12 @@ export function TrainerLectureWrite() {
         videoTime : Math.floor(time.duration),
         academicId: sessionStorage.getItem("id")
       }
-      console.log(data)
       axios
-      .post(`/api/subject/${state}/lecture/write`, data)
+      .post(`/api/subject/${subjectId}/lecture/write`, data)
       .then((res) => {
         console.log(res.data.data)
         setLectureId(res.data.data.lectureId)
+        setError(3);
       })
       .catch((err) => {
         console.log(`${err} : Write Error`)
@@ -186,18 +186,19 @@ export function TrainerLectureWrite() {
     <Container>
       <TableBox>
         <H2>강의 등록</H2>
-          <Input type="text" name="lecture_title" id="lecture_title" value={lectureTitle} onChange={(e)=>setLectureTitle(e.target.value)} placeholder="제목을 입력해주세요"/>
-          <Hr />
-          <ContentInput type="text" name="lecture_content" id="lecture_content" value={lectureContent} onChange={(e)=>setLectureContent(e.target.value)} placeholder="내용을 입력해주세요"/>
-          <P>영상 강의</P>
-          <Input type="file" name="lecture_video" id="lecture_video" accept="video/*" onChange={(e)=>{setLectureVideo(e.target.files[0]); change(e.target.files[0])}}/>
-          <P>강의 자료</P>
-          <Input type="file" name="lecture_file" id="lecture_file" onChange={(e)=>setLectureFile(e.target.files[0])}/>
+        <Input type="text" name="lecture_title" id="lecture_title" value={lectureTitle} onChange={(e)=>setLectureTitle(e.target.value)} placeholder="제목을 입력해주세요"/>
+        <Hr />
+        <ContentInput type="text" name="lecture_content" id="lecture_content" value={lectureContent} onChange={(e)=>setLectureContent(e.target.value)} placeholder="내용을 입력해주세요"/>
+        <P>영상 강의</P>
+        <Input type="file" name="lecture_video" id="lecture_video" accept="video/*" onChange={(e)=>{setLectureVideo(e.target.files[0]); change(e.target.files[0])}}/>
+        <P>강의 자료</P>
+        <Input type="file" name="lecture_file" id="lecture_file" onChange={(e)=>setLectureFile(e.target.files[0])}/>
         {error == 1 && <ErrorMsg>입력하지 않은 항목이 있습니다.</ErrorMsg>}
         {error == 2 && <ErrorMsg>등록에 실패하였습니다.</ErrorMsg>}
+        {error == 3 && navigate(`/lms/t/${subjectId}/lecture`)}
         <Box>
           <PrimaryButton onClick={()=>onSubmit()}><p>등록</p></PrimaryButton>
-          <SecondaryButton onClick={() => navigate(`/lms/t/${state}/lecture`)}><p>목록</p></SecondaryButton>
+          <SecondaryButton onClick={() => navigate(`/lms/t/${subjectId}/lecture`)}><p>목록</p></SecondaryButton>
         </Box>
         {
           videoUrl &&
