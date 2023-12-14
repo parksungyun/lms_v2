@@ -91,6 +91,16 @@ export function DeleteModal({name}){
           console.log(`${err} : 과제 게시글 삭제 실패`);
         });
       }
+      if(type[type.length - 1] === "feedback") {
+        axios
+        .delete(`/api/subject/feedback/${postId}/delete`)
+        .then((res) => {
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log(`${err} : 과제 피드백 삭제 실패`);
+        });
+      }
     }
     else if(userType === "m") {
       if(type[4] === "board") {
@@ -143,6 +153,28 @@ export function DeleteModal({name}){
         })
         .catch((err) => {
           console.log(`${err} : 과목 질문 게시글 삭제 실패`);
+        });
+      }
+    }
+    else if(type[2] === "a") {
+      if(type[3] === "managerSetting" || type[3] === "trainerSetting") {
+        axios
+        .delete(`/api/user/academic/${replyId}/delete`)
+        .then((res) => {
+          navigate(link.substring(0, link.lastIndexOf("/")));
+        })
+        .catch((err) => {
+          console.log(`${err} : 사원(강사/매니저) 삭제 실패`);
+        });
+      }
+      if(type[3] === "courseSetting") {
+        axios
+        .delete(`/api/user/course/${replyId}/delete`)
+        .then((res) => {
+          navigate(link.substring(0, link.lastIndexOf("/")));
+        })
+        .catch((err) => {
+          console.log(`${err} : 과정 삭제 실패`);
         });
       }
     }
