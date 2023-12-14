@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components"
 import { ChangePWModal } from "../../components/ChangePWModal";
@@ -44,7 +44,7 @@ const Button = styled.button`
   border: 1px solid #eee;
   color: white;
   font-weight: 700;
-  margin-top: 2rem;
+  margin-top: 1rem;
   &:hover {
     background-color: #86a8db;
   }
@@ -75,35 +75,113 @@ const ErrorMsg = styled.p`
   padding: 0;
 `;
 
+const VerifyButton = styled.button`
+  padding: 1rem;
+  height: 2.7rem;
+  display: flex;
+  align-items: center;
+  border: none;
+  border-radius: 0.3rem;
+  background-color: #5f7dcf;
+  color: white;
+  margin-top: 1rem;
+`;
+
+const VerifyDiv = styled.div`
+  display: flex;
+  align-items: end;
+  gap: 1rem;
+  input {
+    width: 235px;
+  }
+`;
+
 export function FindPW() {
   const [userId, setUserId] = useState("");
   const [userPhone, setUserPhone] = useState("");
+  const [verify, setVerify] = useState(-1);
+  const [verifyNum, setVerifyNum] = useState("");
   const [errorCheck, setErrorCheck] = useState(0);
+  const [randomNum, setRandomNum] = useState(null);
   const navigate = useNavigate();
 
-  function onSubmit() {
-    if (!userId) {
-      setErrorCheck(1);
-    } else if (!/^\d{3}-\d{3,4}-\d{4}$/.test(userPhone)) {
-      setErrorCheck(2);
-    } else if (!(userId && userPhone)) {
-      setErrorCheck(3);
-    } else {
-      setErrorCheck(0);
+  useEffect(() => {
+    if(verify === 0) {
+      setRandomNum(Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000);
+    }
+  }, [verify]);
+
+  useEffect(() => {
+    setVerifyNum("");
+  }, [errorCheck]);
+
+  useEffect(() => {
+    if(randomNum) {
       const data = {
-        userId: userId,
-        userPhone: userPhone
-      };
+        toNumber: userPhone.replaceAll("-", ""),
+        randomNumber: randomNum,
+      }
       axios
-      .post("/api/auth/findPW", data)      
+      .post("/api/message/send", data)
       .then((res) => {
         console.log(res);
-        setErrorCheck(4);
       })
       .catch((err) => {
-        console.log(`${err} : PW찾기 실패`);
+        console.log(`${err} : 인증문자 전송 실패`);
       });
     }
+  }, [randomNum]);
+
+  function onVerify(e) {
+    e.preventDefault();
+    if (!userId) {
+      setErrorCheck(1);
+      setVerify(-1);
+    }
+    else if(!/^\d{3}-\d{3,4}-\d{4}$/.test(userPhone)) {
+      setErrorCheck(2);
+      setVerify(-1);
+    }
+    else if (!(userId && userPhone)) {
+      setErrorCheck(3);
+      setVerify(-1);
+    }
+    else {
+      setVerify(0);
+    }
+  }
+
+  function onVerifyCheck(e) {
+    e.preventDefault();
+    if(verifyNum == randomNum) {
+      setVerify(1);
+      onSubmit();
+    }
+    else {
+      setErrorCheck(6);
+    }
+  }
+
+  function onSubmit() {
+    setErrorCheck(0);
+    const data = {
+      userId: userId,
+      userPhone: userPhone
+    };
+    axios
+    .post("/api/auth/findPW", data)      
+    .then((res) => {
+      if(res.data.result) {
+        setErrorCheck(4);
+      }
+      else {
+        setErrorCheck(5);
+      }
+    })
+    .catch((err) => {
+      setErrorCheck(7);
+      console.log(`${err} : PW찾기 실패`);
+    });
   };
 
   return <>
@@ -114,15 +192,28 @@ export function FindPW() {
           <label>아이디</label>
           <input id="userId" value={userId} onChange={(e) => setUserId(e.target.value)} />
         </Div>
+        {errorCheck === 1 && <ErrorMsg>아이디를 입력해주세요.</ErrorMsg>}
         <Div>
           <label>연락처</label>
           <input id="userPhone" value={userPhone} onChange={(e) => setUserPhone(e.target.value)} />
         </Div>
-        {errorCheck === 1 && <ErrorMsg>이름을 입력해주세요.</ErrorMsg>}
         {errorCheck === 2 && <ErrorMsg>연락처 형식이 올바르지 않습니다.</ErrorMsg>}
         {errorCheck === 3 && <ErrorMsg>정보를 모두 입력해주세요.</ErrorMsg>}
         {errorCheck === 4 && <ChangePWModal userId={userId}/>}
-        <Button onClick={()=>onSubmit()}><p>비밀번호 찾기</p></Button>
+        <Button onClick={(e) => onVerify(e)}><p>비밀번호 찾기</p></Button>
+        {
+          verify == 0 &&
+          <VerifyDiv>
+            <Div>
+              <label>인증번호</label>
+              <input id="verifyNum" value={verifyNum} onChange={(e) => setVerifyNum(e.target.value)} placeholder="인증번호를 입력해주세요" />
+            </Div>
+            <VerifyButton onClick={(e) => onVerifyCheck(e)}><p>인증</p></VerifyButton>
+          </VerifyDiv>
+        }
+        {errorCheck === 6 && <ErrorMsg>인증 번호가 일치하지 않습니다.</ErrorMsg>}
+        {errorCheck === 5 && <ErrorMsg>일치하는 아이디가 없습니다.</ErrorMsg>}
+        {errorCheck === 7 && <ErrorMsg>비밀번호 찾기 실패</ErrorMsg>}
         <FindWrapper>
           <Find onClick={() => navigate("/register")}><p>회원가입</p></Find>
           <Divider>|</Divider>

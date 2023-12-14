@@ -64,9 +64,11 @@ export function WebNavbar() {
         if(user.student) {
           sessionStorage.setItem("userType", "s");
           sessionStorage.setItem("id", user.student.studentId);
+          sessionStorage.setItem("available", user.student.available);
         }
         if(user.academic) {
           sessionStorage.setItem("id", user.academic.academicId);
+          sessionStorage.setItem("available", user.academic.available);
           if(user.academic.dept === 0)
             sessionStorage.setItem("userType", "m");
           else sessionStorage.setItem("userType", "t");
@@ -79,6 +81,20 @@ export function WebNavbar() {
       }
     }
   });
+
+  function notAvailable() {
+    alert("유효하지 않은 사용자입니다. 관리자에게 문의해주세요.");
+    navigate("/");
+  }
+
+  function linkLms() {
+    if(sessionStorage.getItem("available") == 1) {
+      navigate(`/lms/${userType}`);
+    }
+    else {
+      notAvailable();
+    }
+  }
 
   return <>
     <Navbar>
@@ -106,7 +122,7 @@ export function WebNavbar() {
               }
               {
                 (user && userType !== "g") 
-                && <Nav.Link onClick={() => {navigate(`/lms/${userType}`)}}><StyledLogin>LMS 바로가기 <BsPencil /></StyledLogin></Nav.Link>
+                && <Nav.Link onClick={() => linkLms()}><StyledLogin>LMS 바로가기 <BsPencil /></StyledLogin></Nav.Link>
               }
             </LoginWrapper>
           </Nav>
