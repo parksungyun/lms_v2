@@ -155,7 +155,7 @@ export function TrainerHWFeedback() {
   };
 
   function checkFile(file){
-    if(file) {
+    if(file.submitFileUrl) {
       return <A href={`/api/file/download/student/${file.submitFileUrl.substring(file.submitFileUrl.lastIndexOf("\\") + 1)}`} onClick={()=>Download((file.submitFileUrl.substring(file.submitFileUrl.lastIndexOf("\\") + 1)))}>{file.submitFileName}</A>;
     } else {
       return "";

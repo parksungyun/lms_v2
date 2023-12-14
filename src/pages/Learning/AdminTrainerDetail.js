@@ -254,43 +254,33 @@ export function AdminTrainerDetail() {
       const fd = new FormData();
       if (userPhoto) {
         fd.append("file", userPhoto);
-        console.log(fd);
-        for (const pair of fd.entries()) {
-          console.log(pair[0] + ', ' + pair[1]);
-      }
       } else {
         console.error("No file selected.");
       }
       axios
       .post("/api/user/academic/mod", data)
       .then((res) => {
-        console.log(res.data.data);
+        setError(2);
       })
       .catch((err) => {
         console.log(`${err} : Mod 실패`);
+        setError(3);
       });
-      // axios
-      // .post("/api/file/upload", fd)
-      // .then((res) => {
-      //   console.log(res.data.data);
-      // })
-      // .catch((err) => {
-      //   console.log(`${err} : Upload 실패`)
-      // })
+      
       fetch(`/api/file/upload/${user.user.uid}`, {
-          method: 'POST',
-          body: fd,
+        method: 'POST',
+        body: fd,
       })
       .then(response => response.json())
       .then(data => {
-          console.log('File upload success:', data);
       })
       .catch(error => {
-          console.error('File upload failed:', error);
+        console.error('File upload failed:', error);
+        setError(3);
       });
     }
   };
-  // console.log(userPhoto.substring(userPhoto.lastIndexOf("\\") + 1))
+
   return <>
     {
       user && 
@@ -362,6 +352,8 @@ export function AdminTrainerDetail() {
                 userAvailable == 1 ? <DangerButton onClick={()=>changeAvailable()}><p>비활성화</p></DangerButton> : <PrimaryButton onClick={()=>changeAvailable()}><p>활성화</p></PrimaryButton>
               }
             </Detail>
+            {error == 2 && navigate("/lms/a/trainerSetting")}
+            {error == 3 && <ErrorMsg>수정이 실패하였습니다</ErrorMsg>}
             <ButtonBox>
               <PrimaryButton type="submit" onClick={() => onSubmit()}><p>수정</p></PrimaryButton>
               <SecondaryButton onClick={() => navigate("/lms/a/trainerSetting")}><p>목록</p></SecondaryButton>

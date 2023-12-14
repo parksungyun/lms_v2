@@ -181,9 +181,11 @@ export function BoardPostMod() {
         axios
         .post(`/api/course/board/${id}/mod`, data)
         .then((res) => {
+          setErrorCheck(0);
         })
         .catch((err) => {
           console.log(`${err} : 과정 공지 게시글 수정 실패`);
+          setErrorCheck(3);
         });
 
         if(boardFile) {
@@ -226,7 +228,7 @@ export function BoardPostMod() {
         errorCheck === 3 && <ErrorMsg>수정에 실패하였습니다.</ErrorMsg>
       }
       {
-        errorCheck === 0 && navigate(link)
+        errorCheck === 0 && navigate(link.substring(0, link.lastIndexOf("/")))
       }
       <Box>
         <PrimaryButton onClick={() => onSubmit()}><p>수정</p></PrimaryButton>
