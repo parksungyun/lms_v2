@@ -105,7 +105,6 @@ const SuccessMsg = styled.p`
 `;
 
 export function Register() {
-  const [requestResult, setRequestResult] = useState("");
   const [userId, setUserId] = useState("");
   const [userPw, setUserPw] = useState("");
   const [userPwCheck, setUserPwCheck] = useState("");
@@ -149,7 +148,7 @@ export function Register() {
         userName: userName,
         userBirth: userBirth,
         userPhone: userPhone,
-        userAddress: userAddress,
+        userAddr: userAddress,
         userEmail: userEmail
       };
       axios
