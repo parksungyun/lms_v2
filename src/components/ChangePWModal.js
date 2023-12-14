@@ -59,7 +59,6 @@ export function ChangePWModal({userId}) {
       axios
       .post("/api/auth/changePW", data)
       .then((res) => {
-        console.log(res)
         navigate("/login");
       })
       .catch((err) => {
