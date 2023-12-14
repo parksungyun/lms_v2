@@ -4,6 +4,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FeedbackModal } from "../../components/FeedbackModal";
 import { useEffect, useState } from "react";
 import { getHomeworkByHomeworkId, getStudentsBySubjectId, getSubmitsByHomeworkId } from "../Api";
+import axios from "axios";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -67,6 +68,10 @@ const SecondaryButton = styled.button`
   background-color: gray;
   padding: 0.6rem 1.4rem;
   color: white;
+`;
+
+const A = styled.a`
+  color: black;
 `;
 
 const headers = [
@@ -138,13 +143,32 @@ export function TrainerHWFeedback() {
     }
   });
 
+  function Download(url) {
+    axios
+    .get(`/api/file/download/student/${url}`)
+    .then((res) => {
+      console.log(res.data.data)
+    })
+    .catch((err) => {
+      console.log(`${err} : Error!`)
+    })
+  };
+
+  function checkFile(file){
+    if(file) {
+      return <A href={`/api/file/download/student/${file.submitFileUrl.substring(file.submitFileUrl.lastIndexOf("\\") + 1)}`} onClick={()=>Download((file.submitFileUrl.substring(file.submitFileUrl.lastIndexOf("\\") + 1)))}>{file.submitFileName}</A>;
+    } else {
+      return "";
+    }
+  };
+
   if(homework && submit && students) {
     items = submit.map((s, i) => (
       {
         no: i + 1,
         student: students.find((u) => u.student.studentId === s.submit.studentId).user.userName,
         content: s.submit.submitContent,
-        attached: s.submit.submitFileURL,
+        attached: checkFile(s.submit),
         submitTime: changeColor(homework.endDate, s.submit.submitModDate),
         submitState: changeButton(s),
       }

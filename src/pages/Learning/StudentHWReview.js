@@ -5,6 +5,7 @@ import { academics, feedbacks, homeworks, submits, userList } from "../../assets
 import { useState } from "react";
 import { useEffect } from "react";
 import { getAllTrainers, getHomeworkByHomeworkId, getStudentByStudentId, getSubmitByStudentIdAndHomeworkId, getSubmitBySubmitId } from "../Api";
+import axios from "axios";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -148,6 +149,17 @@ export function StudentHWReview() {
     }
   });
 
+  if(submit && submit.submit.submitFileUrl) {
+    axios
+    .get(`/api/file/download/student/${submit.submit.submitFileUrl.substring(submit.submit.submitFileUrl.lastIndexOf("\\") + 1)}`)
+    .then((res) => {
+      console.log(res.data.data)
+    })
+    .catch((err) => {
+      console.log(`${err} : Error!`)
+    })
+  }
+
   return<>
     {
       (homework && submit && academic) &&
@@ -156,10 +168,13 @@ export function StudentHWReview() {
           <H2>{homework.title}</H2>
           <Hr />
           <Content>{submit.submit.submitContent}</Content>
-          <AttachedBox>
-            <Attached><p className="fw-bold">첨부파일</p></Attached>
-            <div><A href={submit.submit.submitFileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
-          </AttachedBox>
+          {
+            submit.submit.submitFileUrl &&
+            <AttachedBox>
+              <Attached><p className="fw-bold">첨부파일</p></Attached>
+              <div><A href={`/api/file/download/student/${submit.submit.submitFileUrl.substring(submit.submit.submitFileUrl.lastIndexOf("\\") + 1)}`}>{submit.submit.submitFileName}<Icon><BsDownload /></Icon></A></div>
+            </AttachedBox>
+          }
           <Hr />
           {
             submit.feedback &&

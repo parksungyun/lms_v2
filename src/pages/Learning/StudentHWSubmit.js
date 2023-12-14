@@ -75,13 +75,24 @@ const Box = styled.div`
   margin-bottom: 0;
 `;
 
+const ErrorMsg = styled.p`
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 1rem 0 0 0;
+  text-align: center;
+`;
+
 // submitId 존재시 기존 내용에서 덮어씌기 하면서 제출일 새로고침
 export function StudentHWSubmit() {
   const { state } = useLocation();
   const id = sessionStorage.getItem("id"); // studentId
   const [homework, setHomework] = useState(null);
   const [submit, setSubmit] = useState(null);
+  const [submitFile, setSubmitFile] = useState(null);
+  const [submitId, setSubmitId] = useState();
   const [submitContent, setSubmitContent] = useState("");
+  const [errorCheck, setErrorCheck] = useState();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -122,12 +133,34 @@ export function StudentHWSubmit() {
     axios
     .post("/api/subject/submit", data)
     .then((res) => {
-      navigate(`/lms/s/${homework.subjectId}/homework`);
+      setErrorCheck(0);
+      setSubmitId(res.data.data.submitId);
     })
     .catch((err) => {
       console.log(`${err} : 과제 제출 실패`);
+      setErrorCheck(1);
     });
-  }
+  };
+
+  useEffect(()=>{
+    if(submitId && submitFile){
+      const fd =new FormData();
+      fd.append("file", submitFile);
+      fetch(`/api/file/upload/submit/${submitId}`, {
+        method: 'POST',
+        body: fd
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('File upload success:', data);
+          setErrorCheck(0);
+      })
+      .catch(error => {
+          console.error('File upload failed:', error);
+          setErrorCheck(1);
+      });
+    }
+  },[submitId]);
 
   return<>
     {
@@ -138,8 +171,14 @@ export function StudentHWSubmit() {
           <Hr />
           <form>
             <ContentInput type="text" name="content" id="content" value={submitContent} onChange={(e)=>setSubmitContent(e.target.value)} />
-            <Input type="file" name="file" id="file" accept="" />
+            <Input type="file" name="file" id="file" onChange={(e) => setSubmitFile(e.target.files[0])} />
           </form>
+          {
+            errorCheck == 0 && navigate(`/lms/s/${homework.subjectId}/homework`)
+          }
+          {
+            errorCheck == 1 && <ErrorMsg>등록에 실패하였습니다.</ErrorMsg>
+          }
           <Box>
             <PrimaryButton onClick={() => onSubmit()}><p>{ submit ? "다시 제출" : "제출"}</p></PrimaryButton>
             <SecondaryButton onClick={() => navigate(`/lms/s/${homework.subjectId}/homework`)}><p>목록</p></SecondaryButton>

@@ -161,10 +161,13 @@ export function StudentCourseQnaPost() {
           </Box>
           <Hr />
           <Content>{question.question.content}</Content>
-          <AttachedBox>
-            <Attached><p className="fw-bold">첨부파일</p></Attached>
-            <div><A href={`/api/file/download/student/${question.question.fileUrl.substring(question.question.fileUrl.lastIndexOf("\\") + 1)}`}>{question.question.fileName}<Icon><BsDownload /></Icon></A></div>
-          </AttachedBox>
+          {
+            question.question.fileUrl &&
+            <AttachedBox>
+              <Attached><p className="fw-bold">첨부파일</p></Attached>
+              <div><A href={`/api/file/download/student/${question.question.fileUrl.substring(question.question.fileUrl.lastIndexOf("\\") + 1)}`}>{question.question.fileName}<Icon><BsDownload /></Icon></A></div>
+            </AttachedBox>
+          }
           <Hr />
           {
             question.answer && <ReplyPost question={question} academic={academic.find((a) => a.academic.academicId === question.answer.academicId)} type={"c"} />

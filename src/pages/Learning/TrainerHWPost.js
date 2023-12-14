@@ -165,10 +165,13 @@ export function TrainerHWPost() {
           </Box>
           {post.content}
         </Content>
-        <AttachedBox>
-          <Attached><p className="fw-bold">첨부파일</p></Attached>
-          <div><A href={`/api/file/download/academic/${post.fileUrl.substring(post.fileUrl.lastIndexOf("\\") + 1)}`}>{post.fileName}<Icon><BsDownload /></Icon></A></div>
-        </AttachedBox>
+        {
+          post.fileUrl &&
+          <AttachedBox>
+            <Attached><p className="fw-bold">첨부파일</p></Attached>
+            <div><A href={`/api/file/download/academic/${post.fileUrl.substring(post.fileUrl.lastIndexOf("\\") + 1)}`}>{post.fileName}<Icon><BsDownload /></Icon></A></div>
+          </AttachedBox>
+        }
         <Box className="button">
           <PrimaryButton onClick={() => navigate("mod")}><p>수정</p></PrimaryButton>
           <SecondaryButton onClick={() => navigate(`/lms/t/${post.subjectId}/homework`)}><p>목록</p></SecondaryButton>

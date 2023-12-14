@@ -7,6 +7,7 @@ import { ReplyPost } from "../../components/ReplyPost";
 import { ReplyWrite } from "../../components/ReplyWrite";
 import { useEffect } from "react";
 import { getAllStudents, getAllTrainers, getSubjectQnaBySubjectQuestionId } from "../Api";
+import axios from "axios";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -149,6 +150,18 @@ export function TrainerSubjectQnaPost() {
     }
   }, [question]);
 
+  
+  if(question && question.question.fileUrl) {
+    axios
+    .get(`/api/file/download/student/${question.question.fileUrl.substring(question.question.fileUrl.lastIndexOf("\\") + 1)}`)
+    .then((res) => {
+      console.log(res.data.data)
+    })
+    .catch((err) => {
+      console.log(`${err} : Error!`)
+    })
+  };
+
   return<>
     <Container>
       {
@@ -167,16 +180,22 @@ export function TrainerSubjectQnaPost() {
           </Box>
           <Hr />
           <Content>{question.question.content}</Content>
-          <AttachedBox>
-            <Attached><p className="fw-bold">첨부파일</p></Attached>
-            <div><A href={question.question.fileURL}>파일.pdf<Icon><BsDownload /></Icon></A></div>
-          </AttachedBox>
+          {
+            question.question.fileUrl &&
+            <AttachedBox>
+              <Attached><p className="fw-bold">첨부파일</p></Attached>
+              <div><A href={`/api/file/download/student/${question.question.fileUrl.substring(question.question.fileUrl.lastIndexOf("\\") + 1)}`}>{question.question.fileName}<Icon><BsDownload /></Icon></A></div>
+            </AttachedBox>
+          }
           <Hr />
         {
           isReply === 1 ? <>
           <ReplyPost question={question} academic={academics.find((a) => a.academic.academicId === question.answer.academicId)} />
           <Box className="button">
-            <PrimaryButton onClick={() => setIsReply(0)}><p>수정</p></PrimaryButton>
+            {
+              question.answer.academicId == sessionStorage.getItem("id") &&
+              <PrimaryButton onClick={() => setIsReply(0)}><p>수정</p></PrimaryButton>
+            }
             <SecondaryButton onClick={() => navigate(link)}><p>목록</p></SecondaryButton>
           </Box>
           </> : <ReplyWrite question={question} />
