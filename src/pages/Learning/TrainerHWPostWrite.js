@@ -128,6 +128,7 @@ export function TrainerHWPostWrite() {
       .post(`/api/subject/homework/write`, data)
       .then((res) => {
         setHwId(res.data.data.homeworkId);
+        setErrorCheck(0);
       })
       .catch((err) => {
         console.log(`${err} : 과목 과제 게시글 작성 실패`);
