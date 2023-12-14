@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { userList, courses, students } from "../../assets/TempData";
 import { Table } from "../../components/Table";
 import '../../styles/admin_table.css';
 import { useState } from "react";
@@ -142,8 +141,6 @@ export function AdminCourseStudentDetail() {
     ))
   }
   
-  console.log(students);
-  console.log(items);
   return <>
     {
       (items) &&

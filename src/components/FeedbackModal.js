@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import styled from "styled-components"
-import { feedbacks, submits } from "../assets/TempData";
 import  Modal  from "react-bootstrap/Modal";
 import axios from "axios";
+import { DeleteModal } from "./DeleteModal";
 
 const H2 = styled.p`
   font-size: 1.7rem;
@@ -59,14 +59,6 @@ const SuccessButton = styled.button`
   border-radius: 5px;
   border: 0;
   cursor: pointer;
-`;
-
-const DangerButton = styled.button`
-  border: 0;
-  border-radius: 5px;
-  background-color: red;
-  padding: 0.6rem 1.4rem;
-  color: white;
 `;
 
 const SecondaryButton = styled.button`
@@ -151,7 +143,7 @@ export function FeedbackModal({name, submit}){
         {
           isScore === 1 ? <>
             <PrimaryButton onClick={() => onSubmit()}><p>수정</p></PrimaryButton>
-            <DangerButton><p>삭제</p></DangerButton>
+            <DeleteModal name={"삭제"}></DeleteModal>
           </> : <PrimaryButton onClick={() => onSubmit()}><p>등록</p></PrimaryButton>
         }
         </Box>

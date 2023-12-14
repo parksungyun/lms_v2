@@ -949,3 +949,16 @@ export const getSubmitsBySubjectId = async (id) => {
   });
   return submit;
 }
+
+export const getAttendanceById = async (id) => {
+  let attendance;
+  await axios
+  .get(`/api/user/attendance/${id}`)
+  .then((res) => {
+    attendance = res.data.data;
+  })
+  .catch((err) => {
+    console.log(`${err} : 출결아이디로 출결 정보 불러오기 실패`);
+  });
+  return attendance;
+}

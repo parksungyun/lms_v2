@@ -5,6 +5,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import { getAcademicByAcademicId } from "../Api";
+import { DeleteModal } from "../../components/DeleteModal";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -111,13 +112,6 @@ const Check = styled.input`
 const ErrorMsg = styled.p`
   font-size: 1rem;
   color: red;
-  margin: 0;
-  padding: 0;
-`;
-
-const SuccessMsg = styled.p`
-  font-size: 1rem;
-  color: green;
   margin: 0;
   padding: 0;
 `;
@@ -272,7 +266,6 @@ export function AdminManagerDetail() {
       axios
       .post("/api/user/academic/mod", data)
       .then((res) => {
-        console.log(res.data.data);
         setError(2);
       })
       .catch((err) => {
@@ -285,7 +278,6 @@ export function AdminManagerDetail() {
       })
       .then(response => response.json())
       .then(data => {
-        console.log('File upload success:', data);
       })
       .catch(error => {
         console.error('File upload failed:', error);
@@ -365,7 +357,7 @@ export function AdminManagerDetail() {
                 userAvailable == 1 ? <DangerButton onClick={()=>changeAvailable()}><p>비활성화</p></DangerButton> : <PrimaryButton onClick={()=>changeAvailable()}><p>활성화</p></PrimaryButton>
               }
             </Detail>
-              {error == 2 && <SuccessMsg>수정이 성공하였습니다.</SuccessMsg>}
+              {error == 2 && navigate("/lms/a/managerSetting")}
               {error == 3 && <ErrorMsg>수정이 실패하였습니다.</ErrorMsg>}
             <ButtonBox>
               <PrimaryButton type="submit" onClick={()=>onSubmit()}><p>수정</p></PrimaryButton>

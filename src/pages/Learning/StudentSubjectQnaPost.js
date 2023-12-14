@@ -109,7 +109,6 @@ export function StudentSubjectQnaPost() {
   const [question, setQuestion] = useState(null);
   const [students, setStudents] = useState(null);
   const [academic, setAcademic] = useState(null);
-
   useEffect(() => {
     if(!question) {
       const promise = getSubjectQnaBySubjectQuestionId(id);
@@ -155,7 +154,7 @@ export function StudentSubjectQnaPost() {
       console.log(`${err} : Error!`)
     })
   };
-
+  
   return<>
     {
       (question && academic && students) &&
@@ -186,7 +185,10 @@ export function StudentSubjectQnaPost() {
             question.answer && <ReplyPost question={question} academic={academic.find((a) => a.academic.academicId === question.answer.academicId)} />
           }
           <Box className="button">
-            <PrimaryButton onClick={() => navigate("mod", { state: question.question.subjectQuestionId })}><p>수정</p></PrimaryButton>
+            {
+              question.question.studentId == sessionStorage.getItem("id") &&
+              <PrimaryButton onClick={() => navigate("mod", { state: question.question.subjectQuestionId })}><p>수정</p></PrimaryButton>
+            }
             <SecondaryButton onClick={() => navigate(`/lms/s/${question.question.subjectId}/sqna`)}><p>목록</p></SecondaryButton>
           </Box>
         </TableBox>

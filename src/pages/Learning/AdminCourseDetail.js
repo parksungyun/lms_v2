@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { academics, userList, courses, subjects } from "../../assets/TempData";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { BsPatchPlusFill, BsPatchMinusFill } from "react-icons/bs";
@@ -380,18 +379,18 @@ export function AdminCourseDetail() {
       setError(3);
     })
 
-    // fetch(`/api/file/upload/course/${id}`, {
-    //   method: 'POST',
-    //   body: fd
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //     console.log('File upload success:', data);
-    // })
-    // .catch(error => {
-    //     console.error('File upload failed:', error);
-    //     setError(3);
-    // });
+    fetch(`/api/file/upload/course/${id}`, {
+      method: 'POST',
+      body: fd
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('File upload success:', data);
+    })
+    .catch(error => {
+        console.error('File upload failed:', error);
+        setError(3);
+    });
   };    
   
   return <>
@@ -469,16 +468,11 @@ export function AdminCourseDetail() {
                     <AddBox><BsPatchPlusFill className="addIcon" onClick={() => addSubject()} /></AddBox>
                   </SubjectBox>
                 </Detail>
-                {/* <Detail>
-                  <Label>활성화</Label>
-                  {
-                    courses.available == 1 ? <DangerButton><p>비활성화</p></DangerButton> : <PrimaryButton><p>활성화</p></PrimaryButton>
-                  }
-                </Detail> */}
-                  {/* {error == 2 && window.location.reload()} */}
-                  {error == 3 && <ErrorMsg>등록이 실패하였습니다.</ErrorMsg>}
+                  {error == 2 && navigate("/lms/a/courseSetting")}
+                  {error == 3 && <ErrorMsg>수정이 실패하였습니다.</ErrorMsg>}
                 <ButtonBox>
                   <PrimaryButton type="submit" onClick={() => onSubmit()}><p>수정</p></PrimaryButton>
+                  <DeleteModal name={"삭제"}></DeleteModal>
                   <SecondaryButton onClick={() => navigate("/lms/a/courseSetting")}><p>목록</p></SecondaryButton>
                 </ButtonBox>
             </Details>

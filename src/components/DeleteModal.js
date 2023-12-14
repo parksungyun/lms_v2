@@ -156,28 +156,6 @@ export function DeleteModal({name}){
         });
       }
     }
-    else if(type[2] === "a") {
-      if(type[3] === "managerSetting" || type[3] === "trainerSetting") {
-        axios
-        .delete(`/api/user/academic/${replyId}/delete`)
-        .then((res) => {
-          navigate(link.substring(0, link.lastIndexOf("/")));
-        })
-        .catch((err) => {
-          console.log(`${err} : 사원(강사/매니저) 삭제 실패`);
-        });
-      }
-      if(type[3] === "courseSetting") {
-        axios
-        .delete(`/api/user/course/${replyId}/delete`)
-        .then((res) => {
-          navigate(link.substring(0, link.lastIndexOf("/")));
-        })
-        .catch((err) => {
-          console.log(`${err} : 과정 삭제 실패`);
-        });
-      }
-    }
     else {
       if(type[1] === "admission") {
         axios

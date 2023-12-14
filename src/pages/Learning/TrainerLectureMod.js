@@ -167,6 +167,7 @@ export function TrainerLectureMod() {
         axios
         .post(`/api/subject/${state}/lecture/mod`, data)
         .then((res) => {
+          setError(3);
         })
         .catch((err) => {
           console.log(`${err} : Write Error`)
@@ -194,6 +195,7 @@ export function TrainerLectureMod() {
         axios
         .post(`/api/subject/${state}/lecture/mod`, data)
         .then((res) => {
+          setError(3);
         })
         .catch((err) => {
           console.log(`${err} : Write Error`)
@@ -219,6 +221,7 @@ export function TrainerLectureMod() {
             <Input type="file" name="lecture_file" id="lecture_file" onChange={(e)=>setLectureFile(e.target.files[0])}/>
             {error == 1 && <ErrorMsg>제목 혹은 내용이 작성되어 있지 않습니다.</ErrorMsg>}
             {error == 2 && <ErrorMsg>수정에 실패하였습니다.</ErrorMsg>}
+            {error == 3 && navigate(`/lms/t/${lecture.subjectId}/lecture/${state}`)}
             <Box>
               <PrimaryButton onClick={()=>onSubmit()}><p>수정</p></PrimaryButton>
               <DeleteModal name={"삭제"}></DeleteModal>
