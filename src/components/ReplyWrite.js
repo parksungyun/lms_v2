@@ -70,7 +70,6 @@ export function ReplyWrite({ question }) {
         academicId: sessionStorage.getItem("id"),
         content: reply
       };
-      console.log(data);
       axios
       .post(`/api/subject/qna/${question.question.subjectQuestionId}/reply`, data)
       .then((res) => {
@@ -86,7 +85,6 @@ export function ReplyWrite({ question }) {
           academicId: sessionStorage.getItem("id"),
           content: reply
         };
-        console.log(data);
         axios
         .post(`/api/course/qna/${question.question.courseQuestionId}/reply`, data)
         .then((res) => {
@@ -101,9 +99,8 @@ export function ReplyWrite({ question }) {
           academicId: sessionStorage.getItem("id"),
           content: reply
         };
-        console.log(data);
         axios
-        .post(`/api/admission/qna/${question.question.admissionQuestionId}/reply`, data)
+        .post(`/api/admission/${question.question.admissionQuestionId}/reply`, data)
         .then((res) => {
           navigate(link);
         })

@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { admission_answers, admission_questions, courses } from "../../assets/TempData";
 import { useEffect } from "react";
 import { ReplyWrite } from "../../components/ReplyWrite";
 import { ReplyPost } from "../../components/ReplyPost";
+import { getAdmissionPostById, getAllManagers, getCourseById } from "../Api";
 
 const Container = styled.div`
   padding: 1.5rem 2rem;
@@ -60,13 +60,6 @@ const SecondaryButton = styled.button`
   color: white;
 `;
 
-const ButtonBox = styled.div`
-  padding-top: 2rem;
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-`;
-
 const H2 = styled.p`
   font-size: 1.7rem;
   font-weight: bold;
@@ -80,6 +73,11 @@ const Box = styled.div`
   align-items: center;
   text-align: center;
   margin: 10px 0;
+  &.button {
+    justify-content: center;
+    margin-top: 1rem;
+    margin-bottom: 0;
+  }
 `;
 
 const P = styled.p`
@@ -92,64 +90,103 @@ const Hr = styled.hr`
 
 export function ManagerAdmissionBoardPost(){
   const { id } = useParams();
+  const [post, setPost] = useState(null);
+  const [course, setCourse] = useState(null);
+  const [academics, setAcademics] = useState(null);
   const [isReply, setIsReply] = useState();
   const navigate = useNavigate();
-  const question = admission_questions.find((q) => q.a_question_id == id);
-  let answer;
-  if(admission_answers.find(data => data.a_question_id == question.a_question_id)){
-    answer = admission_answers.find(data => data.a_question_id == question.a_question_id);
-  }
 
   useEffect(() => {
-    if(answer) setIsReply(1);
-  }, [answer])
+    if(!post) {
+      const promise = getAdmissionPostById(id);
+      const getData = () => {
+        promise.then((data) => {
+          setPost(data);
+        });
+      };
+      getData();
+    }
+    if(!academics) {
+      const promise = getAllManagers();
+        const getData = () => {
+          promise.then((data) => {
+            setAcademics(data);
+          });
+        };
+        getData();
+    }
+  })
+  
+  useEffect(() => {
+    if(post) {
+      if(!course) {
+        const promise = getCourseById(post.question.desiredCourse);
+          const getData = () => {
+            promise.then((data) => {
+              setCourse(data);
+            });
+          };
+          getData();
+      }
+
+      if(post.answer) {
+        setIsReply(1);
+      }
+    }
+  }, [post]);
 
   return<>
     <Container>
-      <TableBox>
-        <H2>{question.a_question_title}</H2>
-        <Box>
-          <P>{question.writer_name}</P>
-          <P>|</P>
-          <P>{question.a_question_reg_date}</P>
-        </Box>
-        <Hr />
-        <Table>
-          <tr>
-            <th>이름</th>
-            <td>{question.writer_name}</td>
-          </tr>
-          <tr>
-            <th>나이</th>
-            <td>{question.age}</td>
-          </tr>
-          <tr>
-            <th>연락처</th>
-            <td>{question.phone}</td>
-          </tr>
-          <tr>
-            <th>최종학력</th>
-            <td>{question.final_school}</td>
-          </tr>
-          <tr>
-            <th>수강희망과목</th>
-            <td>{courses.find((c) => c.course_id == question.desired_course).course_name}</td>
-          </tr>
-          <ContentRow>
-            <th>내용</th>
-            <td className="overflow-y-scroll">{question.a_question_content}</td>
-          </ContentRow>
-        </Table>
-        {
-          isReply == 1 ? <>
-            <ReplyPost id={question.a_question_id} type={"a"} />
-            <ButtonBox>
-              <PrimaryButton onClick={() => setIsReply(0)}><p>수정</p></PrimaryButton>
-              <SecondaryButton onClick={() => navigate("/lms/m/admission")}><p>목록</p></SecondaryButton>
-            </ButtonBox>
-          </> : <ReplyWrite id={question.a_question_id} type={"m/admission"} />
-        }
-      </TableBox>
+      {
+        (post && course) &&
+        <TableBox>
+          <H2>{post.question.title}</H2>
+          <Box>
+            <P>{post.question.writerName}</P>
+            <P>|</P>
+            <P>{new Date(post.question.regDate).toLocaleDateString("fr-CA")}</P>
+          </Box>
+          <Hr />
+          <Table>
+            <tr>
+              <th>이름</th>
+              <td>{post.question.writerName}</td>
+            </tr>
+            <tr>
+              <th>나이</th>
+              <td>{post.question.age}</td>
+            </tr>
+            <tr>
+              <th>연락처</th>
+              <td>{post.question.phone}</td>
+            </tr>
+            <tr>
+              <th>최종학력</th>
+              <td>{post.question.finalSchool}</td>
+            </tr>
+            <tr>
+              <th>수강희망과목</th>
+              <td>{course.courseName}</td>
+            </tr>
+            <ContentRow>
+              <th>내용</th>
+              <td className="overflow-y-scroll">{post.question.content}</td>
+            </ContentRow>
+          </Table>
+          {
+            (academics && isReply === 1) ? <>
+              <ReplyPost question={post} academic={academics.find((a) => a.academic.academicId === post.answer.academicId)} />
+              <Box className="button">
+                {
+                  post.answer.academicId == sessionStorage.getItem("id") &&
+                  <PrimaryButton onClick={()=>setIsReply(0)}><p>수정</p></PrimaryButton>
+                }
+                <SecondaryButton onClick={()=>navigate(`/lms/m/admission`)}><p>목록</p></SecondaryButton>
+              </Box>
+            </> : <ReplyWrite question={post} />
+          }
+        </TableBox>
+      }
     </Container>
   </>
 }

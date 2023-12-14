@@ -128,7 +128,7 @@ export function AdmissionPost(){
       <Table>
         <tr>
           <th>작성일</th>
-          <td>{new Date(post.question.regDate).toLocaleDateString()}</td>
+          <td>{new Date(post.question.regDate).toLocaleDateString("fr-CA")}</td>
         </tr>
         <tr>
           <th>이름</th>

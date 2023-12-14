@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Menu, MenuItem, Sidebar, SubMenu } from "react-pro-sidebar";
-import { BsFillPersonFill, BsDash, BsMegaphone, BsHouseDoor, BsListCheck, BsPencil,BsQuestionCircle, BsInfoCircle, BsStar } from "react-icons/bs";
+import { BsFillPersonFill, BsMegaphone, BsHouseDoor, BsListCheck, BsPencil,BsQuestionCircle, BsInfoCircle, BsStar, BsChatRightDots } from "react-icons/bs";
 import { RiMacbookLine, RiLogoutBoxRLine, RiMailLine, RiBookletFill, RiUserSettingsLine } from "react-icons/ri";
 import styled from "styled-components";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -263,6 +263,15 @@ export function LmsSidebar() {
                 icon={<RiMailLine />}
                 component={<NavLink to={`/lms/${userType}/cqna`} />}>
                 {"1:1 문의"}
+              </MenuItem>
+          }
+          {
+            (userType === "m")
+            && <MenuItem
+                active={pathName.startsWith(`/lms/${userType}/admission`)}
+                icon={<BsChatRightDots />}
+                component={<NavLink to={`/lms/${userType}/admission`} />}>
+                {"입학상담"}
               </MenuItem>
           }
           {

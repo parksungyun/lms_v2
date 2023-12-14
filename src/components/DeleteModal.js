@@ -92,8 +92,7 @@ export function DeleteModal({name}){
         });
       }
     }
-
-    if(userType === "m") {
+    else if(userType === "m") {
       if(type[4] === "board") {
         axios
         .delete(`/api/course/board/${postId}/delete`)
@@ -114,9 +113,18 @@ export function DeleteModal({name}){
           console.log(`${err} : 과목 문의 답변 삭제 실패`);
         });
       }
+      if(type[3] === "admission") {
+        axios
+        .delete(`/api/admission/reply/${replyId}/delete`)
+        .then((res) => {
+          navigate(link);
+        })
+        .catch((err) => {
+          console.log(`${err} : 입학 상담 답변 삭제 실패`);
+        });
+      }
     }
-
-    if(userType === "s") {
+    else if(userType === "s") {
       if(type[3] === "cqna") {
         axios
         .delete(`/api/course/qna/${postId}/delete`)
@@ -135,6 +143,18 @@ export function DeleteModal({name}){
         })
         .catch((err) => {
           console.log(`${err} : 과목 질문 게시글 삭제 실패`);
+        });
+      }
+    }
+    else {
+      if(type[1] === "admission") {
+        axios
+        .delete(`/api/admission/${postId}/delete`)
+        .then((res) => {
+          navigate("/admission");
+        })
+        .catch((err) => {
+          console.log(`${err} : 입학 상담 게시글 삭제 실패`);
         });
       }
     }

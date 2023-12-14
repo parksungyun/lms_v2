@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import { Table } from "../../components/Table";
 import { Pagination } from "../../components/Pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { academics, admission_answers, admission_questions, userList } from "../../assets/TempData";
+import { getAdmissionPostsByContaining, getAllAdmissionPosts, getAllManagers } from "../Api";
 
 
 const BadgeSuccess = styled.span`
@@ -107,10 +108,33 @@ export function ManagerAdmissionBoard() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [searchOption, setSearchOption] = useState("all");
+  const [questions, setQuestions] = useState(null);
+  const [academics, setAcademics] = useState(null);
   const navigate = useNavigate();
   const limit = 10;
   const offset = (page - 1) * limit;
-  const answer = admission_answers.filter((a) => admission_questions.map((q) => q.a_question_id == a.a_question_id));
+  let items;
+
+  useEffect(() => {
+    if(!questions) {
+      const promise = getAllAdmissionPosts();
+      const getData = () => {
+        promise.then((data) => {
+          setQuestions(data);
+        });
+      };
+      getData();
+    }
+    if(!academics) {
+      const promise = getAllManagers();
+      const getData = () => {
+        promise.then((data) => {
+          setAcademics(data);
+        });
+      };
+      getData();
+    }
+  });
 
   const shortenTitle = (str, length) => {
     let result = '';
@@ -122,39 +146,36 @@ export function ManagerAdmissionBoard() {
     return result;
   };
 
-  const items = admission_questions.map((q, i) => (
-    {
-      no: i + 1,
-      title: titleLink(q.a_question_id, shortenTitle(q.a_question_title, 35)),
-      writer: q.writer_name,
-      regDate: q.a_question_reg_date,
-      replyWriter: findReplyWriter(q.a_question_id),
-      replyDate: findReplyDate(q.a_question_id),
-      replyState: changeReply(q.a_question_id)
-    }
-  ))
+  if(questions && academics) {
+    items = questions.map((q, i) => (
+      {
+        no: i + 1,
+        title: titleLink(q.question.admissionQuestionId, shortenTitle(q.question.title, 35)),
+        writer: q.question.writerName,
+        regDate: new Date(q.question.regDate).toLocaleDateString("fr-CA"),
+        replyWriter: findReplyWriter(q),
+        replyDate: findReplyDate(q),
+        replyState: changeReply(q)
+      }
+    ))
+  }
 
-  function findReplyWriter(id) {
-    let temp;
-    if(answer.find((a) => a.a_question_id == id)){
-      temp = answer.find((a) => a.a_question_id == id);
-      const writer = academics.find((a) => a.academic_id == temp.academic_id);
-      return userList.find((u) => u.uid == writer.uid).user_name;
+  function findReplyWriter(reply) {
+    if(reply.answer){
+      return academics.find((a) => a.academic.academicId === reply.answer.academicId).user.userName;
     }
     else return "";
   }
 
-  function findReplyDate(id) {
-    let temp;
-    if(answer.find((a) => a.a_question_id == id)){
-      temp = answer.find((a) => a.a_question_id == id);
-      return temp.a_answer_mod_date;
+  function findReplyDate(reply) {
+    if(reply.answer){
+      return new Date(reply.answer.answerModDate).toLocaleDateString("fr-CA");
     }
     else return "";
   }
 
-  function changeReply(id) {
-    if(answer.find((a) => a.a_question_id == id)){
+  function changeReply(reply) {
+    if(reply.answer){
       return(<BadgeSuccess>답변완료</BadgeSuccess>)
     }
     else {
@@ -173,19 +194,41 @@ export function ManagerAdmissionBoard() {
     }
   };
 
-  function onSearch(e) {
-    e.preventDefault();
+  function onSearch() {
+    if(search.trim().length > 0) {
+      const promise = getAdmissionPostsByContaining(search, searchOption);
+      const getData = () => {
+        promise.then((data) => {
+          setQuestions(data);
+        });
+      };
+      getData();
+    }
+    else {
+      const promise = getAllAdmissionPosts();
+      const getData = () => {
+        promise.then((data) => {
+          setQuestions(data);
+        });
+      };
+      getData();
+    }
+    setSearch("");
+    setSearchOption("all");
   };
 
   return<>
     <Container>
       <TableBox>
         <H2>입학상담</H2>
-        <Table 
-          headers={headers}
-          items={postsData(items)}
-          selectable={false}
-        />
+        {
+          items &&
+          <Table 
+            headers={headers}
+            items={postsData(items)}
+            selectable={false}
+          />
+        }
         <ButtonBox>
           <SearchBox>
             <select className="searchSelect" onChange={(e) => setSearchOption(e.target.value)}>
@@ -194,10 +237,13 @@ export function ManagerAdmissionBoard() {
               <option key="writer" value="writer">작성자</option>
             </select>
             <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} />
-            <button onClick={onSearch}><p>검색</p></button>
+            <button onClick={() => onSearch()}><p>검색</p></button>
           </SearchBox>
         </ButtonBox>
-        <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+        {
+          items &&
+          <Pagination limit={limit} page={page} totalPosts={items.length} setPage={setPage} />
+        }
       </TableBox>
     </Container>
   </>

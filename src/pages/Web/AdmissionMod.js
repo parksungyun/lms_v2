@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { getAdmissionPostById, getAllCourses, getCourseById } from "../Api";
 import axios from "axios";
+import { DeleteModal } from "../../components/DeleteModal";
 
 const Container = styled.div`
   margin: 2rem 15rem;
@@ -225,7 +226,8 @@ export function AdmissionMod(){
       </form>
       {errorCheck === 1 && <ErrorMsg>입학 상담을 위한 정보를 모두 입력해주세요.</ErrorMsg>}
       <ButtonBox>
-        <PrimaryButton onClick={() => onSubmit()}><p>등록</p></PrimaryButton>
+        <PrimaryButton onClick={() => onSubmit()}><p>수정</p></PrimaryButton>
+        <DeleteModal name={"삭제"}></DeleteModal>
         <SecondaryButton onClick={() => navigate("/admission")}><p>목록</p></SecondaryButton>
       </ButtonBox>
     </Container>

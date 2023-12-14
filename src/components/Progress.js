@@ -53,18 +53,13 @@ const P = styled.p`
 
 export function Progress({subjectName, max, item, link}) {
   const navigate = useNavigate();
-  let i = 100 - (item * 100 / max);
-  if (i == 0) {
-    i = 100;
-  } else if (i == 100) {
-    i = 0;
-  }
+
   return<>
     <Container>
       <PrimaryButton onClick={()=>navigate(link)}><p>{subjectName}</p></PrimaryButton>
       <Box>
         <ProgressBar>
-          <ProgressBox width = {i}/>
+          <ProgressBox width = {item / max * 100}/>
         </ProgressBar>
         <P>현재 진행률 {item}/{max}강</P>
       </Box>
