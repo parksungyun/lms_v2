@@ -87,8 +87,6 @@ export function AdminHome() {
     }
   });
 
-  console.log(user);
-
   function authBadge(auth) {
     if(auth === 3) {
       return (<>

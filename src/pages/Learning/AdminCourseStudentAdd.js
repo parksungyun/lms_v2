@@ -99,13 +99,6 @@ const ButtonBox = styled.div`
   gap: 0.5rem;
 `;
 
-const Select = styled.select`
-  width: 90%;
-  padding: 0.7rem;
-  border: 1px solid lightgray;
-  border-radius: 0.5rem;
-`;
-
 const LoadInfo = styled.div`
   display: flex;
   gap: 1rem;
@@ -209,7 +202,6 @@ export function AdminCourseStudentAdd() {
     axios
       .post(`/api/user/student/${userUid}/add/${id}`)
       .then((res) => {
-        console.log(res.data);
         setError(2);
       })
       .catch((err) => {
@@ -263,7 +255,7 @@ export function AdminCourseStudentAdd() {
                   <Label>과정</Label>
                   <Input type="text" name="course_id" id="course_id" value={course.courseName} disabled />
                 </Detail>
-                  {error == 2 && window.location.reload()}
+                  {error == 2 && navigate(`/lms/a/courseSetting/${id}/s`)}
                   {error == 3 && <ErrorMsg>등록이 실패하였습니다.</ErrorMsg>}
                 <ButtonBox>
                   <PrimaryButton onClick={()=>onSubmit()}><p>등록</p></PrimaryButton>

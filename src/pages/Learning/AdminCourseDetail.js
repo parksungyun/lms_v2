@@ -49,14 +49,6 @@ const SecondaryButton = styled.button`
   color: white;
 `;
 
-const DangerButton = styled.button`
-  border: 0;
-  border-radius: 5px;
-  background-color: red;
-  padding: 0.8rem 1.4rem;
-  color: white;
-`;
-
 const Img = styled.img`
   width: 400px;
   border-radius: 1rem;
@@ -472,7 +464,6 @@ export function AdminCourseDetail() {
                   {error == 3 && <ErrorMsg>수정이 실패하였습니다.</ErrorMsg>}
                 <ButtonBox>
                   <PrimaryButton type="submit" onClick={() => onSubmit()}><p>수정</p></PrimaryButton>
-                  <DeleteModal name={"삭제"}></DeleteModal>
                   <SecondaryButton onClick={() => navigate("/lms/a/courseSetting")}><p>목록</p></SecondaryButton>
                 </ButtonBox>
             </Details>

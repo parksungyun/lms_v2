@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { Table } from "../../components/Table";
-import { academics, userList, courses, students, subjects } from "../../assets/TempData";
 import '../../styles/course_admin_table.css';
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -43,14 +42,6 @@ const PrimaryButton = styled.button`
   border-radius: 5px;
   background-color: #5f7dcf;
   padding: 0.8rem 1.4rem;
-  color: white;
-`;
-
-const PrimaryButtonSmall = styled.button`
-  border: 0;
-  border-radius: 5px;
-  background-color: #5f7dcf;
-  padding: 0.6rem 1.4rem;
   color: white;
 `;
 

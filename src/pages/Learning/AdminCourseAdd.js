@@ -194,13 +194,11 @@ export function AdminCourseAdd() {
   const [capacity, setCapacity] = useState();
   const [coursePhoto, setCoursePhoto] = useState("/upload/CourseDefault.png");
   const [courseInfo, setCourseInfo] = useState();
-  // const [courseAvailable, setCourseAvailable] = useState();
   const [imageSrc, setImageSrc] = useState('');
   const [managers, setManagers] = useState(null);
   const [trainers, setTrainers] = useState(null);
   const [error, setError] = useState(0);
   const [courseId, setCourseId] = useState();
-  let available;
 
   useEffect(() => {
     if(!managers) {
@@ -280,8 +278,6 @@ export function AdminCourseAdd() {
     }
   },[subjectName, subjectSelected]);
 
-  console.log(subject);
-
   function addSubject() {
     const tempsubject = {
       count: subject[subject.length - 1].count + 1,
@@ -304,9 +300,6 @@ export function AdminCourseAdd() {
   };
 
   function onSubmit() {
-    // if(courseAvailable) {
-    //   available = 0;
-    // } else {available = 1;}
     const data = {
       academicId: selected,
       courseName: courseName,
@@ -318,20 +311,16 @@ export function AdminCourseAdd() {
       recruitEnd: recruitEnd,
       courseInfo: courseInfo
     };
-    console.log(data);
 
     axios
     .post("/api/course/add", data)
     .then((res) => {
-      console.log(res.data.data)
-      console.log(res.data.data.courseId);
       setCourseId(res.data.data.courseId);
-      console.log(courseId)
-      setError(1);
+      setError(2);
     })
     .catch((err) => {
       console.log(`${err} : Course Add 실패`)
-      setError(2);
+      setError(3);
     })
   }
 
@@ -339,10 +328,6 @@ export function AdminCourseAdd() {
     const fd = new FormData();
     if (coursePhoto) {
       fd.append("file", coursePhoto);
-      console.log(fd);
-      for (const pair of fd.entries()) {
-        console.log(pair[0] + ', ' + pair[1]);
-    }
     } else {
       console.error("No file selected.");
     }
@@ -350,10 +335,10 @@ export function AdminCourseAdd() {
       axios
       .post(`/api/subject/add/${courseId}`, subject)
       .then((res) => {
-        console.log(res.data.data)
       })
       .catch((err) => {
         console.log(`${err} : Subject Add 실패`)
+        setError(3);
       })
   
       fetch(`/api/file/upload/course/${courseId}`, {
@@ -362,11 +347,10 @@ export function AdminCourseAdd() {
       })
       .then(response => response.json())
       .then(data => {
-          console.log('File upload success:', data);
       })
       .catch(error => {
           console.error('File upload failed:', error);
-          setError(2);
+          setError(3);
       });
     };
   },[courseId]);
@@ -447,10 +431,8 @@ export function AdminCourseAdd() {
                 <AddBox><BsPatchPlusFill className="addIcon" onClick={() => addSubject()} /></AddBox>
               </SubjectBox>
             </Detail>
-            {/* <Detail>
-              <Label>활성화</Label>
-              <Check type="checkbox" name="user_available" id="user_available" checked={courseAvailable} onChange={(e) => {setCourseAvailable(e.target.checked)}} /> 비활성화
-            </Detail> */}
+            {error == 2 && navigate("/lms/a/courseSetting")}
+            {error == 3 && <ErrorMsg>등록이 실패하였습니다.</ErrorMsg>}
             <ButtonBox>
               <PrimaryButton type="submit" onClick={()=>onSubmit()}><p>등록</p></PrimaryButton>
               <SecondaryButton onClick={() => navigate("/lms/a/courseSetting")}><p>목록</p></SecondaryButton>
