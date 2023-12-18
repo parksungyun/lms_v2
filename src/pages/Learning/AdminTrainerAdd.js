@@ -158,7 +158,7 @@ export function AdminTrainerAdd() {
   const [userCAuth, setUserCAuth] = useState(false);
   const [auth, setAuth] = useState();
   const [userRemark, setUserRemark] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState("/upload/UserDefault.png");
   const [error, setError] = useState(0);
   let userAuth;
   let available;

@@ -153,7 +153,7 @@ console.log(sessionStorage)
       <ProgressBar>
         <ProgressBox width = {i}/>
       </ProgressBar>
-      <Video controls
+      <Video
         muted={false}
         ref={ref}
         id="lectureVideo"

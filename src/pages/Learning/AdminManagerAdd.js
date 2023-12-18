@@ -159,7 +159,7 @@ export function AdminManagerAdd() {
   const [userCAuth, setUserCAuth] = useState(false);
   const [auth, setAuth] = useState();
   const [userRemark, setUserRemark] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState("/upload/UserDefault.png");
   const [error, setError] = useState(0);
   let userAuth;
   let available;
@@ -206,7 +206,7 @@ export function AdminManagerAdd() {
     }
   }
 
-  const [imageSrc, setImageSrc] = useState('');
+  const [imageSrc, setImageSrc] = useState();
 
   const encodeFileToBase64 = (fileBlob) => {
     const reader = new FileReader();
@@ -377,7 +377,7 @@ export function AdminManagerAdd() {
               {error == 3 && <ErrorMsg>등록이 실패하였습니다.</ErrorMsg>}
             <ButtonBox>
               <PrimaryButton type="submit" onClick={()=>onSubmit()}><p>등록</p></PrimaryButton>
-              <SecondaryButton onClick={() => navigate("/lms/a/trainerSetting")}><p>목록</p></SecondaryButton>
+              <SecondaryButton onClick={() => navigate("/lms/a/managerSetting")}><p>목록</p></SecondaryButton>
             </ButtonBox>
           </Details>
         </ContentDivide>
