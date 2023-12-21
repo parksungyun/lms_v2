@@ -89,8 +89,6 @@ const P = styled.p`
     addTimeUpdate();
   }, []);
 
-console.log(sessionStorage)
-
   // 강의 영상 재생 후 테스트 해봐야함
   useEffect(() => {
     if (sessionStorage.getItem("userType") == "s") {
@@ -103,7 +101,6 @@ console.log(sessionStorage)
       axios
       .post("/api/subject/study", data)
       .then((res) => {
-        console.log(res.data.data)
       })
       .catch((err) => {
         console.log(`${err} : 실패`);
@@ -137,7 +134,6 @@ console.log(sessionStorage)
     axios
     .get(`/api/file/video/${videoSrc.substring(videoSrc.lastIndexOf("\\") + 1)}`)
     .then((res) => {
-      console.log(res.data.data)
     })
     .catch((err) => {
       console.log(`${err} : failed`)

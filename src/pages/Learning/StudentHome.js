@@ -2,10 +2,9 @@ import { Col, Row } from "react-bootstrap";
 import styled from "styled-components"
 import { Table } from "../../components/Table";
 import { Progress } from "../../components/Progress";
-import { academics, course_board, courses, homeworks, lectures, students, studies, subjects, userList } from "../../assets/TempData";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getAcademicByAcademicId, getAllManagers, getCourseBoardByCourseId, getHomeworksByCourseId, getProgressByStudentId, getSubjectByCourseId, getUserByUid } from "../Api";
+import { getAllManagers, getCourseBoardByCourseId, getHomeworksByCourseId, getProgressByStudentId, getSubjectByCourseId, getUserByUid } from "../Api";
 import axios from "axios";
 
 const Container = styled.div`

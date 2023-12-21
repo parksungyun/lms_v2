@@ -115,22 +115,24 @@ export function FindPW() {
     setVerifyNum("");
   }, [errorCheck]);
 
-  useEffect(() => {
-    if(randomNum) {
-      const data = {
-        toNumber: userPhone.replaceAll("-", ""),
-        randomNumber: randomNum,
-      }
-      axios
-      .post("/api/message/send", data)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(`${err} : 인증문자 전송 실패`);
-      });
-    }
-  }, [randomNum]);
+  // useEffect(() => {
+  //   if(randomNum) {
+  //     const data = {
+  //       toNumber: userPhone.replaceAll("-", ""),
+  //       randomNumber: randomNum,
+  //     }
+  //     axios
+  //     .post("/api/message/send", data)
+  //     .then((res) => {
+  //       console.log(res);
+  //     })
+  //     .catch((err) => {
+  //       console.log(`${err} : 인증문자 전송 실패`);
+  //     });
+  //   }
+  // }, [randomNum]);
+
+  console.log(randomNum);
 
   function onVerify(e) {
     e.preventDefault();
